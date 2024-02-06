@@ -1,0 +1,3 @@
+{
+    "apps/user-setup/**/*.{js,ts,jsx,tsx}": ["npm run lint"]
+  }
