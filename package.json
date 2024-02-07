@@ -12,7 +12,7 @@
     "lint:fix": "cd apps/user-setup && npm run lint:fix",
     "start:dev": "cd apps/user-setup && npm run start:dev",
     "start:prod": "cd apps/user-setup && npm run start:prod",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "husky": "^9.0.10",
