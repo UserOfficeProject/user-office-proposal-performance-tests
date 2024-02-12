@@ -1,0 +1,49 @@
+{
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false
+    },
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "k6-linting-rules",
+      "import",
+      "unused-imports"
+    ],
+    "rules": {
+      "semi": ["error", "always"],
+      "import/order": [
+        "error",
+        {
+          "groups": [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling"],
+            "index"
+          ],
+          "pathGroups": [
+            {
+              "pattern": "@src/**",
+              "group": "internal",
+              "position": "after"
+            }
+          ],
+          "pathGroupsExcludedImportTypes": ["builtin"],
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ],
+      "quotes": ["error", "single"],
+      "padding-line-between-statements": [
+        "error",
+        { "blankLine": "always", "prev": "*", "next": "return" }
+      ],
+      "unused-imports/no-unused-imports-ts": 2,
+      "no-console": "error"
+    }
+  }
