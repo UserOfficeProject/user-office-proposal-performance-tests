@@ -8,8 +8,12 @@
   "scripts": {
     "tsc": "cd apps/user-setup && tsc",
     "build": "cd apps/user-setup && npm run build",
-    "lint": "cd apps/user-setup && npm run lint",
-    "lint:fix": "cd apps/user-setup && npm run lint:fix",
+    "lint:user-setup": "cd apps/user-setup && npm run lint",
+    "lint:k6-test": "cd apps/k6-tests && npm run lint",
+    "lint:fix:k6-test": "cd apps/k6-test && npm run lint:fix",
+    "lint:fix:user-setup": "cd apps/user-setup && npm run lint:fix",
+    "lint": "concurrently \"npm run lint:user-setup\" \"npm run lint:k6-test\"",
+    "lint:fix": "concurrently \"npm run lint:fix:user-setup\" \"npm run lint:fix:k6-test\"",
     "start:dev": "cd apps/user-setup && npm run start:dev",
     "start:prod": "cd apps/user-setup && npm run start:prod",
     "prepare": "husky"
@@ -17,5 +21,8 @@
   "devDependencies": {
     "husky": "^9.0.10",
     "lint-staged": "^15.2.2"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
   }
 }
