@@ -14,13 +14,19 @@
     "lint:fix:user-setup": "cd apps/user-setup && npm run lint:fix",
     "lint": "concurrently \"npm run lint:user-setup\" \"npm run lint:k6-test\"",
     "lint:fix": "concurrently \"npm run lint:fix:user-setup\" \"npm run lint:fix:k6-test\"",
-    "start:dev": "cd apps/user-setup && npm run start:dev",
-    "start:prod": "cd apps/user-setup && npm run start:prod",
+    "install:user-setup": "cd apps/user-setup  && npm install",
+    "install:k6-tests": "cd apps/k6-tests && npm install",
+    "postinstall": "concurrently \"npm run install:user-setup\" \"npm run install:k6-tests\"",
+    "dev:start:user-setup": "cd apps/user-setup && npm run start:dev",
+    "prod:start:user-setup": "cd apps/user-setup && npm run start:prod",
+    "dev:load-test": "cd apps/k6-tests && npm run dev:k6:load-test",
+    "dev:k6:load-test": "concurrently -k -s first \"npm run dev:start:user-setup\" \"npm run dev:load-test\"",
     "prepare": "husky"
   },
   "devDependencies": {
     "husky": "^9.0.10",
-    "lint-staged": "^15.2.2"
+    "lint-staged": "^15.2.2",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "concurrently": "^8.2.2"

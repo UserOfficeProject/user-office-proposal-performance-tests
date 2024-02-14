@@ -1,49 +1,72 @@
 {
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-      "requireConfigFile": false
-    },
-    "extends": [
-      "plugin:prettier/recommended"
-    ],
-    "plugins": [
-      "k6-linting-rules",
-      "import",
-      "unused-imports"
-    ],
-    "rules": {
-      "semi": ["error", "always"],
-      "import/order": [
-        "error",
-        {
-          "groups": [
-            "builtin",
-            "external",
-            "internal",
-            ["parent", "sibling"],
-            "index"
-          ],
-          "pathGroups": [
-            {
-              "pattern": "@src/**",
-              "group": "internal",
-              "position": "after"
-            }
-          ],
-          "pathGroupsExcludedImportTypes": ["builtin"],
-          "newlines-between": "always",
-          "alphabetize": {
-            "order": "asc",
-            "caseInsensitive": true
-          }
-        }
-      ],
-      "quotes": ["error", "single"],
-      "padding-line-between-statements": [
-        "error",
-        { "blankLine": "always", "prev": "*", "next": "return" }
-      ],
-      "unused-imports/no-unused-imports-ts": 2,
-      "no-console": "error"
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
     }
+  },
+  "plugins": ["@typescript-eslint", "import", "unused-imports"],
+  "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "index"
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
+    "@typescript-eslint/no-empty-function": [
+      "error",
+      { "allow": ["arrowFunctions"] }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"],
+        "leadingUnderscore": "allow",
+        "trailingUnderscore": "allow"
+      },
+      {
+        "selector": "function",
+        "format": ["PascalCase", "camelCase"]
+      }
+    ],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "Function": "Use `FunctionType` instead",
+          "fixWith": "FunctionType"
+        }
+      }
+    ],
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "unused-imports/no-unused-imports-ts": 2
   }
+}

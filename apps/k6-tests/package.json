@@ -6,9 +6,10 @@
   "license": "",
   "sideEffects": false,
   "scripts": {
-    "lint": "eslint . --ext .js,.ts --quiet",
-    "lint:fix": "eslint . --ext .js,.ts --fix --quiet",
-    "bundle": "webpack"
+    "lint": "tsc --noEmit && eslint . --ext .js,.ts --quiet",
+    "lint:fix": "tsc --noEmit && eslint . --ext .js,.ts --fix --quiet",
+    "bundle": "webpack",
+    "dev:k6:load-test": "npm run bundle && k6 run --no-usage-report - <./test/load-test.js"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
