@@ -4,4 +4,4 @@ data
 scripts/generated
 scripts/generated/generate-graphql-sdk.js
 src/utils/k6
-webp
+config
