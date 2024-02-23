@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 const GlobEntries = require('webpack-glob-entries');
 
 module.exports = {
@@ -25,21 +26,10 @@ module.exports = {
   },
   target: 'web',
   externals: /^(k6|https?\:\/\/)(\/.*)?/,
-  // Generate map files for compiled scripts
-  devtool: "source-map",
   stats: {
     colors: true,
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    // Copy assets to the destination folder
-    new CopyPlugin({
-      patterns: [{ 
-        from: path.resolve(__dirname, 'data'), 
-        noErrorOnMissing: true 
-      }],
-    }),
-  ],
+  plugins: [new CleanWebpackPlugin()],
   optimization: {
     // Don't minimize, as it's not used in the browser
     minimize: false,

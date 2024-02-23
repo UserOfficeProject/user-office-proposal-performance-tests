@@ -2,7 +2,7 @@ import { logger } from '@user-office-software/duo-logger';
 import express, { Request, Response } from 'express';
 import oracledb from 'oracledb';
 
-import { UserDataSource, createUserDataSource } from './user-data-source';
+import { UserDataSource, createUserDataSource } from './userDataSource';
 
 const firstId = -220800000;
 const maximumNumberOfIds = 1000;
@@ -39,6 +39,8 @@ export default function (pool: oracledb.Pool) {
     handleError(async (req: Request, res: Response) => {
       const { number } = req.params;
       const dataSource: UserDataSource = await createUserDataSource(pool);
+      //clean up
+      await dataSource.deleteUsersBetween(firstId, lastId);
       const sessionIds = await Promise.all(
         Array.from({ length: +number || 1 }, () => {
           const userId = userIdGenerator.next().value;
@@ -47,6 +49,12 @@ export default function (pool: oracledb.Pool) {
           }
         })
       );
+
+      if (sessionIds.length > 0) {
+        logger.logInfo('Created logins,people,establishments and addresses', {
+          number,
+        });
+      }
 
       res.status(200).json(sessionIds);
     })

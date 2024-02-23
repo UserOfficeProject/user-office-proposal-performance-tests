@@ -128,13 +128,9 @@ export class UserDataSource {
 
       await connection.commit();
 
-      logger.logInfo('Created logins,people,establishments and addresses', {
-        userId,
-        loginCreated,
-        personCreated,
-        establishmentCreated,
-        addressCreated,
-      });
+      if (!(userId && loginCreated && personCreated && establishmentCreated && addressCreated)) {
+        throw new Error('Fail to create logins,people,establishments and addresses');
+      }
 
       return {
         sessionId: uuid,

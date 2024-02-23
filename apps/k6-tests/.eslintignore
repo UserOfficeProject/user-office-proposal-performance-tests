@@ -1,3 +1,7 @@
 node_modules
 test
 data
+scripts/generated
+scripts/generated/generate-graphql-sdk.js
+src/utils/k6
+webp

@@ -6,11 +6,13 @@
   "license": "",
   "sideEffects": false,
   "scripts": {
+    "tsc": "tsc",
     "lint": "tsc --noEmit && eslint . --ext .js,.ts --quiet",
     "lint:fix": "tsc --noEmit && eslint . --ext .js,.ts --fix --quiet",
     "bundle": "webpack",
     "build:dev": "npm run bundle",
-    "dev:k6:load-test": "npm run bundle && k6 run --no-usage-report - <./test/load-test.js"
+    "dev:k6:load-test": "npm run bundle && k6 run --no-usage-report - <./test/load-test.js",
+    "generate-sdk:dev": "SCHEMA_URL=http://localhost:4000/graphql node scripts/generate-graphql-sdk.js"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -18,14 +20,26 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-typescript": "^7.23.3",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.4",
+    "@graphql-codegen/typescript-operations": "^4.1.2",
     "@types/k6": "^0.49.0",
     "@types/webpack": "^5.28.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
     "babel-loader": "^9.1.3",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^12.0.2",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "prettier": "^3.2.5",
     "typescript": "^5.3.3",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4",
     "webpack-glob-entries": "^1.0.1"
+  },
+  "dependencies": {
+    "@graphql-codegen/typescript-graphql-request": "^6.2.0"
   }
 }

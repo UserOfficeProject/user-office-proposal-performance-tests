@@ -1,3 +1,7 @@
 node_modules
 test
 screenshots
+
+#SDK file
+/scripts/generated
+/config/env.json
