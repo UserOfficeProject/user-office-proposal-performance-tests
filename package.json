@@ -11,9 +11,8 @@
     "build:k6-test": "cd apps/k6-tests && npm run build",
     "dev:build:k6-test": "cd apps/k6-tests && npm run build:dev",
     "dev:build:user-setup": "cd apps/user-setup && npm run build:dev",
-    "dev:generate-sdk:k6-test": "cd apps/k6-tests && npm run generate-sdk:dev",
     "dev:build": "concurrently \"npm run dev:build:user-setup\" \"npm run dev:build:k6-test\"",
-    "build": "concurrently \"npm run build:user-setup\" \"npm run generate-sdk:k6-test\" \"npm run build:k6-test\"",
+    "build": "concurrently \"npm run build:user-setup\" \"npm run build:k6-test\"",
     "lint:user-setup": "cd apps/user-setup && npm run lint",
     "lint:k6-test": "cd apps/k6-tests && npm run lint",
     "lint:fix:k6-test": "cd apps/k6-tests && npm run lint:fix",
@@ -30,6 +29,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.12",
     "husky": "^9.0.10",
     "lint-staged": "^15.2.2",
     "typescript": "^5.3.3"

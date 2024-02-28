@@ -2,6 +2,5 @@ node_modules
 test
 screenshots
 
-#SDK file
-/scripts/generated
-/config/env.json
+#.k6rc env file
+/.k6rc

@@ -7,6 +7,9 @@ const GlobEntries = require('webpack-glob-entries');
 module.exports = {
   mode: 'production',
   entry: GlobEntries('./src/*test*.ts'), // Generates multiple entry for each test
+  experiments: {
+    outputModule: true,
+  },
   output: {
     path: path.join(__dirname, 'test'),
     libraryTarget: 'commonjs',
