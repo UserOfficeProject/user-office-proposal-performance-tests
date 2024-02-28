@@ -1,0 +1,86 @@
+pipeline {
+  agent none
+
+  options {
+    disableConcurrentBuilds()
+
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10'
+      )
+    )
+
+    office365ConnectorWebhooks([[
+      url: "${env.TEAMS_WEBHOOK_URL}",
+      notifyUnstable: true,
+      notifyFailure: true,
+      notifyBackToNormal: true,
+      startNotification: false,
+      notifySuccess: false,
+      notifyAborted: false,
+      notifyNotBuilt: false,
+      notifyRepeatedFailure: false
+    ]])
+  }
+  environment {
+    GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
+    BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
+    GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
+    USER_SETUP_DOTENV_PATH = '.env'
+  }
+
+  stages {
+    stage('Run load testing on dev') {
+      agent {
+        dockerfile {
+          filename 'Dockerfile.dev'
+          dir 'app'
+          label 'linux && docker'
+        }
+      }
+      steps {
+        copyArtifacts (
+          projectName: 'Dev_Build_BisAppSettings',
+          filter: 'BISAppSettings/proposal-load-tester/k6/dev/*',
+          selector: lastSuccessful(),
+          fingerprintArtifacts: true
+        )
+        sh (
+          '''
+            npm run dev:build:k6-test &
+            sleep 10 &
+            npm run dev:start:user-setup &
+            sleep 10 
+
+            # To pass VUS and Iterations uncomment and pass these envs
+            # export SC1_BROWSER_VUS=60
+            # export SC1_GRAPHQL_VUS=80
+            # export SC1_GRAPHQL_ITERATIONS=5
+
+            k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
+          '''
+        )
+      }
+    }
+  }
+
+  post {
+    regression {
+        emailext(
+          subject: '$DEFAULT_SUBJECT',
+          body: '$DEFAULT_CONTENT',
+          to: '$DEFAULT_RECIPIENTS',
+          recipientProviders: [developers()]
+        )
+      }
+
+    fixed {
+      emailext(
+      subject: '$DEFAULT_SUBJECT',
+      body: '$DEFAULT_CONTENT',
+      to: '$DEFAULT_RECIPIENTS',
+      recipientProviders: [developers()]
+    )
+    }
+  }
+}

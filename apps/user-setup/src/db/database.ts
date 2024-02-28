@@ -2,7 +2,11 @@ import { logger } from '@user-office-software/duo-logger';
 import oracledb from 'oracledb';
 
 export default async function () {
-  const { USERNAME: user, PASSWORD: password, CONNECTION_STRING: connectionString } = process.env;
+  const {
+    DB_USERNAME: user,
+    DB_PASSWORD: password,
+    DB_CONNECTION_STRING: connectionString,
+  } = process.env;
 
   if (!user) {
     throw new Error('USERNAME environment variable was not set');

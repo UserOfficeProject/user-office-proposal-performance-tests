@@ -39,3 +39,9 @@ ENV K6_BROWSER_HEADLESS=true
 # no-sandbox chrome arg is required to run chrome browser in
 # alpine and avoids the usage of SYS_ADMIN Docker capability
 ENV K6_BROWSER_ARGS=no-sandbox
+
+ENV XK6_BROWSER_LOG="fatal"
+
+ENV K6_BROWSER_LOG="error"
+
+ENV ENVIRONMENT="production"
