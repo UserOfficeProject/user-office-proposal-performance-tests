@@ -3,6 +3,8 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
+import { getTokenApi } from './graphql';
+import { Call } from '../graphql/support/call';
 import { SharedData } from '../utils/sharedType';
 
 export function sc1TearDown(sharedData: SharedData) {
@@ -22,13 +24,16 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let retryCount = 0;
   let proposalHealthCheck = false;
   let userSetupHealthCheck = false;
-  const sharedData: SharedData = {
-    users: undefined,
-    browserBaseUrl: __ENV.BROWSER_BASE_URL || 'http://localhost:8081',
-    graphqlUrl: __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql',
-    userSetupBaseUrl:
-      __ENV.USER_SETUP_BASE_URL || 'http://localhost:8100/users',
-  };
+  let users = undefined;
+
+  const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
+  const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
+  const userSetupBaseUrl =
+    __ENV.USER_SETUP_BASE_URL || 'http://localhost:8100/users';
+  const apiClient = getTokenApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
+  const call = new Call(apiClient);
+  const testCall = call.createTestCall();
+
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (
     !(proposalHealthCheck && userSetupHealthCheck) &&
@@ -36,7 +41,7 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   ) {
     if (!proposalHealthCheck) {
       // Check for successful proposal health check flags
-      const response = http.get(`${sharedData.browserBaseUrl}/health`);
+      const response = http.get(`${browserBaseUrl}/health`);
       check(response, {
         'Proposal health check successful': (r) => {
           const status = r.status === 200;
@@ -59,7 +64,7 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
 
     if (!userSetupHealthCheck) {
       const response = http.post(
-        `${sharedData.userSetupBaseUrl}/${environmentConfig.SETUP_TOTAL_USERS}`,
+        `${userSetupBaseUrl}/${environmentConfig.SETUP_TOTAL_USERS}`,
         '',
         {
           headers: { 'Content-Type': 'application/json' },
@@ -71,8 +76,7 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
           const status = r.status === 200;
           if (status) {
             userSetupHealthCheck = true;
-            const data = response.json();
-            sharedData.users = data;
+            users = response.json();
           }
 
           return status;
@@ -111,10 +115,16 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     );
   }
 
-  if (!sharedData.users) {
+  if (!users) {
     console.error('Setup failed user login empty. Aborting test!');
     exec.test.abort();
   }
 
-  return sharedData;
+  return {
+    users,
+    browserBaseUrl,
+    graphqlUrl,
+    userSetupBaseUrl,
+    testCall,
+  } as SharedData;
 }

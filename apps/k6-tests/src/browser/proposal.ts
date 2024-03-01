@@ -8,7 +8,7 @@ import { Dashboard } from './support/dashboard';
 import { logFailedTest } from './support/logger';
 import { Proposal } from './support/proposal';
 import { User } from './support/user';
-import { randomString } from '../utils/index';
+import { randomString } from '../utils/helperFunctions';
 import { SharedData } from '../utils/sharedType';
 
 const proposalSubmissionDuration = new Trend('proposal_submission_duration');
@@ -46,7 +46,9 @@ export async function proposalTest(sharedData: SharedData) {
       if (
         !check(page, {
           'User can see test call': () =>
-            page.waitForSelector(call.getTestCall()).isVisible(),
+            page
+              .waitForSelector(call.getTestCall(sharedData.testCall.title))
+              .isVisible(),
         })
       ) {
         logFailedTest(page, proposalTitle, fail('User cannot see test call'));
@@ -56,7 +58,7 @@ export async function proposalTest(sharedData: SharedData) {
           waitUntil: 'networkidle',
           timeout: 10000,
         }),
-        page.locator(call.getTestCall()).click(),
+        page.locator(call.getTestCall(sharedData.testCall.title)).click(),
       ]);
 
       const proposal = new Proposal(page);

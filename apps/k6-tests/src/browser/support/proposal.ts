@@ -1,6 +1,6 @@
 import { Page } from 'k6/experimental/browser';
 
-import { randomString } from '../../utils';
+import { randomString } from '../../utils/helperFunctions';
 
 export class Proposal {
   constructor(private page: Page) {}

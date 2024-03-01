@@ -25,14 +25,14 @@ export function setup() {
 //This set the execution options
 export const options: Options = { ...executionOptions };
 
-export async function graphqlTests(sharedData: SharedData) {
-  return tokenLogin(sharedData);
+export async function graphqlTests(SharedData: SharedData) {
+  return tokenLogin(SharedData);
 }
 
-export async function browserTests(sharedData: SharedData) {
-  return proposalTest(sharedData);
+export async function browserTests(sc1SharedData: SharedData) {
+  return proposalTest(sc1SharedData);
 }
 
-export function teardown(sharedData: SharedData) {
-  return sc1TearDown(sharedData);
+export function teardown(SharedData: SharedData) {
+  return sc1TearDown(SharedData, environmentConfig);
 }
