@@ -7,7 +7,7 @@ export const initData = {
   call: {
     id: 1,
     title: 'Performance test',
-    shortCode: 'Test Call',
+    shortCode: 'Test',
     allocationTimeUnit: AllocationTimeUnits.DAY,
   },
   proposal: {
