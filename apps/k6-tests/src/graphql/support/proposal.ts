@@ -94,24 +94,6 @@ export class Proposal {
       )
     );
 
-    // const sessionIds = await Promise.all(
-    //   Array.from({ length: +number || 1 }, () => {
-    //     const userId = userIdGenerator.next().value;
-    //     if (userId) {
-    //       return dataSource.createLoggedInUser(userId);
-    //     }
-    //   })
-    // );
-
-    // const sessionIds = await Promise.all(
-    //   Array.from({ length: +number || 1 }, () => {
-    //     const userId = userIdGenerator.next().value;
-    //     if (userId) {
-    //       return dataSource.createLoggedInUser(userId);
-    //     }
-    //   })
-    // );
-
     responses.forEach((response, index) => {
       const proposalPK = proposals[index];
       if (response.status === 200) {
