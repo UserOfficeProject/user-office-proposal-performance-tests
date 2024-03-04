@@ -29,7 +29,6 @@ RUN npm ci --loglevel verbose
 
 USER root
 
-RUN chmod +x runtests.sh
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
