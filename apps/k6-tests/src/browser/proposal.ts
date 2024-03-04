@@ -17,13 +17,12 @@ export async function proposalTest(sharedData: SharedData) {
   const sessionId =
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length / 2))]
       .sessionId;
-  const browserBaseUrl = 'http://duo-reverse-proxy:80';
   const context = browser.newContext();
   context.setDefaultTimeout(60000);
   const page = context.newPage();
   group('User should be able to create and submit proposal', async () => {
     try {
-      const user = new User(browserBaseUrl, sessionId);
+      const user = new User(sharedData.browserBaseUrl, sessionId);
       const proposalTitle = randomString(10);
       await page.goto(user.getLoginURL());
       await Promise.all([page.waitForNavigation()]);
@@ -39,7 +38,7 @@ export async function proposalTest(sharedData: SharedData) {
       const call = new Call();
 
       await Promise.all([
-        await page.goto(browserBaseUrl),
+        await page.goto(sharedData.browserBaseUrl),
         page.locator(dashboard.proposalMenuItem()).click(),
       ]);
 
