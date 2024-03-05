@@ -1,6 +1,10 @@
 import { Options } from 'k6/options';
 
-import { getDevelopmentOption, getProductionOption } from './options';
+import {
+  getLocalOption,
+  getDevelopOption,
+  getProductionOption,
+} from './options';
 
 export type EnvironmentConfigurations = {
   GRAPHQL_TOKEN: string;
@@ -23,6 +27,15 @@ export function getExecutionOptions(
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
+  if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'develop') {
+    return getDevelopOption(
+      browserVus,
+      browserIterations,
+      graphqlVus,
+      graphqlIterations
+    );
+  }
+
   if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'production') {
     return getProductionOption(
       browserVus,
@@ -32,7 +45,7 @@ export function getExecutionOptions(
     );
   }
 
-  return getDevelopmentOption(
+  return getLocalOption(
     browserVus,
     browserIterations,
     graphqlVus,
