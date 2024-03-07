@@ -78,7 +78,7 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     };
   } catch (err) {
     console.error(
-      `File .k6rcn not found.Create the file in ${configDir} if you want to use it`
+      `File .k6rc not found.Create the file in ${configDir} if you want to use it`
     );
 
     return {
