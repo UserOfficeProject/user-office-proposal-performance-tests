@@ -1,0 +1,40 @@
+{
+  "name": "user-office-proposal-performance-tests",
+  "description": "This is performance monitoring for the user office project",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "author": "",
+  "license": "BSD",
+  "scripts": {
+    "tsc": "cd apps/user-setup && tsc",
+    "build:user-setup": "cd apps/user-setup && npm run build",
+    "build:k6-test": "cd apps/k6-tests && npm run build",
+    "dev:build:k6-test": "cd apps/k6-tests && npm run build:dev",
+    "dev:build:user-setup": "cd apps/user-setup && npm run build:dev",
+    "dev:build": "concurrently \"npm run dev:build:user-setup\" \"npm run dev:build:k6-test\"",
+    "build": "concurrently \"npm run build:user-setup\" \"npm run build:k6-test\"",
+    "lint:user-setup": "cd apps/user-setup && npm run lint",
+    "lint:k6-test": "cd apps/k6-tests && npm run lint",
+    "lint:fix:k6-test": "cd apps/k6-tests && npm run lint:fix",
+    "lint:fix:user-setup": "cd apps/user-setup && npm run lint:fix",
+    "lint": "concurrently \"npm run lint:user-setup\" \"npm run lint:k6-test\"",
+    "lint:fix": "concurrently \"npm run lint:fix:user-setup\" \"npm run lint:fix:k6-test\"",
+    "install:user-setup": "cd apps/user-setup  && npm install",
+    "install:k6-tests": "cd apps/k6-tests && npm install",
+    "postinstall": "concurrently \"npm run install:user-setup\" \"npm run install:k6-tests\"",
+    "dev:start:user-setup": "cd apps/user-setup && npm run start:dev",
+    "prod:start:user-setup": "cd apps/user-setup && npm run start:prod",
+    "dev:load-test": "cd apps/k6-tests && npm run dev:k6:load-test",
+    "dev:k6:load-test": "concurrently -k -s first \"npm run dev:start:user-setup\" \"npm run dev:load-test\"",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.12",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
