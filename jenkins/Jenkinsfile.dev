@@ -34,7 +34,6 @@ pipeline {
       agent {
         dockerfile {
           filename 'Dockerfile.dev'
-          dir 'app'
           label 'linux && docker'
         }
       }
