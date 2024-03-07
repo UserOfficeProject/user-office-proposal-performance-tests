@@ -3,6 +3,7 @@ import { Options } from 'k6/options';
 export function getDevelopOption(
   browserVus?: number,
   browserIterations?: number,
+  browserReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -20,7 +21,7 @@ export function getDevelopOption(
     thresholds: {
       browser_http_req_failed: [
         {
-          threshold: 'rate <= 0.05',
+          threshold: browserReqFailThreshold || 'rate <= 0.05',
           abortOnFail: true,
         },
       ],
@@ -51,6 +52,7 @@ export function getDevelopOption(
 export function getProductionOption(
   browserVus?: number,
   browserIterations?: number,
+  browserReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -68,7 +70,7 @@ export function getProductionOption(
     thresholds: {
       browser_http_req_failed: [
         {
-          threshold: 'rate <= 0.05',
+          threshold: browserReqFailThreshold || 'rate <= 0.05',
           abortOnFail: true,
         },
       ],
@@ -99,6 +101,7 @@ export function getProductionOption(
 export function getLocalOption(
   browserVus?: number,
   browserIterations?: number,
+  browserReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -116,7 +119,7 @@ export function getLocalOption(
     thresholds: {
       browser_http_req_failed: [
         {
-          threshold: 'rate <= 0.05',
+          threshold: browserReqFailThreshold || 'rate <= 0.05',
           abortOnFail: true,
         },
       ],

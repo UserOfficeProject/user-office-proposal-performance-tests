@@ -8,6 +8,6 @@ export class User {
     return `${this.baseUrl}/external-auth?token=${this.sessionId}`;
   }
   getLoggedInMessage(): string {
-    return '//h1[contains(text(), "User Office / Dashboard")]';
+    return '//h1[contains(text(), "User Office Dashboard")]';
   }
 }

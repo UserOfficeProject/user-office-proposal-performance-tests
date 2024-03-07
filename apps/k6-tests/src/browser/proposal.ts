@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { check, fail } from 'k6';
+import { check } from 'k6';
+import exec from 'k6/execution';
 import { browser } from 'k6/experimental/browser';
 import { Trend } from 'k6/metrics';
 
@@ -11,7 +12,10 @@ import { User } from './support/user';
 import { randomString } from '../utils/helperFunctions';
 import { SharedData } from '../utils/sharedType';
 
-const proposalSubmissionDuration = new Trend('proposal_submission_duration');
+const proposalSubmissionDuration = new Trend(
+  'proposal_submission_duration',
+  true
+);
 export async function proposalTest(sharedData: SharedData) {
   const startTime = Date.now();
   const sessionId =
@@ -31,7 +35,12 @@ export async function proposalTest(sharedData: SharedData) {
           page.waitForSelector(user.getLoggedInMessage()).isVisible(),
       })
     ) {
-      logFailedTest(page, proposalTitle, fail('User could not login'));
+      logFailedTest(
+        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
+        'User could not login User Office / Dashboard not visible',
+        page,
+        proposalTitle
+      );
     }
     const dashboard = new Dashboard();
     const call = new Call();
@@ -49,7 +58,12 @@ export async function proposalTest(sharedData: SharedData) {
             .isVisible(),
       })
     ) {
-      logFailedTest(page, proposalTitle, fail('User cannot see test call'));
+      logFailedTest(
+        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
+        `User cannot see test call ${sharedData.testCall.title} not visible`,
+        page,
+        proposalTitle
+      );
     }
     await Promise.all([
       page.waitForNavigation({
@@ -69,9 +83,10 @@ export async function proposalTest(sharedData: SharedData) {
       })
     ) {
       logFailedTest(
+        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
+        'User could not submit proposal submission message not visible',
         page,
-        proposalTitle,
-        fail('User could not submit proposal')
+        proposalTitle
       );
     }
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);

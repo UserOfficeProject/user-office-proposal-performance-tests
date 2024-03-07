@@ -24,6 +24,7 @@ function getConfigDirectory(): string {
 export function getExecutionOptions(
   browserVus?: number,
   browserIterations?: number,
+  browserReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -31,6 +32,7 @@ export function getExecutionOptions(
     return getDevelopOption(
       browserVus,
       browserIterations,
+      browserReqFailThreshold,
       graphqlVus,
       graphqlIterations
     );
@@ -40,6 +42,7 @@ export function getExecutionOptions(
     return getProductionOption(
       browserVus,
       browserIterations,
+      browserReqFailThreshold,
       graphqlVus,
       graphqlIterations
     );
@@ -48,6 +51,7 @@ export function getExecutionOptions(
   return getLocalOption(
     browserVus,
     browserIterations,
+    browserReqFailThreshold,
     graphqlVus,
     graphqlIterations
   );

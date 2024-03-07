@@ -13,6 +13,7 @@ import { SharedData } from './utils/sharedType';
 const executionOptions = getExecutionOptions(
   +__ENV.SC1_BROWSER_VUS,
   +__ENV.SC1_BROWSER_ITERATIONS,
+  __ENV.SC1_BROWSER_REQ_FAIL_THRESHOLD,
   +__ENV.SC1_GRAPHQL_VUS,
   +__ENV.SC1_GRAPHQL_ITERATIONS
 );

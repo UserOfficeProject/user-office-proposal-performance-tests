@@ -1,11 +1,13 @@
+import { fail } from 'k6';
 import { Page } from 'k6/experimental/browser';
 
 export function logFailedTest(
-  page: Page,
-  screenShotName: string,
-  callBack: () => void
+  context: string,
+  message: string,
+  page?: Page,
+  screenShotName?: string
 ) {
-  if (screenShotName) {
+  if (page && screenShotName) {
     try {
       page.screenshot({
         path: `screenshots/${screenShotName + Date.now() + '_screenshot.png'}`,
@@ -14,5 +16,6 @@ export function logFailedTest(
       console.error('Failed to take screenshot:', error);
     }
   }
-  callBack();
+
+  fail(`${context},${message}`);
 }
