@@ -50,7 +50,8 @@ pipeline {
             )
             sh ('ls')
             
-            //run npm build in proposal-populate-consumables
+            sh 'npm config set prefix $WORKSPACE/.npm'
+
             sh 'npm cache clean --force'
 
             sh 'npm ci --loglevel=verbose'
