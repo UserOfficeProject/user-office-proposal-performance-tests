@@ -1,11 +1,6 @@
 pipeline {
   
-  agent {
-    dockerfile {
-      label 'linux && docker'
-      filename 'Dockerfile.run'
-    }
-  }
+  agent none
 
   options {
     disableConcurrentBuilds()
@@ -37,8 +32,13 @@ pipeline {
 
   stages {
 
-        stage('Build populate consumables tool on dev') {
-
+        stage('Build load testing') {
+          agent {
+            dockerfile {
+              label 'linux && docker'
+              filename 'Dockerfile.tests'
+            }
+          }
           steps {
             copyArtifacts(
               projectName: 'Dev_Build_BisAppSettings',
