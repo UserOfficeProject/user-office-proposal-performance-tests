@@ -21,8 +21,6 @@ RUN apk add --no-cache \
 COPY --from=k6-builder /app/k6 /bin/
 
 
-USER root
-
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
 ENV CHROME_PATH=/usr/lib/chromium/
