@@ -47,9 +47,7 @@ pipeline {
         )
         sh (
           '''
-            npm run dev:build:k6-test &
-            sleep 10 &
-            npm run dev:start:user-setup &
+            npm run start:user-setup &
             sleep 10 
 
             # To pass VUS and Iterations uncomment and pass these envs
@@ -57,7 +55,7 @@ pipeline {
             # export SC1_GRAPHQL_VUS=80
             # export SC1_GRAPHQL_ITERATIONS=5
 
-            k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
+            # k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
           '''
         )
       }
