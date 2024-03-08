@@ -1,6 +1,11 @@
 pipeline {
   
-  agent none
+  agent {
+    dockerfile {
+      label 'linux && docker'
+      filename 'Dockerfile.run'
+    }
+  }
 
   options {
     disableConcurrentBuilds()
@@ -31,36 +36,53 @@ pipeline {
   }
 
   stages {
-    stage('Run load testing on dev') {
 
-      agent {
-        dockerfile {
-          label 'linux && docker'
-          filename 'Dockerfile.run'
-        }
-      }
-      steps {
-        copyArtifacts(
-          projectName: 'Dev_Build_BisAppSettings',
-          filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
-          selector: lastSuccessful(),
-          fingerprintArtifacts: true,
-          flatten: true
-        )
-        sh (
-          '''
-            node ./apps/user-setup/build/index.js
+        stage('Build populate consumables tool on dev') {
 
-            # To pass VUS and Iterations uncomment and pass these envs
-            # export SC1_BROWSER_VUS=60
-            # export SC1_GRAPHQL_VUS=80
-            # export SC1_GRAPHQL_ITERATIONS=5
+          steps {
+            copyArtifacts(
+              projectName: 'Dev_Build_BisAppSettings',
+              filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
+              selector: lastSuccessful(),
+              fingerprintArtifacts: true,
+              flatten: true
+            )
+            sh (
+              '''
+                npm cache clean --force
 
-            # k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
-          '''
-        )
-      }
+                npm install
+
+                npm run build
+              '''
+            )
+            
+          }
     }
+    // stage('Run load testing on dev') {
+
+    //   steps {
+    //     copyArtifacts(
+    //       projectName: 'Dev_Build_BisAppSettings',
+    //       filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
+    //       selector: lastSuccessful(),
+    //       fingerprintArtifacts: true,
+    //       flatten: true
+    //     )
+    //     sh (
+    //       '''
+    //         node ./apps/user-setup/build/index.js
+
+    //         # To pass VUS and Iterations uncomment and pass these envs
+    //         # export SC1_BROWSER_VUS=60
+    //         # export SC1_GRAPHQL_VUS=80
+    //         # export SC1_GRAPHQL_ITERATIONS=5
+
+    //         # k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
+    //       '''
+    //     )
+    //   }
+    // }
   }
 
   // post {

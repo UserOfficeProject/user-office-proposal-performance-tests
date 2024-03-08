@@ -20,12 +20,6 @@ RUN apk add --no-cache \
 # Install build dependencies for k6
 COPY --from=k6-builder /app/k6 /bin/
 
-WORKDIR /
-
-COPY ./ ./
-
-# Install Node.js dependencies
-RUN npm ci --loglevel verbose
 
 USER root
 
@@ -43,5 +37,3 @@ ENV XK6_BROWSER_LOG="fatal"
 ENV K6_BROWSER_LOG="error"
 
 ENV ENVIRONMENT="develop"
-
-RUN npm run build
