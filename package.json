@@ -21,7 +21,6 @@
     "lint:fix": "concurrently \"npm run lint:fix:user-setup\" \"npm run lint:fix:k6-test\"",
     "install:user-setup": "cd apps/user-setup  && npm install",
     "install:k6-tests": "cd apps/k6-tests && npm install",
-    "postinstall": "concurrently \"npm run install:user-setup\" \"npm run install:k6-tests\"",
     "dev:start:user-setup": "cd apps/user-setup && npm run start:dev",
     "start:user-setup": "cd apps/user-setup && npm run start",
     "dev:load-test": "cd apps/k6-tests && npm run dev:k6:load-test",
@@ -29,12 +28,14 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.12",
     "husky": "^9.0.10",
-    "lint-staged": "^15.2.2",
-    "typescript": "^5.3.3"
+    "lint-staged": "^15.2.2"
   },
   "dependencies": {
     "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
   }
 }
