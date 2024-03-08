@@ -20,7 +20,7 @@ RUN apk add --no-cache \
 # Install build dependencies for k6
 COPY --from=k6-builder /app/k6 /bin/
 
-WORKDIR /app
+WORKDIR /
 
 COPY ./ ./
 
