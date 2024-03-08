@@ -36,7 +36,7 @@ pipeline {
           agent {
             docker {
               label 'linux && docker'
-              image 'node:3.18.6-alpine'
+              image 'node:18.19-alpine'
               alwaysPull true
             }
           }
