@@ -1,11 +1,6 @@
 pipeline {
   
-  agent {
-    dockerfile {
-      label 'linux && docker'
-      filename 'Dockerfile.run'
-    }
-  }
+  agent none
 
   options {
     disableConcurrentBuilds()
@@ -37,6 +32,13 @@ pipeline {
 
   stages {
     stage('Run load testing on dev') {
+
+      agent {
+        dockerfile {
+          label 'linux && docker'
+          filename 'Dockerfile.run'
+        }
+      }
       steps {
         copyArtifacts(
           projectName: 'Dev_Build_BisAppSettings',
@@ -47,8 +49,7 @@ pipeline {
         )
         sh (
           '''
-            npm run start:user-setup &
-            sleep 10 
+            node ./apps/user-setup/build/index.js
 
             # To pass VUS and Iterations uncomment and pass these envs
             # export SC1_BROWSER_VUS=60
