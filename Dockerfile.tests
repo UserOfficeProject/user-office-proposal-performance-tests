@@ -10,4 +10,4 @@ RUN npm run build
 
 COPY --chown=node:node /apps/user-setup/build ./apps/user-setup/build
 
-COPY --chown=node:node /apps/k6-tests/tests ./apps/k6-tests/tests
+COPY --chown=node:node /apps/k6-tests/test ./apps/k6-tests/test
