@@ -50,9 +50,8 @@ pipeline {
             )
             sh ('ls')
             
-
             //run npm build in proposal-populate-consumables
-            sh ('npm run install:user-setup')
+            sh 'npm cache clean --force'
 
             
           }
