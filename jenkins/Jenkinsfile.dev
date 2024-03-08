@@ -49,11 +49,8 @@ pipeline {
             )
             sh (
               '''
-                npm cache clean --force
-
-                npm install
-
-                npm run build
+                npm run start:user-setup
+                
               '''
             )
             
