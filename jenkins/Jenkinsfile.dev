@@ -1,5 +1,11 @@
 pipeline {
-  agent none
+  
+  agent {
+    dockerfile {
+      label 'linux && docker'
+      filename 'Dockerfile.run'
+    }
+  }
 
   options {
     disableConcurrentBuilds()
@@ -31,18 +37,13 @@ pipeline {
 
   stages {
     stage('Run load testing on dev') {
-      agent {
-        dockerfile {
-          filename 'Dockerfile.dev'
-          label 'linux && docker'
-        }
-      }
       steps {
-        copyArtifacts (
+        copyArtifacts(
           projectName: 'Dev_Build_BisAppSettings',
-          filter: 'BISAppSettings/proposal-load-tester/k6/dev/*',
+          filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
           selector: lastSuccessful(),
-          fingerprintArtifacts: true
+          fingerprintArtifacts: true,
+          flatten: true
         )
         sh (
           '''

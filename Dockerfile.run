@@ -7,8 +7,8 @@ ENV CGO_ENABLED 0
 RUN go install go.k6.io/xk6/cmd/xk6@latest
 
 RUN xk6 build \
-    --with github.com/grafana/xk6-browser
-    
+  --with github.com/grafana/xk6-browser
+
 FROM alpine:3.18 as release
 
 RUN apk add --no-cache \
@@ -37,3 +37,6 @@ ENV K6_BROWSER_HEADLESS=true
 # no-sandbox chrome arg is required to run chrome browser in
 # alpine and avoids the usage of SYS_ADMIN Docker capability
 ENV K6_BROWSER_ARGS=no-sandbox
+
+
+ENV ENVIRONMENT="develop"
