@@ -36,7 +36,7 @@ pipeline {
           agent {
             docker {
               label 'linux && docker'
-              image 'node:18-alpine'
+              image 'node:3.18.6-alpine'
               alwaysPull true
             }
           }
@@ -53,7 +53,7 @@ pipeline {
             //run npm build in proposal-populate-consumables
             sh 'npm cache clean --force'
 
-            sh 'npm ci --loglevel=silent --logs-max=0'
+            sh 'npm ci --loglevel=verbose'
 
             
           }
