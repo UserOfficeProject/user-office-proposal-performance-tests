@@ -47,6 +47,8 @@ pipeline {
               fingerprintArtifacts: true,
               flatten: true
             )
+            sh ('ls apps/user-setup/build')
+            sh ('ls apps/k6-tets/tests')
             sh ('ls')
             
           }
