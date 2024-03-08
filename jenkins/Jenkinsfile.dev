@@ -47,12 +47,7 @@ pipeline {
               fingerprintArtifacts: true,
               flatten: true
             )
-            sh (
-              '''
-                npm run start:user-setup
-                
-              '''
-            )
+            sh ('ls')
             
           }
     }
