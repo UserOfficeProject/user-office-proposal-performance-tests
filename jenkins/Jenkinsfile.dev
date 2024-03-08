@@ -53,7 +53,7 @@ pipeline {
             //run npm build in proposal-populate-consumables
             sh 'npm cache clean --force'
 
-            sh 'npm install --loglevel=verbose '
+            sh 'npm ci --loglevel=silent --logs-max=0'
 
             
           }
