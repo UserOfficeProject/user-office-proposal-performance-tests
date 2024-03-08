@@ -7,7 +7,3 @@ COPY --chown=node:node . .
 RUN npm ci --loglevel error --no-fund
 
 RUN npm run build
-
-COPY --chown=node:node /apps/user-setup/build ./apps/user-setup/build
-
-COPY --chown=node:node /apps/k6-tests/test ./apps/k6-tests/test
