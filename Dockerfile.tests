@@ -8,4 +8,4 @@ RUN npm ci --loglevel error --no-fund
 
 RUN npm run build
 
-CMD [ "node", "./apps/user-setup/build/index.js" ]
+CMD [ "node", "./apps/user-setup/build/index.js"]
