@@ -34,9 +34,10 @@ pipeline {
 
         stage('Build load testing') {
           agent {
-            dockerfile {
+            docker {
               label 'linux && docker'
-              filename 'Dockerfile.tests'
+              image 'node:18.17.1-alpine'
+              alwaysPull true
             }
           }
           steps {
