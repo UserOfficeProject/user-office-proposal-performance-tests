@@ -28,13 +28,14 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "husky": "8.0.3"
-  },
-  "engines": {
-    "npm": ">=8.0.0",
-    "node": ">=16.0.0"
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2"
   },
   "dependencies": {
     "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "npm": ">=9.0.0",
+    "node": ">=18.0.0"
   }
 }
