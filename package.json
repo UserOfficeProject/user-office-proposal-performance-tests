@@ -28,7 +28,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "husky": "^9.0.11"
+    "husky": "8.0.3"
   },
   "engines": {
     "npm": ">=8.0.0",
