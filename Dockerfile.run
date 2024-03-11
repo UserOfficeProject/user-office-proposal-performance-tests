@@ -9,7 +9,7 @@ RUN go install go.k6.io/xk6/cmd/xk6@latest
 RUN xk6 build \
   --with github.com/grafana/xk6-browser
 
-FROM alpine:3.18 as release
+FROM alpine:3.19 as release
 
 RUN apk add --no-cache \
   chromium-swiftshader \
@@ -20,6 +20,7 @@ RUN apk add --no-cache \
 # Install build dependencies for k6
 COPY --from=k6-builder /app/k6 /bin/
 
+USER root
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 

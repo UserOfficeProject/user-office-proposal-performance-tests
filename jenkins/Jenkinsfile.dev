@@ -34,10 +34,9 @@ pipeline {
 
         stage('Build load testing') {
           agent {
-            docker {
+            dockerfile {
+              filename 'Dockerfile.run'
               label 'linux && docker'
-              image 'node:21.7-alpine'
-              alwaysPull true
             }
           }
           steps {
@@ -53,6 +52,7 @@ pipeline {
               sh 'rm -rf ./node_modules'
               sh 'rm -rf ./apps/k6-tests/node_modules'
               sh 'rm -rf ./apps/user-setup/node_modules'
+              sh 'rm -rf .env apps/user-setup/.env'
               sh 'mv .env apps/user-setup/'
               sh 'ls'
               // clear npm cache
