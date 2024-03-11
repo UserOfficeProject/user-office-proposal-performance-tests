@@ -28,6 +28,6 @@ export class Proposal {
   }
 
   submissionMessage(): string {
-    return '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon")]';
+    return '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon.")]';
   }
 }

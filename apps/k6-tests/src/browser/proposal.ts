@@ -49,7 +49,7 @@ export async function proposalTest(sharedData: SharedData) {
       await page.goto(sharedData.browserBaseUrl),
       page.locator(dashboard.proposalMenuItem()).click(),
     ]);
-    sleep(10);
+    sleep(5);
     if (
       !check(page, {
         'User can see test call': () =>
@@ -65,7 +65,6 @@ export async function proposalTest(sharedData: SharedData) {
         proposalTitle
       );
     }
-    sleep(10);
     await Promise.all([
       page.waitForNavigation({
         waitUntil: 'networkidle',
@@ -76,7 +75,7 @@ export async function proposalTest(sharedData: SharedData) {
 
     const proposal = new Proposal(page);
     proposal.createProposal(proposalTitle);
-    sleep(10);
+    sleep(5);
     if (
       !check(page, {
         'User was able to submit proposal': () =>

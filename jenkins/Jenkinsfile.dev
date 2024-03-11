@@ -28,6 +28,7 @@ pipeline {
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     HOME = '.'
+    SC1_BROWSER_VUS = 3
   }
 
   stages {
@@ -56,7 +57,7 @@ pipeline {
               mv .env apps/user-setup/
               npm install
               npm run build
-              
+
               npm run dev:build:k6-test &
               sleep 10 &
               npm run dev:start:user-setup &

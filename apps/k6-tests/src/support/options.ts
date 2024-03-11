@@ -30,7 +30,7 @@ export function getDevelopOption(
       SC1_BROWSER: {
         exec: 'browserTests',
         executor: 'per-vu-iterations',
-        vus: browserVus || 10,
+        vus: browserVus || 3,
         iterations: browserIterations || 1,
         options: {
           browser: {

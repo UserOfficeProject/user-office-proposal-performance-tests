@@ -77,9 +77,18 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
       ...localEnvs,
     };
   } catch (err) {
-    console.error(
-      `File .k6rc not found.Create the file in ${configDir} if you want to use it`
-    );
+    if (
+      `${__ENV.ENVIRONMENT}`.toLowerCase() !== 'develop' ||
+      `${__ENV.ENVIRONMENT}`.toLowerCase() !== 'production'
+    ) {
+      console.info(
+        `File .k6rc not found.Create the file in ${configDir} if you want to use it`
+      );
+    } else {
+      console.error(
+        `File .k6rc not found.Create the file in ${configDir} if you want to use it`
+      );
+    }
 
     return {
       ...defaultEnv,
