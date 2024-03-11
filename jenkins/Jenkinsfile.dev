@@ -28,7 +28,7 @@ pipeline {
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     HOME = '.'
-    USER_SETUP_DOTENV_PATH = './BISAppSettings/proposal-load-tester/k6/dev/.env'
+    USER_SETUP_DOTENV_PATH = './.env'
   }
 
   stages {
@@ -46,11 +46,11 @@ pipeline {
               projectName: 'Dev_Build_BisAppSettings',
               filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
               selector: lastSuccessful(),
-              fingerprintArtifacts: true
+              fingerprintArtifacts: true,
+              flatten: true
             )
               sh 'ls'
-              sh 'rm -rf ./BISAppSettings/Node'
-              sh 'rm -rf ./.env'
+              sh 'rm -rf ./BISAppSettings'
               sh 'rm -rf ./node_modules'
               sh 'rm -rf ./apps/k6-tests/node_modules'
               sh 'rm -rf ./apps/user-setup/node_modules'
