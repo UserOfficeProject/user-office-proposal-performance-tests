@@ -28,7 +28,7 @@ pipeline {
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     HOME = '.'
-    USER_SETUP_DOTENV_PATH = './.env'
+    USER_SETUP_DOTENV_PATH = './BISAppSettings/proposal-load-tester/k6/dev/.env'
   }
 
   stages {
