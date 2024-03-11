@@ -27,8 +27,8 @@ pipeline {
     GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
-    USER_SETUP_DOTENV_PATH = '../.env'
     HOME = '.'
+    USER_SETUP_DOTENV_PATH = './.env'
   }
 
   stages {
@@ -43,11 +43,11 @@ pipeline {
           }
           steps {
             copyArtifacts(
-              projectName: 'Dev_Build_BisAppSettings',
-              filter: 'BISAppSettings/proposal-load-tester/*',
-              selector: lastSuccessful(),
-              fingerprintArtifacts: true,
-              flatten: true
+                projectName: 'Dev_Build_BisAppSettings',
+                filter: 'BISAppSettings/Node/proposal-populate-consumables/dev/.env',
+                selector: lastSuccessful(),
+                fingerprintArtifacts: true,
+                flatten: true
             )
             
             
@@ -69,8 +69,7 @@ pipeline {
               sh 'ls ./'
 
               sh 'npm run start:user-setup'
-              
-              sh 'ls $WORKSPACE/BISAppSettings'
+
             
           }
     }
