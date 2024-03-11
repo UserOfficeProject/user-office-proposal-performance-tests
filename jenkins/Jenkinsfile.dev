@@ -28,7 +28,6 @@ pipeline {
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     HOME = '.'
-    USER_SETUP_DOTENV_PATH = '/.env'
   }
 
   stages {
@@ -54,7 +53,7 @@ pipeline {
               sh 'rm -rf ./node_modules'
               sh 'rm -rf ./apps/k6-tests/node_modules'
               sh 'rm -rf ./apps/user-setup/node_modules'
-              sh 'rm -rf .env apps/user-setup/.env'
+              sh 'mv .env apps/user-setup/'
               sh 'ls'
               // clear npm cache
               sh 'npm cache clean --force'
