@@ -51,13 +51,15 @@ pipeline {
             )
             dir('apps/user-setup') {
               sh 'ls'
-              // clear npm cache
-              sh 'npm cache clean --force'
-
-              //run npm build in proposal-populate-consumables
-              sh 'npm install'
+              sh 'rm -rf /node_modules'
+              sh 'ls'
+              sh 'npm install --legacy-peer-deps'
+              
+              sh 'npm prune --production'
 
               sh 'npm run build'
+              
+              sh 'ls'
             }
           }
     }
