@@ -54,11 +54,14 @@ pipeline {
               rm -rf ./apps/user-setup/node_modules
               rm -rf ./apps/user-setup/.env
               mv .env apps/user-setup/
-              ls
               npm install
               npm run build
-              ls
-              npm run start:user-setup
+              
+              npm run dev:build:k6-test &
+              sleep 10 &
+              npm run dev:start:user-setup &
+              sleep 10 
+              k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
           """  
           }
     }
