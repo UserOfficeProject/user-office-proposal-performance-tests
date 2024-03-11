@@ -21,6 +21,7 @@
     "lint:fix": "concurrently \"npm run lint:fix:user-setup\" \"npm run lint:fix:k6-test\"",
     "install:user-setup": "cd apps/user-setup  && npm install",
     "install:k6-tests": "cd apps/k6-tests && npm install",
+    "postinstall": "concurrently \"npm run install:user-setup\" \"npm run install:k6-tests\"",
     "dev:start:user-setup": "cd apps/user-setup && npm run start:dev",
     "start:user-setup": "cd apps/user-setup && npm run start",
     "dev:load-test": "cd apps/k6-tests && npm run dev:k6:load-test",
