@@ -53,7 +53,12 @@ pipeline {
               sh 'ls'
               sh 'rm -rf ./node_modules'
               sh 'ls'
-
+              // clear npm cache
+              sh 'npm cache clean --force'
+              sh 'ls'
+              //run npm install
+              sh 'npm install'
+              sh 'ls'
               sh 'npm run build'
               
               sh 'ls'
