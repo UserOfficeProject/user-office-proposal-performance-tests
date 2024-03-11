@@ -49,9 +49,11 @@ pipeline {
               fingerprintArtifacts: true,
               flatten: true
             )
-            dir('apps/user-setup') {
+            
               sh 'ls'
               sh 'rm -rf ./node_modules'
+              sh 'rm -rf ./apps/k6-tests/node_modules'
+              sh 'rm -rf ./apps/user-setup/node_modules'
               sh 'ls'
               // clear npm cache
               sh 'npm cache clean --force'
@@ -62,7 +64,7 @@ pipeline {
               sh 'npm run build'
               
               sh 'ls'
-            }
+            
           }
     }
     // stage('Run load testing on dev') {
