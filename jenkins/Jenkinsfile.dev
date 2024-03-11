@@ -51,11 +51,8 @@ pipeline {
             )
             dir('apps/user-setup') {
               sh 'ls'
-              sh 'rm -rf /node_modules'
+              sh 'rm -rf ./node_modules'
               sh 'ls'
-              sh 'npm install --legacy-peer-deps'
-              
-              sh 'npm prune --production'
 
               sh 'npm run build'
               
