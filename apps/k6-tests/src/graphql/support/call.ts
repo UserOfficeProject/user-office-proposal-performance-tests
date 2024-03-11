@@ -40,7 +40,7 @@ export class Call {
         endNotify: future,
         startCycle: future,
         endCycle: future,
-        templateId: 1,
+        templateId: 119,
         allocationTimeUnit: AllocationTimeUnits.DAY,
         cycleComment: `${randomString(20)}`,
         surveyComment: `${randomString(10)}`,
