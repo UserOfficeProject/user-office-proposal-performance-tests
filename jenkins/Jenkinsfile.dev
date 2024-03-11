@@ -27,7 +27,7 @@ pipeline {
     string(
       name: 'BROWSER_VUS',
       description: 'The number of vus to use',
-      defaultValue: '10',
+      defaultValue: '45',
       trim: true
     )
   }
