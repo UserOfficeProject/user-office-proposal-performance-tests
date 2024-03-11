@@ -23,13 +23,21 @@ pipeline {
       notifyRepeatedFailure: false
     ]])
   }
+  parameters {
+    string(
+      name: 'BROWSER_VUS',
+      description: 'The number of vus to use',
+      defaultValue: '10',
+      trim: true
+    )
+  }
   environment {
     GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     HOME = '.'
-    SC1_BROWSER_VUS = 20
     ENVIRONMENT = 'develop'
+    SC1_BROWSER_VUS = "${params.BROWSER_VUS}"
   }
 
   stages {
