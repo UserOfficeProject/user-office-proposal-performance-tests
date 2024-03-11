@@ -44,7 +44,7 @@ pipeline {
           steps {
             copyArtifacts(
               projectName: 'Dev_Build_BisAppSettings',
-              filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
+              filter: 'BISAppSettings/proposal-load-tester/*',
               selector: lastSuccessful(),
               fingerprintArtifacts: true,
               flatten: true
@@ -65,12 +65,12 @@ pipeline {
               sh 'npm run build'
               
               sh 'ls'
-              
-              sh 'ls ../'
+
+              sh 'ls ./'
 
               sh 'npm run start:user-setup'
               
-              sh 'ls $WORKSPACE'
+              sh 'ls $WORKSPACE/BISAppSettings'
             
           }
     }
