@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import exec from 'k6/execution';
 import { browser } from 'k6/experimental/browser';
 import { Trend } from 'k6/metrics';
@@ -49,7 +49,7 @@ export async function proposalTest(sharedData: SharedData) {
       await page.goto(sharedData.browserBaseUrl),
       page.locator(dashboard.proposalMenuItem()).click(),
     ]);
-
+    sleep(10);
     if (
       !check(page, {
         'User can see test call': () =>
@@ -65,6 +65,7 @@ export async function proposalTest(sharedData: SharedData) {
         proposalTitle
       );
     }
+    sleep(10);
     await Promise.all([
       page.waitForNavigation({
         waitUntil: 'networkidle',
@@ -75,7 +76,7 @@ export async function proposalTest(sharedData: SharedData) {
 
     const proposal = new Proposal(page);
     proposal.createProposal(proposalTitle);
-
+    sleep(10);
     if (
       !check(page, {
         'User was able to submit proposal': () =>

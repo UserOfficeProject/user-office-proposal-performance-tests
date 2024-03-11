@@ -21,9 +21,7 @@ export class Proposal {
       this.page.locator('//div[contains(text(), "Saved")]').isVisible(),
       this.page.locator('//button[contains(text(), "Submit")]').click(),
       this.page
-        .waitForSelector(
-          '//p[contains(text(), "I am aware that no further edits can be made after proposal submission")]'
-        )
+        .waitForSelector('//h2[contains(text(), "Please confirm")]')
         .isVisible(),
       this.page.locator('//button[contains(text(), "OK")]').click(),
     ]);
