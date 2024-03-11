@@ -1,6 +1,13 @@
 pipeline {
   
-  agent none
+  agent {
+    docker {
+      label 'linux && docker'
+      image 'node:18.19-alpine'
+      args '-u root:root'
+      alwaysPull true
+    }
+  }
 
   options {
     disableConcurrentBuilds()
@@ -28,18 +35,14 @@ pipeline {
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     USER_SETUP_DOTENV_PATH = '.env'
+    NPM_CONFIG_CACHE = "${WORKSPACE}/.npm"
+    HOME = '.'
   }
 
   stages {
 
         stage('Build load testing') {
-          agent {
-            docker {
-              label 'linux && docker'
-              image 'node:18.19-alpine'
-              alwaysPull true
-            }
-          }
+
           steps {
             copyArtifacts(
               projectName: 'Dev_Build_BisAppSettings',
@@ -50,11 +53,10 @@ pipeline {
             )
             sh ('ls')
             
-            sh 'npm config set prefix $WORKSPACE/.npm'
 
             sh 'npm cache clean --force'
 
-            sh 'npm ci --loglevel=verbose'
+            sh 'npm install --loglevel=verbose'
 
             
           }
