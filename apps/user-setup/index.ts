@@ -13,7 +13,7 @@ import { validate } from './src/utils/helper-functions';
  */
 dotenv.config({
   path: validate<string>(
-    process.env.USER_SETUP_DOTENV_PATH || '/app/apps/user-setup/.env',
+    process.env.USER_SETUP_DOTENV_PATH ?? './app/apps/user-setup/.env',
     'USER_SETUP_DOTENV_PATH'
   ),
 });
