@@ -49,7 +49,7 @@ pipeline {
               fingerprintArtifacts: true
             )
               sh 'ls'
-              sh 'rm -rf ./BISAppSettings/Node/proposal-populate-consumables/dev'
+              sh 'rm -rf ./BISAppSettings/Node'
               sh 'rm -rf ./.env'
               sh 'rm -rf ./node_modules'
               sh 'rm -rf ./apps/k6-tests/node_modules'
