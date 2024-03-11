@@ -43,12 +43,12 @@ pipeline {
           }
           steps {
             copyArtifacts(
-                projectName: 'Dev_Build_BisAppSettings',
-                filter: 'BISAppSettings/Node/proposal-populate-consumables/dev/.env',
-                selector: lastSuccessful(),
-                fingerprintArtifacts: true
+              projectName: 'Dev_Build_BisAppSettings',
+              filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
+              selector: lastSuccessful(),
+              fingerprintArtifacts: true,
+              flatten: true
             )
-              sh 'ls $WORKSPACE/BISAppSettings/Node/proposal-populate-consumables/dev/'
             
               sh 'ls '
               sh 'rm -rf ./node_modules'
