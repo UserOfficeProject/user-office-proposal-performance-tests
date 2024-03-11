@@ -46,8 +46,7 @@ pipeline {
               projectName: 'Dev_Build_BisAppSettings',
               filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
               selector: lastSuccessful(),
-              fingerprintArtifacts: true,
-              flatten: true
+              fingerprintArtifacts: true
             )
             
               sh 'ls '
