@@ -6,17 +6,11 @@ import express from 'express';
 import database from './src/db/database';
 import users from './src/users';
 import { AddressInUseError } from './src/utils/customTypes';
-import { validate } from './src/utils/helper-functions';
 
 /**
  * Set this to dotenv.config() when running script in local non containerized environment
  */
-dotenv.config({
-  path: validate<string>(
-    process.env.USER_SETUP_DOTENV_PATH ?? './app/apps/user-setup/.env',
-    'USER_SETUP_DOTENV_PATH'
-  ),
-});
+dotenv.config();
 
 async function startServer() {
   try {
