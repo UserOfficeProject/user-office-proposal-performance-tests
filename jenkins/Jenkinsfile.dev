@@ -48,7 +48,6 @@ pipeline {
               selector: lastSuccessful(),
               fingerprintArtifacts: true
             )
-            BISAppSettings
               sh 'ls'
               sh 'rm -rf ./BISAppSettings/Node/proposal-populate-consumables/dev'
               sh 'rm -rf ./.env'
