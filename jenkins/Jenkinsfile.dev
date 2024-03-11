@@ -29,6 +29,7 @@ pipeline {
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
     HOME = '.'
     SC1_BROWSER_VUS = 20
+    ENVIRONMENT = 'develop'
   }
 
   stages {
