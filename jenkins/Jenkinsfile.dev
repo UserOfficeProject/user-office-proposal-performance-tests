@@ -47,29 +47,19 @@ pipeline {
               fingerprintArtifacts: true,
               flatten: true
             )
-              sh 'ls'
-              sh 'rm -rf ./BISAppSettings'
-              sh 'rm -rf ./node_modules'
-              sh 'rm -rf ./apps/k6-tests/node_modules'
-              sh 'rm -rf ./apps/user-setup/node_modules'
-              sh 'rm -rf ./apps/user-setup/.env'
-              sh 'mv .env apps/user-setup/'
-              sh 'ls'
-              // clear npm cache
-              sh 'npm cache clean --force'
-              sh 'ls'
-              //run npm install
-              sh 'npm install'
-              sh 'ls'
-              sh 'npm run build'
               
-              sh 'ls'
-
-              sh 'ls ./'
-
-              sh 'npm run start:user-setup'
-
-            
+          sh """
+              rm -rf ./node_modules
+              rm -rf ./apps/k6-tests/node_modules
+              rm -rf ./apps/user-setup/node_modules
+              rm -rf ./apps/user-setup/.env
+              mv .env apps/user-setup/
+              ls
+              npm install
+              npm run build
+              ls
+              npm run start:user-setup
+          """  
           }
     }
     // stage('Run load testing on dev') {
