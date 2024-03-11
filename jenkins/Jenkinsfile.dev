@@ -46,12 +46,11 @@ pipeline {
                 projectName: 'Dev_Build_BisAppSettings',
                 filter: 'BISAppSettings/Node/proposal-populate-consumables/dev/.env',
                 selector: lastSuccessful(),
-                fingerprintArtifacts: true,
-                flatten: true
+                fingerprintArtifacts: true
             )
+              sh 'ls $WORKSPACE/BISAppSettings/Node/proposal-populate-consumables/dev/'
             
-            
-              sh 'ls'
+              sh 'ls '
               sh 'rm -rf ./node_modules'
               sh 'rm -rf ./apps/k6-tests/node_modules'
               sh 'rm -rf ./apps/user-setup/node_modules'
