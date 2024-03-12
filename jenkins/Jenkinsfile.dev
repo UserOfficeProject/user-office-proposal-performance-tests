@@ -74,13 +74,13 @@ pipeline {
         npm run build
         npm run dev:build:k6-test 
       """  
-      sh 'npm run dev:start:user-setup'
+      sh """
+         # start user setup server and run tests
+         npm run dev:start:user-setup &
+         sleep 10 &
+         k6 run apps/k6-tests/test/sc1-load-test.js
+      """
 
-      //start setup server
-      sh 'npm run dev:start:user-setup'
-
-      //run k6 tests
-      sh 'k6 run apps/k6-tests/test/sc1-load-test.js'
       }
       
     }
