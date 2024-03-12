@@ -76,7 +76,7 @@ pipeline {
       """  
       sh """
          # start user setup server and run tests
-         npm run dev:start:user &
+         npm run dev:start:user-setup &
          sleep 60  &
          k6 run apps/k6-tests/test/sc1-load-test.js
       """
