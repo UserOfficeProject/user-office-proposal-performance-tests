@@ -44,12 +44,13 @@ export async function proposalTest(sharedData: SharedData) {
     }
     const dashboard = new Dashboard();
     const call = new Call();
-
+    await page.goto(sharedData.browserBaseUrl);
+    sleep(5);
     await Promise.all([
-      await page.goto(sharedData.browserBaseUrl),
+      page.waitForSelector(dashboard.proposalMenuItem()).isVisible(),
       page.locator(dashboard.proposalMenuItem()).click(),
     ]);
-    sleep(5);
+
     if (
       !check(page, {
         'User can see test call': () =>
