@@ -78,8 +78,8 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     };
   } catch (err) {
     if (
-      `${__ENV.ENVIRONMENT}`.toLowerCase() !== 'develop' ||
-      `${__ENV.ENVIRONMENT}`.toLowerCase() !== 'production'
+      __ENV.ENVIRONMENT.toLowerCase() !== 'develop' &&
+      __ENV.ENVIRONMENT.toLowerCase() !== 'production'
     ) {
       console.error(
         `File .k6rc not found.Create the file in ${configDir} if you want to use it`

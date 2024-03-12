@@ -4,6 +4,7 @@ import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
 import { getTokenApi } from './graphql';
+import { getInitData } from './initData';
 import { Call } from '../graphql/support/call';
 import { SharedData } from '../utils/sharedType';
 
@@ -31,7 +32,8 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   const userSetupBaseUrl =
     __ENV.USER_SETUP_BASE_URL || 'http://localhost:8100/users';
   const apiClient = getTokenApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
-  const call = new Call(apiClient);
+  const initData = getInitData(__ENV.ENVIRONMENT.toLowerCase());
+  const call = new Call(apiClient, initData);
   const testCall = call.createTestCall();
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
@@ -126,5 +128,6 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     graphqlUrl,
     userSetupBaseUrl,
     testCall,
+    initData,
   } as SharedData;
 }

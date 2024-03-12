@@ -1,22 +1,19 @@
 import { check, fail } from 'k6';
 
-import { AllocationTimeUnits, initData } from '../../support/initData';
-import { randomString } from '../../utils/helperFunctions';
 import {
   ClientResponse,
   CallQueryResponse,
   Call as CallType,
+  InitData,
 } from '../../utils/sharedType';
 
 export class Call {
-  constructor(private apiClient: (body: string) => ClientResponse) {}
+  constructor(
+    private apiClient: (body: string) => ClientResponse,
+    private initData: InitData
+  ) {}
 
   createTestCall(): CallType {
-    const current = new Date();
-    current.setHours(0, 0, 0, 0);
-    const future = new Date();
-    future.setDate(current.getDate() + 2);
-
     const mutation = `
     mutation CreateCall($createCallInput: CreateCallInput!) {
       createCall(createCallInput: $createCallInput) {
@@ -27,38 +24,20 @@ export class Call {
     }`;
 
     const variables = {
-      createCallInput: {
-        title: initData.call.title + ' ' + randomString(6),
-        shortCode: initData.call.shortCode + ' ' + randomString(6),
-        startCall: current,
-        endCall: future,
-        startReview: future,
-        endReview: future,
-        startFapReview: future,
-        endFapReview: future,
-        startNotify: future,
-        endNotify: future,
-        startCycle: future,
-        endCycle: future,
-        templateId: 119,
-        allocationTimeUnit: AllocationTimeUnits.DAY,
-        cycleComment: `${randomString(20)}`,
-        surveyComment: `${randomString(10)}`,
-        proposalWorkflowId: 1,
-      },
+      createCallInput: { ...this.initData?.call },
     };
 
     const response = this.apiClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as CallQueryResponse;
+    const checkValue = check(response, {
+      'Performance test call created': (r) =>
+        r.status === 200 && !!responseData.data?.createCall?.id,
+    }).valueOf();
 
-    if (
-      !check(response, {
-        'Performance test call created': (r) =>
-          r.status === 200 && !!responseData.data.createCall.id && true,
-      })
-    ) {
+    console.log('checkValue' + checkValue);
+    if (!checkValue) {
       fail('Performance test could not be created aborting test');
     }
 

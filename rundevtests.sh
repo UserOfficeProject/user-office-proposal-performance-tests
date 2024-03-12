@@ -10,7 +10,7 @@ sleep 10
 # set some env we require
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
-export ENVIRONMENT="development"
+export ENVIRONMENT="local"
 export BROWSER_BASE_URL=http://duo-reverse-proxy:80
 export GRAPHQL_URL=http://duo-reverse-proxy:80/graphql
 export USER_SETUP_DOTENV_PATH="/app/apps/user-setup/.env"

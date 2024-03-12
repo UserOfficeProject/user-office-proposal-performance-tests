@@ -20,7 +20,7 @@ export function sc1TearDown(
   console.log('Cleaning proposals');
   proposal.deleteCallProposals(sharedData.testCall.id);
 
-  const call = new Call(apiClient);
+  const call = new Call(apiClient, sharedData.initData);
   console.log('Cleaning up test call');
 
   call.deleteCall(sharedData.testCall.id);
