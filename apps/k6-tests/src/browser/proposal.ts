@@ -44,27 +44,13 @@ export async function proposalTest(sharedData: SharedData) {
     }
     const dashboard = new Dashboard();
     const call = new Call();
-    await page.goto(sharedData.browserBaseUrl);
-    let proposalMenu = null;
-    let retry = 0;
-    do {
-      proposalMenu = page.locator(dashboard.proposalMenuItem());
-      sleep(1000);
-      retry++;
-      if (retry === 10) {
-        logFailedTest(
-          `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
-          `User cannot see test call ${sharedData.testCall.title} not visible`,
-          page,
-          proposalTitle
-        );
-      }
-    } while (!!proposalMenu.isVisible() && retry <= 10);
-
+    sleep(5);
     await Promise.all([
-      page.locator(dashboard.proposalMenuItem()).click({ force: true }),
+      await page.goto(sharedData.browserBaseUrl),
+      page.waitForSelector(dashboard.proposalMenuItem()).isVisible(),
     ]);
-
+    sleep(5);
+    page.locator(dashboard.proposalMenuItem()).click({ force: true });
     if (
       !check(page, {
         'User can see test call': () =>
