@@ -27,7 +27,13 @@ pipeline {
     string(
       name: 'BROWSER_VUS',
       description: 'The number of vus to use',
-      defaultValue: '45',
+      defaultValue: '30',
+      trim: true
+    )
+    string(
+      name: 'BROWSER_VUS_ITERATIONS',
+      description: 'The number of vus iterations',
+      defaultValue: '3',
       trim: true
     )
   }
@@ -38,6 +44,7 @@ pipeline {
     HOME = '.'
     ENVIRONMENT = 'develop'
     SC1_BROWSER_VUS = "${params.BROWSER_VUS}"
+    SC1_BROWSER_VUS_ITERATIONS = "${params.BROWSER_VUS_ITERATIONS}"
   }
 
   stages {
