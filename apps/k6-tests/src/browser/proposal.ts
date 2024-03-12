@@ -47,8 +47,8 @@ export async function proposalTest(sharedData: SharedData) {
     await page.goto(sharedData.browserBaseUrl);
     sleep(5);
     await Promise.all([
-      page.waitForSelector(dashboard.proposalMenuItem()).isVisible(),
-      page.locator(dashboard.proposalMenuItem()).click(),
+      page.locator(dashboard.proposalMenuItem()).waitFor({ state: 'visible' }),
+      page.locator(dashboard.proposalMenuItem()).click({ force: true }),
     ]);
 
     if (
