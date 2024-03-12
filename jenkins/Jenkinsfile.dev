@@ -77,7 +77,10 @@ pipeline {
       sh """
          # start user setup server and run tests
          npm run dev:start:user-setup &
-         sleep 200  &
+         while ! nc -z localhost 8100; do
+            sleep 5
+            echo "User setup server not ready"
+         done
          k6 run apps/k6-tests/test/sc1-load-test.js
       """
 
