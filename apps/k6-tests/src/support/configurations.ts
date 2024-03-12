@@ -25,6 +25,7 @@ export function getExecutionOptions(
   browserVus?: number,
   browserIterations?: number,
   browserReqFailThreshold?: string,
+  httpReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -33,6 +34,7 @@ export function getExecutionOptions(
       browserVus,
       browserIterations,
       browserReqFailThreshold,
+      httpReqFailThreshold,
       graphqlVus,
       graphqlIterations
     );
@@ -43,6 +45,7 @@ export function getExecutionOptions(
       browserVus,
       browserIterations,
       browserReqFailThreshold,
+      httpReqFailThreshold,
       graphqlVus,
       graphqlIterations
     );
@@ -52,6 +55,7 @@ export function getExecutionOptions(
     browserVus,
     browserIterations,
     browserReqFailThreshold,
+    httpReqFailThreshold,
     graphqlVus,
     graphqlIterations
   );

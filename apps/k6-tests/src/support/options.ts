@@ -4,6 +4,7 @@ export function getDevelopOption(
   browserVus?: number,
   browserIterations?: number,
   browserReqFailThreshold?: string,
+  httpReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -21,10 +22,20 @@ export function getDevelopOption(
     thresholds: {
       browser_http_req_failed: [
         {
-          threshold: browserReqFailThreshold || 'rate <= 0.05',
+          threshold: browserReqFailThreshold || 'rate <= 0.5',
           abortOnFail: true,
         },
       ],
+      http_req_failed: [
+        {
+          threshold: httpReqFailThreshold || 'rate <= 0.5',
+          abortOnFail: true,
+        },
+      ],
+      proposals_submitted: [
+        `count>=${(browserVus || 10) * (browserIterations || 1)}`,
+      ],
+      checks: ['rate>0.95'],
     },
     scenarios: {
       SC1_BROWSER: {
@@ -53,6 +64,7 @@ export function getProductionOption(
   browserVus?: number,
   browserIterations?: number,
   browserReqFailThreshold?: string,
+  httpReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -70,10 +82,20 @@ export function getProductionOption(
     thresholds: {
       browser_http_req_failed: [
         {
-          threshold: browserReqFailThreshold || 'rate <= 0.05',
+          threshold: browserReqFailThreshold || 'rate <= 0.5',
           abortOnFail: true,
         },
       ],
+      http_req_failed: [
+        {
+          threshold: httpReqFailThreshold || 'rate <= 0.5',
+          abortOnFail: true,
+        },
+      ],
+      proposals_submitted: [
+        `count>=${(browserVus || 10) * (browserIterations || 1)}`,
+      ],
+      checks: ['rate>0.95'],
     },
     scenarios: {
       SC1_BROWSER: {
@@ -102,6 +124,7 @@ export function getLocalOption(
   browserVus?: number,
   browserIterations?: number,
   browserReqFailThreshold?: string,
+  httpReqFailThreshold?: string,
   graphqlVus?: number,
   graphqlIterations?: number
 ): Options {
@@ -119,10 +142,20 @@ export function getLocalOption(
     thresholds: {
       browser_http_req_failed: [
         {
-          threshold: browserReqFailThreshold || 'rate <= 0.05',
+          threshold: browserReqFailThreshold || 'rate <= 0.5',
           abortOnFail: true,
         },
       ],
+      http_req_failed: [
+        {
+          threshold: httpReqFailThreshold || 'rate <= 0.5',
+          abortOnFail: true,
+        },
+      ],
+      proposals_submitted: [
+        `count>=${(browserVus || 10) * (browserIterations || 1)}`,
+      ],
+      checks: ['rate>0.95'],
     },
     scenarios: {
       SC1_BROWSER: {

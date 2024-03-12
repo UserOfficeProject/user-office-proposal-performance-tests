@@ -2,7 +2,7 @@
 import { check, sleep } from 'k6';
 import exec from 'k6/execution';
 import { browser } from 'k6/experimental/browser';
-import { Trend } from 'k6/metrics';
+import { Counter, Trend } from 'k6/metrics';
 
 import { Call } from './support/call';
 import { Dashboard } from './support/dashboard';
@@ -16,6 +16,8 @@ const proposalSubmissionDuration = new Trend(
   'proposal_submission_duration',
   true
 );
+
+const proposalsSubmitted = new Counter('proposals_submitted', false);
 export async function proposalTest(sharedData: SharedData) {
   const startTime = Date.now();
   const sessionId =
@@ -90,6 +92,7 @@ export async function proposalTest(sharedData: SharedData) {
         proposalTitle
       );
     }
+    proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
   } finally {
     page.close();
