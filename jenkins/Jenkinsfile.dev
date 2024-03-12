@@ -44,13 +44,12 @@ pipeline {
 
         stage('Build load tests') {
           
-          agent {
-            dockerfile {
-              filename 'Dockerfile.run'
+            docker {
               label 'linux && docker'
+              image 'node:21.7-alpine'
+              alwaysPull true
             }
-          }
-          
+
           steps {
             copyArtifacts(
               projectName: 'Dev_Build_BisAppSettings',
@@ -78,6 +77,12 @@ pipeline {
           }
     }
     stage('Run load tests on dev') {
+      agent {
+        dockerfile {
+          filename 'Dockerfile.run'
+          label 'linux && docker'
+        }
+      }
       steps {
         // start user setup server
         sh ('ls')

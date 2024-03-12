@@ -29,12 +29,12 @@ export async function proposalTest(sharedData: SharedData) {
     const proposalTitle = randomString(10);
     await page.goto(user.getLoginURL());
     await Promise.all([page.waitForNavigation()]);
-    check(page, {
-      'User is logged in': () =>
-        page.waitForSelector(user.getLoggedInMessage()).isVisible(),
-    });
-    if (true) {
-      console.log('test has failed');
+    if (
+      !check(page, {
+        'User is logged in': () =>
+          page.waitForSelector(user.getLoggedInMessage()).isVisible(),
+      })
+    ) {
       logFailedTest(
         `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
         'User could not login User Office / Dashboard not visible',
