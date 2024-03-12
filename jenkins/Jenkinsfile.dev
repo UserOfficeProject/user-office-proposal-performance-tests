@@ -41,14 +41,15 @@ pipeline {
   }
 
   stages {
-    stage('Build load testing') {
+    stage('Build and run load tests') {
+
       agent {
-        docker {
+        dockerfile {
+          filename 'Dockerfile.run'
           label 'linux && docker'
-          image 'node:21.7-alpine'
-          alwaysPull true
         }
       }
+
       steps {
         copyArtifacts(
           projectName: 'Dev_Build_BisAppSettings',
@@ -74,19 +75,9 @@ pipeline {
         npm run dev:build:k6-test 
       """  
       }
+      sh 'npm run dev:start:user-setup'
     }
-    stage('Run load testing on dev') {
-      agent {
-        dockerfile {
-          filename 'Dockerfile.run'
-          label 'linux && docker'
-        }
-      }
-      steps {
-        sh 'ls'
-        sh 'node ./apps/user-setup/build/index.js'
-      }
-    }
+
   }
 
   // post {
