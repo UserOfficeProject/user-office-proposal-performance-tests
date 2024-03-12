@@ -84,7 +84,7 @@ pipeline {
       }
       steps {
         sh 'ls'
-        sh 'npm run dev:start:user-setup'
+        sh 'node ./apps/user-setup/build/index.js'
       }
     }
   }
