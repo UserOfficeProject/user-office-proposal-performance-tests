@@ -42,41 +42,43 @@ pipeline {
 
   stages {
 
-        stage('Build load tests') {
+    stage('Build load tests') { 
+
+      docker {
+        label 'linux && docker'
+        image 'node:21.7-alpine'
+        alwaysPull true
+      }
+
+      steps {
+        copyArtifacts(
+          projectName: 'Dev_Build_BisAppSettings',
+          filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
+          selector: lastSuccessful(),
+          fingerprintArtifacts: true,
+          flatten: true
+        )
           
-            docker {
-              label 'linux && docker'
-              image 'node:21.7-alpine'
-              alwaysPull true
-            }
+      sh """
+          # clean up past data
+          rm -rf ./node_modules
+          rm -rf ./apps/k6-tests/node_modules
+          rm -rf ./apps/user-setup/node_modules
+          rm -rf ./apps/user-setup/.env
 
-          steps {
-            copyArtifacts(
-              projectName: 'Dev_Build_BisAppSettings',
-              filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
-              selector: lastSuccessful(),
-              fingerprintArtifacts: true,
-              flatten: true
-            )
-              
-          sh """
-              # clean up past data
-              rm -rf ./node_modules
-              rm -rf ./apps/k6-tests/node_modules
-              rm -rf ./apps/user-setup/node_modules
-              rm -rf ./apps/user-setup/.env
+          # move env to the correct location
+          mv .env apps/user-setup/
 
-              # move env to the correct location
-              mv .env apps/user-setup/
-
-              # install and build
-              npm install
-              npm run build
-              npm run dev:build:k6-test 
-          """  
-          }
+          # install and build
+          npm install
+          npm run build
+          npm run dev:build:k6-test 
+      """  
+      }
     }
+
     stage('Run load tests on dev') {
+      
       agent {
         dockerfile {
           filename 'Dockerfile.run'
