@@ -1,16 +1,18 @@
 import { check, fail } from 'k6';
 
 import {
-  ClientResponse,
   CallQueryResponse,
   Call as CallType,
   InitData,
+  CallsFilter,
+  ClientApi,
+  CallsQueryResponse,
 } from '../../utils/sharedType';
 
 export class Call {
   constructor(
-    private apiClient: (body: string) => ClientResponse,
-    private initData: InitData
+    private apiClient: ClientApi,
+    private initData?: InitData
   ) {}
 
   createTestCall(): CallType {
@@ -36,7 +38,6 @@ export class Call {
         r.status === 200 && !!responseData.data?.createCall?.id,
     }).valueOf();
 
-    console.log('checkValue' + checkValue);
     if (!checkValue) {
       fail('Performance test could not be created aborting test');
     }
@@ -103,5 +104,47 @@ export class Call {
     }
 
     return responseData.data.call;
+  }
+
+  getUserCalls(userToken: string, callsFilter: CallsFilter): [CallType] {
+    const query = `
+            query Calls($filter: CallsFilter) {
+              calls(filter: $filter) {
+                id
+                title
+                shortCode
+                templateId
+                endCall
+                endCallInternal
+                allocationTimeUnit
+                cycleComment
+                isActive
+                isActiveInternal
+                shortCode
+                startCall
+                startCycle
+                pdfTemplateId
+              }
+            }`;
+
+    const variables = {
+      filter: callsFilter,
+    };
+
+    const response = this.apiClient(
+      JSON.stringify({ query, variables }),
+      userToken
+    );
+    const responseData = response.json() as CallsQueryResponse;
+    if (
+      !check(response, {
+        'Get user calls': (r) =>
+          r.status === 200 && responseData?.data?.calls?.length > 0,
+      })
+    ) {
+      console.log('No user calls found', response.error);
+    }
+
+    return responseData?.data?.calls;
   }
 }

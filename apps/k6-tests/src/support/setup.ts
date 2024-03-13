@@ -3,7 +3,7 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getTokenApi } from './graphql';
+import { getClientApi } from './graphql';
 import { getInitData } from './initData';
 import { Call } from '../graphql/support/call';
 import { SharedData } from '../utils/sharedType';
@@ -31,7 +31,7 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const userSetupBaseUrl =
     __ENV.USER_SETUP_BASE_URL || 'http://localhost:8100/users';
-  const apiClient = getTokenApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
+  const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
   const initData = getInitData(__ENV.ENVIRONMENT.toLowerCase());
   const call = new Call(apiClient, initData);
   const testCall = call.createTestCall();

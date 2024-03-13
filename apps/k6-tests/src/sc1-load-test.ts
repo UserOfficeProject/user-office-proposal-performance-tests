@@ -1,7 +1,8 @@
 import { Options } from 'k6/options';
 
-import { proposalTest } from './browser/proposal';
-import { tokenLogin } from './graphql/user';
+import { proposal } from './browser/proposalTest';
+import { call } from './graphql/callTest';
+import { tokenLogin } from './graphql/userTest';
 import {
   getEnvironmentConfigurations,
   getExecutionOptions,
@@ -28,11 +29,11 @@ export function setup() {
 export const options: Options = { ...executionOptions };
 
 export async function graphqlTests(SharedData: SharedData) {
-  return tokenLogin(SharedData);
+  return await Promise.all([call(SharedData), tokenLogin(SharedData)]);
 }
 
 export async function browserTests(sc1SharedData: SharedData) {
-  return proposalTest(sc1SharedData);
+  return proposal(sc1SharedData);
 }
 
 export function teardown(SharedData: SharedData) {

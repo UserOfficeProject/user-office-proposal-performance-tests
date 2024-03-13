@@ -2,7 +2,7 @@ import { check } from 'k6';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getTokenApi } from './graphql';
+import { getClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Proposal } from '../graphql/support/proposal';
 import { SharedData } from '../utils/sharedType';
@@ -11,7 +11,7 @@ export function sc1TearDown(
   sharedData: SharedData,
   environmentConfig: EnvironmentConfigurations
 ) {
-  const apiClient = getTokenApi(
+  const apiClient = getClientApi(
     sharedData.graphqlUrl,
     environmentConfig.GRAPHQL_TOKEN
   );

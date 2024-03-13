@@ -19,6 +19,8 @@ export USER_SETUP_DOTENV_PATH="/app/apps/user-setup/.env"
 # export SC1_BROWSER_VUS=20
 # export SC1_GRAPHQL_VUS=80
 # export SC1_GRAPHQL_ITERATIONS=5
+# export SETUP_TOTAL_USERS=500
+# export SC1_BROWSER_VUS_ITERATIONS=3
 
 k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
 

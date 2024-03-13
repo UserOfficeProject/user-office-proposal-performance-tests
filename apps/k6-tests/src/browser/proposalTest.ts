@@ -18,7 +18,7 @@ const proposalSubmissionDuration = new Trend(
 );
 
 const proposalsSubmitted = new Counter('proposals_submitted', false);
-export async function proposalTest(sharedData: SharedData) {
+export async function proposal(sharedData: SharedData) {
   const startTime = Date.now();
   const sessionId =
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length / 2))]
