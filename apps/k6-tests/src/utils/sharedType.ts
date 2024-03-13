@@ -3,7 +3,18 @@ export enum AllocationTimeUnits {
   DAY = 'Day',
   HOUR = 'Hour',
 }
-export type Call = { id: number; shortCode: string; title: string };
+
+export type Call = {
+  id: number;
+  shortCode: string;
+  title: string;
+  templateId: number;
+};
+export type Template = {
+  templateId: number;
+  name: string;
+  description: string;
+};
 export type Proposal = {
   primaryKey: number;
   proposalId: string;
@@ -19,7 +30,6 @@ export type SharedData = {
   graphqlUrl: string;
   userSetupBaseUrl: string;
   testCall: Call;
-  initData: InitData;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,7 +42,9 @@ export type CallQueryResponse = {
 export type CallsQueryResponse = {
   data: { [name: string]: [Call] };
 };
-
+export type TemplateQueryResponse = {
+  data: { [name: string]: Template };
+};
 export type ExternalTokenLoginResponse = {
   data: { externalTokenLogin: string };
 };
@@ -77,12 +89,9 @@ export type InitData = {
     title: string;
   };
   template: {
-    id: number;
     name: string;
-    topic: {
-      id: number;
-      title: string;
-    };
+    description: string;
+    groupId: string;
   };
   workflows: {
     defaultWorkflow: {

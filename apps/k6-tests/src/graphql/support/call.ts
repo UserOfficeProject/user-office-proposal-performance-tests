@@ -1,32 +1,31 @@
 import { check, fail } from 'k6';
 
+import { getInitData } from '../../support/initData';
 import {
   CallQueryResponse,
   Call as CallType,
-  InitData,
   CallsFilter,
   ClientApi,
   CallsQueryResponse,
 } from '../../utils/sharedType';
 
 export class Call {
-  constructor(
-    private apiClient: ClientApi,
-    private initData?: InitData
-  ) {}
+  private initData = getInitData();
+  constructor(private apiClient: ClientApi) {}
 
-  createTestCall(): CallType {
+  createTestCall(templateId: number): CallType {
     const mutation = `
     mutation CreateCall($createCallInput: CreateCallInput!) {
       createCall(createCallInput: $createCallInput) {
         id
         shortCode
         title
+        templateId
       }
     }`;
 
     const variables = {
-      createCallInput: { ...this.initData?.call },
+      createCallInput: { ...this.initData?.call, templateId },
     };
 
     const response = this.apiClient(
@@ -42,7 +41,7 @@ export class Call {
       fail('Performance test could not be created aborting test');
     }
 
-    return responseData.data.createCall as CallType;
+    return responseData?.data?.createCall as CallType;
   }
 
   deleteCall(deleteCallId: number): number {
@@ -52,6 +51,7 @@ export class Call {
               id
               shortCode
               title
+              templateId
             }
           }`;
 
@@ -84,6 +84,7 @@ export class Call {
               id
               title
               shortCode
+              templateId
             }
           }`;
 
@@ -103,7 +104,7 @@ export class Call {
       console.log('Call was not found', response.error);
     }
 
-    return responseData.data.call;
+    return responseData.data?.call;
   }
 
   getUserCalls(userToken: string, callsFilter: CallsFilter): [CallType] {
