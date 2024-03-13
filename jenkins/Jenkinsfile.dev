@@ -27,7 +27,7 @@ pipeline {
     string(
       name: 'BROWSER_VUS',
       description: 'The number of vus to use',
-      defaultValue: '30',
+      defaultValue: '10',
       trim: true
     )
     string(
@@ -49,9 +49,28 @@ pipeline {
       trim: true
     )
     string(
+      name: 'BROWSER_REQ_FAIL_THRESHOLD',
+      description: 'This is the fail treshhold for browser requests e.g rate <= 0.5',
+      trim: true
+    )
+    string(
+      name: 'HTTP_REQ_FAIL_THRESHOLD',
+      description: 'This is the fail threshhold for api requests e.g rate <= 0.5',
+      trim: true
+    )
+    string(
+      name: 'PROPOSALS_SUBMITTED_FAIL_THRESHOLD',
+      description: 'This is the number of proposals which fail to submit e.g count>=100',
+      trim: true
+    )
+    string(
+      name: 'CHECK_FAIL_THRESHOLD',
+      description: 'This is the fail thershold for all checks e.g rate > 0.90',
+      trim: true
+    )
+    string(
       name: 'SETUP_TOTAL_USERS',
       description: 'Total users to set up max is 1000 and min must be 200',
-      defaultValue: '200',
       trim: true
     )
   }
@@ -65,6 +84,10 @@ pipeline {
     SC1_BROWSER_VUS_ITERATIONS = "${params.BROWSER_VUS_ITERATIONS}"
     SC1_GRAPHQL_VUS = "${params.GRAPHQL_VUS}"
     SC1_GRAPHQL_ITERATIONS = "${params.GRAPHQL_ITERATIONS}"
+    SC1_BROWSER_REQ_FAIL_THRESHOLD = "${params.BROWSER_REQ_FAIL_THRESHOLD}"
+    SC1_HTTP_REQ_FAIL_THRESHOLD = "${params.HTTP_REQ_FAIL_THRESHOLD}"
+    SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD = "${params.PROPOSALS_SUBMITTED_FAIL_THRESHOLD}"
+    SC1_CHECK_FAIL_THRESHOLD = "${params.CHECK_FAIL_THRESHOLD}"
     SETUP_TOTAL_USERS = "${params.SETUP_TOTAL_USERS}"
   }
 

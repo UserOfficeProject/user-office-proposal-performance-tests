@@ -24,19 +24,23 @@ function getConfigDirectory(): string {
 export function getExecutionOptions(
   browserVus?: number,
   browserIterations?: number,
+  graphqlVus?: number,
+  graphqlIterations?: number,
   browserReqFailThreshold?: string,
   httpReqFailThreshold?: string,
-  graphqlVus?: number,
-  graphqlIterations?: number
+  proposalSubmittedFailThreshold?: string,
+  checksFailThreshold?: string
 ): Options {
   if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'develop') {
     return getDevelopOption(
       browserVus,
       browserIterations,
+      graphqlVus,
+      graphqlIterations,
       browserReqFailThreshold,
       httpReqFailThreshold,
-      graphqlVus,
-      graphqlIterations
+      proposalSubmittedFailThreshold,
+      checksFailThreshold
     );
   }
 
@@ -44,20 +48,24 @@ export function getExecutionOptions(
     return getProductionOption(
       browserVus,
       browserIterations,
+      graphqlVus,
+      graphqlIterations,
       browserReqFailThreshold,
       httpReqFailThreshold,
-      graphqlVus,
-      graphqlIterations
+      proposalSubmittedFailThreshold,
+      checksFailThreshold
     );
   }
 
   return getLocalOption(
     browserVus,
     browserIterations,
+    graphqlVus,
+    graphqlIterations,
     browserReqFailThreshold,
     httpReqFailThreshold,
-    graphqlVus,
-    graphqlIterations
+    proposalSubmittedFailThreshold,
+    checksFailThreshold
   );
 }
 

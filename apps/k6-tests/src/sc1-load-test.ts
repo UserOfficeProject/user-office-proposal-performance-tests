@@ -14,13 +14,14 @@ import { SharedData } from './utils/sharedType';
 const executionOptions = getExecutionOptions(
   +__ENV.SC1_BROWSER_VUS,
   +__ENV.SC1_BROWSER_VUS_ITERATIONS,
+  +__ENV.SC1_GRAPHQL_VUS,
+  +__ENV.SC1_GRAPHQL_ITERATIONS,
   __ENV.SC1_BROWSER_REQ_FAIL_THRESHOLD,
   __ENV.SC1_HTTP_REQ_FAIL_THRESHOLD,
-  +__ENV.SC1_GRAPHQL_VUS,
-  +__ENV.SC1_GRAPHQL_ITERATIONS
+  __ENV.SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD,
+  __ENV.SC1_CHECK_FAIL_THRESHOLD
 );
 const environmentConfig = getEnvironmentConfigurations();
-
 export function setup() {
   return sc1Setup(environmentConfig);
 }
