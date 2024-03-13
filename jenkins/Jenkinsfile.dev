@@ -36,6 +36,24 @@ pipeline {
       defaultValue: '3',
       trim: true
     )
+    string(
+      name: 'GRAPHQL_VUS',
+      description: 'The number of vus for graphql interactions',
+      defaultValue: '100',
+      trim: true
+    )
+    string(
+      name: 'GRAPHQL_ITERATIONS',
+      description: 'The number of graphql vus interactions',
+      defaultValue: '3',
+      trim: true
+    )
+    string(
+      name: 'SETUP_TOTAL_USERS',
+      description: 'Total users to set up max is 1000 and min must be 200',
+      defaultValue: '200',
+      trim: true
+    )
   }
   environment {
     GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
@@ -45,6 +63,9 @@ pipeline {
     ENVIRONMENT = 'develop'
     SC1_BROWSER_VUS = "${params.BROWSER_VUS}"
     SC1_BROWSER_VUS_ITERATIONS = "${params.BROWSER_VUS_ITERATIONS}"
+    SC1_GRAPHQL_VUS = "${params.GRAPHQL_VUS}"
+    SC1_GRAPHQL_ITERATIONS = "${params.GRAPHQL_ITERATIONS}"
+    SETUP_TOTAL_USERS = "${params.SETUP_TOTAL_USERS}"
   }
 
   stages {

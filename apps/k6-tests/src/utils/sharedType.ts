@@ -4,7 +4,6 @@ export enum AllocationTimeUnits {
   HOUR = 'Hour',
 }
 export type Call = { id: number; shortCode: string; title: string };
-
 export type Proposal = {
   primaryKey: number;
   proposalId: string;
