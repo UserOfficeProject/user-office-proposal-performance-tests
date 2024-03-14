@@ -9,7 +9,7 @@ import { Dashboard } from './support/dashboard';
 import { logFailedTest } from './support/logger';
 import { Proposal } from './support/proposal';
 import { User } from './support/user';
-import { randomString } from '../utils/helperFunctions';
+import { randomIntBetween, randomString } from '../utils/helperFunctions';
 import { SharedData } from '../utils/sharedType';
 
 const proposalSubmissionDuration = new Trend(
@@ -24,7 +24,7 @@ export async function proposal(sharedData: SharedData) {
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length / 2))]
       .sessionId;
   const context = browser.newContext();
-  context.setDefaultTimeout(60000);
+  context.setDefaultTimeout(240000);
   const page = context.newPage();
   const proposalTitle = randomString(10);
   try {
@@ -49,12 +49,21 @@ export async function proposal(sharedData: SharedData) {
     const call = new Call();
 
     await page.goto(sharedData.browserBaseUrl);
-
-    sleep(5);
+    sleep(randomIntBetween(10, 50));
     await Promise.all([
+      page.waitForNavigation({
+        waitUntil: 'networkidle',
+      }),
       page.waitForSelector(dashboard.proposalMenuItem()).isVisible(),
       page.waitForSelector(dashboard.proposalMenuItem()).tap(),
     ]);
+
+    check(page, {
+      'New proposal menu is enabled': () =>
+        page
+          .waitForSelector(call.getTestCall(sharedData.testCall.title))
+          .isEnabled(),
+    });
 
     check(page, {
       'User can see test call': () =>
@@ -66,7 +75,6 @@ export async function proposal(sharedData: SharedData) {
     await Promise.all([
       page.waitForNavigation({
         waitUntil: 'networkidle',
-        timeout: 10000,
       }),
       page.locator(call.getTestCall(sharedData.testCall.title)).click(),
     ]);

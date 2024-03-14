@@ -1,5 +1,5 @@
 export class Dashboard {
   proposalMenuItem(): string {
-    return '[aria-label="New Proposal"]';
+    return '//a[@aria-label="New Proposal"]';
   }
 }
