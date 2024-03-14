@@ -24,11 +24,12 @@ export async function proposal(sharedData: SharedData) {
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length / 2))]
       .sessionId;
   const context = browser.newContext();
-  context.setDefaultTimeout(240000);
+  context.setDefaultTimeout(60000);
   const page = context.newPage();
+  const proposalTitle = randomString(10);
   try {
     const user = new User(sharedData.browserBaseUrl, sessionId);
-    const proposalTitle = randomString(10);
+
     await page.goto(user.getLoginURL());
     await Promise.all([page.waitForNavigation()]);
     if (
@@ -46,28 +47,22 @@ export async function proposal(sharedData: SharedData) {
     }
     const dashboard = new Dashboard();
     const call = new Call();
+
+    await page.goto(sharedData.browserBaseUrl);
+
     sleep(5);
     await Promise.all([
-      await page.goto(sharedData.browserBaseUrl),
       page.waitForSelector(dashboard.proposalMenuItem()).isVisible(),
+      page.waitForSelector(dashboard.proposalMenuItem()).tap(),
     ]);
-    sleep(5);
-    page.locator(dashboard.proposalMenuItem()).click({ force: true });
-    if (
-      !check(page, {
-        'User can see test call': () =>
-          page
-            .waitForSelector(call.getTestCall(sharedData.testCall.title))
-            .isVisible(),
-      })
-    ) {
-      logFailedTest(
-        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
-        `User cannot see test call ${sharedData.testCall.title} not visible`,
-        page,
-        proposalTitle
-      );
-    }
+
+    check(page, {
+      'User can see test call': () =>
+        page
+          .waitForSelector(call.getTestCall(sharedData.testCall.title))
+          .isVisible(),
+    });
+
     await Promise.all([
       page.waitForNavigation({
         waitUntil: 'networkidle',
@@ -79,21 +74,22 @@ export async function proposal(sharedData: SharedData) {
     const proposal = new Proposal(page);
     proposal.createProposal(proposalTitle);
     sleep(5);
-    if (
-      !check(page, {
-        'User was able to submit proposal': () =>
-          page.waitForSelector(proposal.submissionMessage()).isVisible(),
-      })
-    ) {
-      logFailedTest(
-        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
-        'User could not submit proposal submission message not visible',
-        page,
-        proposalTitle
-      );
-    }
+
+    check(page, {
+      'User was able to submit proposal': () =>
+        page.waitForSelector(proposal.submissionMessage()).isVisible(),
+    });
+
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+  } catch (error) {
+    console.error(error);
+    logFailedTest(
+      `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
+      `User could not create and submit proposal to  ${sharedData.testCall.title} call`,
+      page,
+      proposalTitle
+    );
   } finally {
     page.close();
   }
