@@ -87,7 +87,7 @@ export async function proposal(sharedData: SharedData) {
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
   } catch (error) {
-    const scenario = `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`;
+    const scenario = `SCENARIO: ${exec.scenario.name} TEST: proposal test VU_ID: ${exec.vu.idInTest}`;
     const message = `User could not create and submit proposal to  ${sharedData.testCall.title} call`;
     console.error(scenario, message, error);
     logFailedTest(scenario, message, page, proposalTitle);

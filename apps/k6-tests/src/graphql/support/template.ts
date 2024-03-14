@@ -35,7 +35,9 @@ export class Template {
     }).valueOf();
 
     if (!checkValue) {
-      fail('Performance test template could not be created aborting test');
+      fail(
+        'Performance test template could not be created aborting test, Executing class Template.createTemplate'
+      );
     }
 
     return responseData.data?.createTemplate as TemplateType;

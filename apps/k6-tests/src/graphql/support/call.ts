@@ -39,7 +39,9 @@ export class Call {
     }).valueOf();
 
     if (!checkValue) {
-      fail('Performance test could not be created aborting test');
+      fail(
+        'Performance test could not be created aborting test, Executing Call.createTestCall'
+      );
     }
 
     return responseData?.data?.createCall as CallType;
@@ -150,7 +152,7 @@ export class Call {
 
       return responseData?.data?.calls;
     } catch (error) {
-      fail(`SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}
+      fail(`SCENARIO: ${exec.scenario.name} Executing class Call.getUserCalls VU_ID: ${exec.vu.idInTest}
       Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
     }
   }
