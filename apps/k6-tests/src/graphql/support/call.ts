@@ -1,4 +1,5 @@
 import { check, fail } from 'k6';
+import exec from 'k6/execution';
 
 import { getInitData } from '../../support/initData';
 import {
@@ -136,6 +137,12 @@ export class Call {
       JSON.stringify({ query, variables }),
       userToken
     );
+
+    if (response.status !== 200) {
+      fail(`SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}
+      Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+    }
+
     const responseData = response.json() as CallsQueryResponse;
     if (
       !check(response, {
