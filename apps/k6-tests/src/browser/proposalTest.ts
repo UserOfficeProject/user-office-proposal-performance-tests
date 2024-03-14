@@ -77,13 +77,20 @@ export async function proposal(sharedData: SharedData) {
     sleep(5);
 
     check(page, {
-      'User was able to submit proposal': () =>
-        page.waitForSelector(proposal.submissionMessage()).isVisible(),
+      'User was able to submit proposal': () => {
+        const isVisible = page
+          .waitForSelector(proposal.submissionMessage())
+          .isVisible();
+        if (isVisible) {
+          logError = false;
+        }
+
+        return isVisible;
+      },
     });
 
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
-    logError = false;
   } finally {
     if (logError) {
       logFailedTest(
