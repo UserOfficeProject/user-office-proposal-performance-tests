@@ -1,4 +1,5 @@
-import { check } from 'k6';
+import { check, fail } from 'k6';
+import exec from 'k6/execution';
 
 import {
   ClientResponse,
@@ -15,9 +16,8 @@ export class User {
      }`;
     const response = this.apiClient(JSON.stringify({ query }));
     if (response.status !== 200) {
-      throw new Error(
-        `Error response getUserToken ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`
-      );
+      fail(`SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}
+      Error response getUserToken ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
     }
 
     const responseData = response.json() as ExternalTokenLoginResponse;
