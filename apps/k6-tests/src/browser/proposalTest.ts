@@ -27,29 +27,22 @@ export async function proposal(sharedData: SharedData) {
   context.setDefaultTimeout(240000);
   const page = context.newPage();
   const proposalTitle = randomString(10);
+  let logError = true;
   try {
     const user = new User(sharedData.browserBaseUrl, sessionId);
 
     await page.goto(user.getLoginURL());
     await Promise.all([page.waitForNavigation()]);
-    if (
-      !check(page, {
-        'User is logged in': () =>
-          page.waitForSelector(user.getLoggedInMessage()).isVisible(),
-      })
-    ) {
-      logFailedTest(
-        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
-        'User could not login User Office / Dashboard not visible',
-        page,
-        proposalTitle
-      );
-    }
+    check(page, {
+      'User is logged in': () =>
+        page.waitForSelector(user.getLoggedInMessage()).isVisible(),
+    });
+
     const dashboard = new Dashboard();
     const call = new Call();
 
     await page.goto(sharedData.browserBaseUrl);
-    sleep(randomIntBetween(10, 50));
+    sleep(randomIntBetween(50, 200));
     await Promise.all([
       page.waitForNavigation({
         waitUntil: 'networkidle',
@@ -90,13 +83,17 @@ export async function proposal(sharedData: SharedData) {
 
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
-  } catch (error) {
-    const message = `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`;
-    const scenario = `User could not create and submit proposal to  ${sharedData.testCall.title} call`;
-    console.error(message, scenario, error);
-    logFailedTest(scenario, message, page, proposalTitle);
-    throw new Error(`${error}`);
+    logError = false;
   } finally {
+    if (logError) {
+      logFailedTest(
+        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
+        `User could not create and submit proposal to  ${sharedData.testCall.title} call`,
+        page,
+        proposalTitle
+      );
+    }
+
     page.close();
   }
 }
