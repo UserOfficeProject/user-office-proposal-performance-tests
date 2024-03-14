@@ -138,21 +138,20 @@ export class Call {
       userToken
     );
 
-    if (response.status !== 200) {
+    check(response, {
+      'GetUserCalls status is 200': (res) => res.status === 200,
+    });
+
+    try {
+      const responseData = response.json() as CallsQueryResponse;
+      check(response, {
+        'Get user calls has data': () => responseData?.data?.calls?.length > 0,
+      });
+
+      return responseData?.data?.calls;
+    } catch (error) {
       fail(`SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}
       Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
     }
-
-    const responseData = response.json() as CallsQueryResponse;
-    if (
-      !check(response, {
-        'Get user calls': (r) =>
-          r.status === 200 && responseData?.data?.calls?.length > 0,
-      })
-    ) {
-      console.log('No user calls found', response.error);
-    }
-
-    return responseData?.data?.calls;
   }
 }

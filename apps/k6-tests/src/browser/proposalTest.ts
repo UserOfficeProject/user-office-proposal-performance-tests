@@ -11,7 +11,6 @@ import { Proposal } from './support/proposal';
 import { User } from './support/user';
 import { randomIntBetween, randomString } from '../utils/helperFunctions';
 import { SharedData } from '../utils/sharedType';
-
 const proposalSubmissionDuration = new Trend(
   'proposal_submission_duration',
   true
@@ -27,7 +26,6 @@ export async function proposal(sharedData: SharedData) {
   context.setDefaultTimeout(240000);
   const page = context.newPage();
   const proposalTitle = randomString(10);
-  let logError = true;
   try {
     const user = new User(sharedData.browserBaseUrl, sessionId);
 
@@ -81,9 +79,6 @@ export async function proposal(sharedData: SharedData) {
         const isVisible = page
           .waitForSelector(proposal.submissionMessage())
           .isVisible();
-        if (isVisible) {
-          logError = false;
-        }
 
         return isVisible;
       },
@@ -91,16 +86,12 @@ export async function proposal(sharedData: SharedData) {
 
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+  } catch (error) {
+    const scenario = `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`;
+    const message = `User could not create and submit proposal to  ${sharedData.testCall.title} call`;
+    console.error(scenario, message, error);
+    logFailedTest(scenario, message, page, proposalTitle);
   } finally {
-    if (logError) {
-      logFailedTest(
-        `SCENARIO: ${exec.scenario.name} TEST: ProposalTest VU_ID: ${exec.vu.idInTest}`,
-        `User could not create and submit proposal to  ${sharedData.testCall.title} call`,
-        page,
-        proposalTitle
-      );
-    }
-
     page.close();
   }
 }
