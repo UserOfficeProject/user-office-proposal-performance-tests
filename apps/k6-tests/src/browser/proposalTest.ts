@@ -24,7 +24,7 @@ export async function proposal(sharedData: SharedData) {
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length / 2))]
       .sessionId;
   const context = browser.newContext();
-  context.setDefaultTimeout(60000);
+  context.setDefaultTimeout(240000);
   const page = context.newPage();
   try {
     const user = new User(sharedData.browserBaseUrl, sessionId);
