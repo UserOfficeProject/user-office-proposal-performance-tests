@@ -116,6 +116,7 @@ pipeline {
         rm -rf ./apps/k6-tests/node_modules
         rm -rf ./apps/user-setup/node_modules
         rm -rf ./apps/user-setup/.env
+        rm -rf ./screenshots
 
         # move env to the correct location
         mv .env apps/user-setup/

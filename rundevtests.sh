@@ -1,6 +1,7 @@
 #!/bin/sh
 # runtests.sh
-
+# remove shreenshots
+rm -rf ./screenshots
 # No command provided, run both build and test by default
 npm run dev:build:k6-test &
 sleep 10 &
