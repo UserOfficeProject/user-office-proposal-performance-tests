@@ -42,7 +42,7 @@ export async function proposal(sharedData: SharedData) {
     const call = new Call();
 
     await page.goto(sharedData.browserBaseUrl);
-    sleep(randomIntBetween(60, 500));
+    sleep(randomIntBetween(60, 300));
     await Promise.all([
       page.waitForNavigation({
         waitUntil: 'networkidle',
