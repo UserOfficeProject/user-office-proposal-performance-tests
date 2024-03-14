@@ -10,7 +10,7 @@ export function call(sharedData: SharedData) {
   const clientApi = getClientApi(sharedData.graphqlUrl);
   const user = new User(clientApi);
   const call = new Call(clientApi);
-  sleep(randomIntBetween(10, 100));
+  sleep(randomIntBetween(5, 20));
   const externalTokenLogin = user.getUserToken(
     `${sharedData.users[randomIntBetween(Math.floor(sharedData.users.length / 2), __VU)].sessionId}`
   );

@@ -7,7 +7,7 @@ import { SharedData } from '../utils/sharedType';
 
 export function tokenLogin(sharedData: SharedData) {
   const user = new User(getClientApi(sharedData.graphqlUrl));
-  sleep(randomIntBetween(10, 100));
+  sleep(randomIntBetween(5, 20));
   const externalTokenLogin = user.getUserToken(
     `${sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))].sessionId}`
   );
