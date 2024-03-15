@@ -1,4 +1,5 @@
 pipeline {
+  
   agent none
 
   options {
@@ -22,65 +23,142 @@ pipeline {
       notifyRepeatedFailure: false
     ]])
   }
+  parameters {
+    string(
+      name: 'BROWSER_VUS',
+      description: 'The number of vus to use',
+      defaultValue: '30',
+      trim: true
+    )
+    string(
+      name: 'BROWSER_VUS_ITERATIONS',
+      description: 'The number of vus iterations',
+      defaultValue: '3',
+      trim: true
+    )
+    string(
+      name: 'GRAPHQL_VUS',
+      description: 'The number of vus for graphql interactions',
+      defaultValue: '100',
+      trim: true
+    )
+    string(
+      name: 'GRAPHQL_ITERATIONS',
+      description: 'The number of graphql vus interactions',
+      defaultValue: '3',
+      trim: true
+    )
+    string(
+      name: 'BROWSER_REQ_FAIL_THRESHOLD',
+      description: 'This is the fail treshhold for browser requests e.g rate <= 0.5',
+      trim: true
+    )
+    string(
+      name: 'HTTP_REQ_FAIL_THRESHOLD',
+      description: 'This is the fail threshhold for api requests e.g rate <= 0.5',
+      trim: true
+    )
+    string(
+      name: 'PROPOSALS_SUBMITTED_FAIL_THRESHOLD',
+      description: 'This is the number of proposals which fail to submit e.g count>=100',
+      trim: true
+    )
+    string(
+      name: 'CHECK_FAIL_THRESHOLD',
+      description: 'This is the fail thershold for all checks e.g rate > 0.90',
+      trim: true
+    )
+    string(
+      name: 'SETUP_TOTAL_USERS',
+      description: 'Total users to set up max is 1000 and min must be 200',
+      trim: true
+    )
+  }
   environment {
     GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
-    USER_SETUP_DOTENV_PATH = '.env'
+    HOME = '.'
+    ENVIRONMENT = 'develop'
+    SC1_BROWSER_VUS = "${params.BROWSER_VUS}"
+    SC1_BROWSER_VUS_ITERATIONS = "${params.BROWSER_VUS_ITERATIONS}"
+    SC1_GRAPHQL_VUS = "${params.GRAPHQL_VUS}"
+    SC1_GRAPHQL_ITERATIONS = "${params.GRAPHQL_ITERATIONS}"
+    SC1_BROWSER_REQ_FAIL_THRESHOLD = "${params.BROWSER_REQ_FAIL_THRESHOLD}"
+    SC1_HTTP_REQ_FAIL_THRESHOLD = "${params.HTTP_REQ_FAIL_THRESHOLD}"
+    SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD = "${params.PROPOSALS_SUBMITTED_FAIL_THRESHOLD}"
+    SC1_CHECK_FAIL_THRESHOLD = "${params.CHECK_FAIL_THRESHOLD}"
+    SETUP_TOTAL_USERS = "${params.SETUP_TOTAL_USERS}"
   }
 
   stages {
-    stage('Run load testing on dev') {
+    stage('Build and run load tests') {
+
       agent {
         dockerfile {
-          filename 'Dockerfile.dev'
-          dir 'app'
+          filename 'Dockerfile.run'
           label 'linux && docker'
         }
       }
+
       steps {
-        copyArtifacts (
+        copyArtifacts(
           projectName: 'Dev_Build_BisAppSettings',
-          filter: 'BISAppSettings/proposal-load-tester/k6/dev/*',
+          filter: 'BISAppSettings/proposal-load-tester/k6/dev/.env',
           selector: lastSuccessful(),
-          fingerprintArtifacts: true
+          fingerprintArtifacts: true,
+          flatten: true
         )
-        sh (
-          '''
-            npm run dev:build:k6-test &
-            sleep 10 &
-            npm run dev:start:user-setup &
-            sleep 10 
+          
+      sh """
+        # clean up past data
+        rm -rf ./node_modules
+        rm -rf ./apps/k6-tests/node_modules
+        rm -rf ./apps/user-setup/node_modules
+        rm -rf ./apps/user-setup/.env
+        rm -rf ./screenshots
 
-            # To pass VUS and Iterations uncomment and pass these envs
-            # export SC1_BROWSER_VUS=60
-            # export SC1_GRAPHQL_VUS=80
-            # export SC1_GRAPHQL_ITERATIONS=5
+        # move env to the correct location
+        mv .env apps/user-setup/
 
-            k6 run --no-usage-report - < <(cat ./apps/k6-tests/test/sc1-load-test.js)
-          '''
-        )
+        # install and build
+        npm install
+        npm run build
+        npm run dev:build:k6-test 
+      """  
+      sh """
+         # start user setup server and run tests
+         npm run dev:start:user-setup &
+         while ! nc -z localhost 8100; do
+            sleep 5
+            echo "User setup server not ready"
+         done
+         k6 run apps/k6-tests/test/sc1-load-test.js
+      """
+
       }
+      
     }
+
   }
 
-  post {
-    regression {
-        emailext(
-          subject: '$DEFAULT_SUBJECT',
-          body: '$DEFAULT_CONTENT',
-          to: '$DEFAULT_RECIPIENTS',
-          recipientProviders: [developers()]
-        )
-      }
+  // post {
+  //   regression {
+  //       emailext(
+  //         subject: '$DEFAULT_SUBJECT',
+  //         body: '$DEFAULT_CONTENT',
+  //         to: '$DEFAULT_RECIPIENTS',
+  //         recipientProviders: [developers()]
+  //       )
+  //     }
 
-    fixed {
-      emailext(
-      subject: '$DEFAULT_SUBJECT',
-      body: '$DEFAULT_CONTENT',
-      to: '$DEFAULT_RECIPIENTS',
-      recipientProviders: [developers()]
-    )
-    }
-  }
+  //   fixed {
+  //     emailext(
+  //     subject: '$DEFAULT_SUBJECT',
+  //     body: '$DEFAULT_CONTENT',
+  //     to: '$DEFAULT_RECIPIENTS',
+  //     recipientProviders: [developers()]
+  //   )
+  //   }
+  // }
 }

@@ -10,6 +10,7 @@
     "lint": "tsc --noEmit && eslint . --ext .js,.ts --quiet",
     "lint:fix": "tsc --noEmit && eslint . --ext .js,.ts --fix --quiet",
     "bundle": "webpack",
+    "build": "npm run bundle",
     "build:dev": "npm run bundle",
     "dev:k6:load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js"
   },
@@ -34,5 +35,9 @@
     "webpack-cli": "^5.1.4",
     "webpack-glob-entries": "^1.0.1",
     "webpack-sources": "^3.2.3"
+  },
+  "engines": {
+    "npm": ">=10.2.5",
+    "node": ">=19.0.0"
   }
 }
