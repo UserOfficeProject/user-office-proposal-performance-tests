@@ -24,17 +24,23 @@ function getConfigDirectory(): string {
 export function getExecutionOptions(
   browserVus?: number,
   browserIterations?: number,
-  browserReqFailThreshold?: string,
   graphqlVus?: number,
-  graphqlIterations?: number
+  graphqlIterations?: number,
+  browserReqFailThreshold?: string,
+  httpReqFailThreshold?: string,
+  proposalSubmittedFailThreshold?: string,
+  checksFailThreshold?: string
 ): Options {
   if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'develop') {
     return getDevelopOption(
       browserVus,
       browserIterations,
-      browserReqFailThreshold,
       graphqlVus,
-      graphqlIterations
+      graphqlIterations,
+      browserReqFailThreshold,
+      httpReqFailThreshold,
+      proposalSubmittedFailThreshold,
+      checksFailThreshold
     );
   }
 
@@ -42,18 +48,24 @@ export function getExecutionOptions(
     return getProductionOption(
       browserVus,
       browserIterations,
-      browserReqFailThreshold,
       graphqlVus,
-      graphqlIterations
+      graphqlIterations,
+      browserReqFailThreshold,
+      httpReqFailThreshold,
+      proposalSubmittedFailThreshold,
+      checksFailThreshold
     );
   }
 
   return getLocalOption(
     browserVus,
     browserIterations,
-    browserReqFailThreshold,
     graphqlVus,
-    graphqlIterations
+    graphqlIterations,
+    browserReqFailThreshold,
+    httpReqFailThreshold,
+    proposalSubmittedFailThreshold,
+    checksFailThreshold
   );
 }
 
@@ -77,9 +89,14 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
       ...localEnvs,
     };
   } catch (err) {
-    console.error(
-      `File .k6rc not found.Create the file in ${configDir} if you want to use it`
-    );
+    if (
+      __ENV.ENVIRONMENT.toLowerCase() !== 'develop' &&
+      __ENV.ENVIRONMENT.toLowerCase() !== 'production'
+    ) {
+      console.error(
+        `File .k6rc not found.Create the file in ${configDir} if you want to use it`
+      );
+    }
 
     return {
       ...defaultEnv,

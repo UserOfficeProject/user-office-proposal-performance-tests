@@ -1,18 +1,37 @@
 import http from 'k6/http';
 
-export function getTokenApi(graphqlUrl: string, bearerToken: string) {
-  return function (body: string) {
-    return http.post(graphqlUrl, body, {
-      headers: {
-        Authorization: `${bearerToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-  };
-}
+import { ClientApi } from '../utils/sharedType';
 
-export function getNoTokenApi(graphqlUrl: string) {
-  return function (body: string) {
+export function getClientApi(graphqlUrl: string): ClientApi;
+export function getClientApi(
+  graphqlUrl: string,
+  bearerToken?: string
+): ClientApi;
+export function getClientApi(
+  graphqlUrl: string,
+  bearerToken?: string
+): ClientApi {
+  if (bearerToken) {
+    return function (body: string, userToken?: string) {
+      return http.post(graphqlUrl, body, {
+        headers: {
+          Authorization: userToken ? `Bearer ${userToken}` : bearerToken,
+          'Content-Type': 'application/json',
+        },
+      });
+    };
+  }
+
+  return function (body: string, userToken?: string) {
+    if (userToken) {
+      return http.post(graphqlUrl, body, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
     return http.post(graphqlUrl, body, {
       headers: {
         'Content-Type': 'application/json',

@@ -1,7 +1,8 @@
 import { Options } from 'k6/options';
 
-import { proposalTest } from './browser/proposal';
-import { tokenLogin } from './graphql/user';
+import { proposal } from './browser/proposalTest';
+import { call } from './graphql/callTest';
+import { tokenLogin } from './graphql/userTest';
 import {
   getEnvironmentConfigurations,
   getExecutionOptions,
@@ -12,13 +13,15 @@ import { SharedData } from './utils/sharedType';
 
 const executionOptions = getExecutionOptions(
   +__ENV.SC1_BROWSER_VUS,
-  +__ENV.SC1_BROWSER_ITERATIONS,
-  __ENV.SC1_BROWSER_REQ_FAIL_THRESHOLD,
+  +__ENV.SC1_BROWSER_VUS_ITERATIONS,
   +__ENV.SC1_GRAPHQL_VUS,
-  +__ENV.SC1_GRAPHQL_ITERATIONS
+  +__ENV.SC1_GRAPHQL_ITERATIONS,
+  __ENV.SC1_BROWSER_REQ_FAIL_THRESHOLD,
+  __ENV.SC1_HTTP_REQ_FAIL_THRESHOLD,
+  __ENV.SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD,
+  __ENV.SC1_CHECK_FAIL_THRESHOLD
 );
 const environmentConfig = getEnvironmentConfigurations();
-
 export function setup() {
   return sc1Setup(environmentConfig);
 }
@@ -27,11 +30,11 @@ export function setup() {
 export const options: Options = { ...executionOptions };
 
 export async function graphqlTests(SharedData: SharedData) {
-  return tokenLogin(SharedData);
+  return await Promise.all([call(SharedData), tokenLogin(SharedData)]);
 }
 
 export async function browserTests(sc1SharedData: SharedData) {
-  return proposalTest(sc1SharedData);
+  return proposal(sc1SharedData);
 }
 
 export function teardown(SharedData: SharedData) {
