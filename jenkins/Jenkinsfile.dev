@@ -27,7 +27,7 @@ pipeline {
     string(
       name: 'BROWSER_VUS',
       description: 'The number of vus to use',
-      defaultValue: '30',
+      defaultValue: '20',
       trim: true
     )
     string(
@@ -45,7 +45,7 @@ pipeline {
     string(
       name: 'GRAPHQL_ITERATIONS',
       description: 'The number of graphql vus interactions',
-      defaultValue: '3',
+      defaultValue: '2',
       trim: true
     )
     string(
@@ -71,6 +71,7 @@ pipeline {
     string(
       name: 'SETUP_TOTAL_USERS',
       description: 'Total users to set up max is 1000 and min must be 200',
+      defaultValue: '300',
       trim: true
     )
   }
