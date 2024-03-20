@@ -27,13 +27,13 @@ pipeline {
     string(
       name: 'BROWSER_VUS',
       description: 'The number of vus to use',
-      defaultValue: '20',
+      defaultValue: '30',
       trim: true
     )
     string(
       name: 'BROWSER_VUS_ITERATIONS',
       description: 'The number of vus iterations',
-      defaultValue: '3',
+      defaultValue: '2',
       trim: true
     )
     string(
