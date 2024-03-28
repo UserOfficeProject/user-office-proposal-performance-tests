@@ -1,33 +1,51 @@
-export enum AllocationTimeUnits {
-  DAY = 'Day',
-  HOUR = 'Hour',
-}
+import { randomString } from '../utils/helperFunctions';
+import { AllocationTimeUnits, InitData } from '../utils/sharedType';
 
-export const initData = {
-  call: {
-    id: 1,
-    title: 'Performance test',
-    shortCode: 'Test',
-    allocationTimeUnit: AllocationTimeUnits.DAY,
-  },
-  proposal: {
-    id: 1,
-    title: 'Proposal for performance test',
-    questionaryId: 1,
-    shortCode: '999999',
-  },
-  template: {
-    id: 1,
-    name: 'default template',
-    topic: {
-      id: 5,
-      title: 'Topic title',
+export function getInitData(): InitData {
+  const current = new Date();
+  current.setHours(0, 0, 0, 0);
+  const future = new Date();
+  future.setDate(current.getDate() + 2);
+  const data = {
+    call: {
+      title: 'Performance test' + ' ' + randomString(6),
+      shortCode: 'Test' + ' ' + randomString(6),
+      startCall: current,
+      endCall: future,
+      startReview: future,
+      endReview: future,
+      startFapReview: future,
+      endFapReview: future,
+      startNotify: future,
+      endNotify: future,
+      startCycle: future,
+      endCycle: future,
+      templateId: 1,
+      allocationTimeUnit: AllocationTimeUnits.DAY,
+      cycleComment: `${randomString(20)}`,
+      surveyComment: `${randomString(10)}`,
+      proposalWorkflowId: 1,
     },
-  },
-  workflows: {
-    defaultWorkflow: {
+    proposal: {
       id: 1,
+      title: 'Proposal for performance test',
+      questionaryId: 1,
+      shortCode: '999999',
     },
-    defaultDroppableGroup: 'proposalWorkflowConnections_0',
-  },
-};
+    template: {
+      name: 'Performance test',
+      description: 'Performance test template',
+      groupId: 'PROPOSAL',
+    },
+    workflows: {
+      defaultWorkflow: {
+        id: 1,
+      },
+      defaultDroppableGroup: 'proposalWorkflowConnections_0',
+    },
+  };
+
+  return {
+    ...data,
+  };
+}

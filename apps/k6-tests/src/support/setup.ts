@@ -3,8 +3,9 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getTokenApi } from './graphql';
+import { getClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
+import { Template } from '../graphql/support/template';
 import { SharedData } from '../utils/sharedType';
 
 export function sc1TearDown(sharedData: SharedData) {
@@ -30,9 +31,10 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const userSetupBaseUrl =
     __ENV.USER_SETUP_BASE_URL || 'http://localhost:8100/users';
-  const apiClient = getTokenApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
+  const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
   const call = new Call(apiClient);
-  const testCall = call.createTestCall();
+  const template = new Template(apiClient);
+  const testCall = call.createTestCall(template.createTemplate().templateId);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (

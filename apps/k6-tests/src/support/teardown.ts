@@ -2,20 +2,22 @@ import { check } from 'k6';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getTokenApi } from './graphql';
+import { getClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Proposal } from '../graphql/support/proposal';
+import { Template } from '../graphql/support/template';
 import { SharedData } from '../utils/sharedType';
 
 export function sc1TearDown(
   sharedData: SharedData,
   environmentConfig: EnvironmentConfigurations
 ) {
-  const apiClient = getTokenApi(
+  const apiClient = getClientApi(
     sharedData.graphqlUrl,
     environmentConfig.GRAPHQL_TOKEN
   );
   const proposal = new Proposal(apiClient);
+  const template = new Template(apiClient);
 
   console.log('Cleaning proposals');
   proposal.deleteCallProposals(sharedData.testCall.id);
@@ -24,6 +26,10 @@ export function sc1TearDown(
   console.log('Cleaning up test call');
 
   call.deleteCall(sharedData.testCall.id);
+
+  console.log('Cleaning up call template');
+
+  template.deleteTemplate(sharedData.testCall.templateId);
 
   console.log('Cleaning up user set up');
 
