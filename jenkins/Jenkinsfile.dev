@@ -98,7 +98,7 @@ pipeline {
       agent {
         dockerfile {
           filename 'Dockerfile.run'
-          label 'linux && docker'
+          label 'k6'
         }
       }
 
