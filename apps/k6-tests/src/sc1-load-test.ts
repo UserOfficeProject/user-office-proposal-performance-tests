@@ -22,21 +22,21 @@ const executionOptions = getExecutionOptions(
   __ENV.SC1_CHECK_FAIL_THRESHOLD
 );
 const environmentConfig = getEnvironmentConfigurations();
-export function setup() {
-  return sc1Setup(environmentConfig);
+export async function setup() {
+  return await sc1Setup(environmentConfig);
 }
 
 //This set the execution options
 export const options: Options = { ...executionOptions };
 
-export async function graphqlTests(SharedData: SharedData) {
-  return await Promise.all([call(SharedData), tokenLogin(SharedData)]);
+export async function graphqlTests(sharedData: SharedData) {
+  return await Promise.all([call(sharedData), tokenLogin(sharedData)]);
 }
 
-export async function browserTests(sc1SharedData: SharedData) {
-  return proposal(sc1SharedData);
+export async function browserTests(sharedData: SharedData) {
+  return proposal(sharedData);
 }
 
-export function teardown(SharedData: SharedData) {
-  return sc1TearDown(SharedData, environmentConfig);
+export function teardown(sharedData: SharedData) {
+  return sc1TearDown(sharedData, environmentConfig);
 }

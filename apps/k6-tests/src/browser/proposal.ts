@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { check } from 'k6';
 import exec from 'k6/execution';
 import { browser } from 'k6/experimental/browser';

@@ -24,11 +24,9 @@ export type Proposals = {
   proposals: [Proposal];
 };
 export type SharedData = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  users: any;
+  users: UserLogin[];
   browserBaseUrl: string;
   graphqlUrl: string;
-  userSetupBaseUrl: string;
   testCall: Call;
 };
 
@@ -113,3 +111,15 @@ export type CallsFilter = {
   pdfTemplateIds?: number;
   templateIds?: number;
 };
+
+export type UserLogin = { userId: number; sessionId: string };
+
+export enum DatabaseClientConnector {
+  ORACLE = 'oracle',
+  POSTGRESQL = 'postgresql',
+}
+
+export interface DatabaseClient {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  begin(): any;
+}

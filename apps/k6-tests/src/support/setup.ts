@@ -4,19 +4,12 @@ import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
 import { getClientApi } from './graphql';
+import { UserDataSource } from './userDataSource';
 import { Call } from '../graphql/support/call';
 import { Template } from '../graphql/support/template';
 import { SharedData } from '../utils/sharedType';
 
-export function sc1TearDown(sharedData: SharedData) {
-  console.log('Cleaning up user set up');
-  const response = http.del(`${sharedData.userSetupBaseUrl}/`, null, {});
-  check(response, {
-    'User setup clean up successful': (r) => r.status === 204, // Expected status code for successful deletion
-  });
-}
-
-export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
+export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
       Check if the system under test and user setup server are available.
       Abort load testing if the system is not available.
@@ -24,22 +17,29 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     ************/
   let retryCount = 0;
   let proposalHealthCheck = false;
-  let userSetupHealthCheck = false;
-  let users = undefined;
-
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
-  const userSetupBaseUrl =
-    __ENV.USER_SETUP_BASE_URL || 'http://localhost:8100/users';
+
   const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
   const call = new Call(apiClient);
   const template = new Template(apiClient);
-  const testCall = call.createTestCall(template.createTemplate().templateId);
+  const startingId = -220800000;
+
+  const usersDataSource = new UserDataSource(
+    environmentConfig.USER_DB_USERNAME,
+    environmentConfig.USER_DB_PASSWORD,
+    environmentConfig.USER_DB_CONNECTION_STRING
+  );
+  const users = await usersDataSource.getUsersBetween(
+    startingId,
+    startingId + environmentConfig.SETUP_TOTAL_USERS
+  );
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (
-    !(proposalHealthCheck && userSetupHealthCheck) &&
-    retryCount < environmentConfig.SETUP_RETRIES
+    !proposalHealthCheck &&
+    retryCount < environmentConfig.SETUP_RETRIES &&
+    users.length > 0
   ) {
     if (!proposalHealthCheck) {
       // Check for successful proposal health check flags
@@ -61,51 +61,20 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
             retryCount + 1
           }) Retrying in ${10} seconds...`
         );
+        sleep(environmentConfig.SETUP_RETRY_INTERVAL); // Adjust retry delay as needed
+        retryCount++;
       }
-    }
-
-    if (!userSetupHealthCheck) {
-      const response = http.post(
-        `${userSetupBaseUrl}/${environmentConfig.SETUP_TOTAL_USERS}`,
-        '',
-        {
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-
-      check(response, {
-        'User auth setup successful': (r) => {
-          const status = r.status === 200;
-          if (status) {
-            userSetupHealthCheck = true;
-            users = response.json();
-          }
-
-          return status;
-        },
-      });
-
-      if (!userSetupHealthCheck) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          `User auth setup failed! (retry #${
-            retryCount + 1
-          }) Retrying in ${10} seconds...`
-        );
-      }
-    }
-
-    if (!proposalHealthCheck || !userSetupHealthCheck) {
-      sleep(environmentConfig.SETUP_RETRY_INTERVAL); // Adjust retry delay as needed
-      retryCount++;
     }
   }
 
   // Check for final setup outcome and abort if necessary
-  if (!proposalHealthCheck || !userSetupHealthCheck) {
+  if (!proposalHealthCheck || users.length < 0) {
     console.error(
       `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
     );
+    if (users.length < 0) {
+      console.error('Failed to create users');
+    }
     exec.test.abort();
   } else {
     console.info(
@@ -116,17 +85,12 @@ export function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       } `
     );
   }
-
-  if (!users) {
-    console.error('Setup failed user login empty. Aborting test!');
-    exec.test.abort();
-  }
+  const testCall = call.createTestCall(template.createTemplate().templateId);
 
   return {
     users,
     browserBaseUrl,
     graphqlUrl,
-    userSetupBaseUrl,
     testCall,
   } as SharedData;
 }

@@ -1,3 +1,3 @@
 {
-    "apps/user-setup/**/*.{js,ts,jsx,tsx}": ["npm run lint"]
+    "apps/k6-tests/**/*.{js,ts,jsx,tsx}": ["npm run lint"]
   }

@@ -1,4 +1,4 @@
-export function uuidv4(): string {
+export function randomUUIDv4(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0; // Convert to integer
     const v = c === 'x' ? r : (r & 0x3) | 0x8; // Use ternary operator for clarity
@@ -19,6 +19,13 @@ export function randomItem<T>(arrayOfItems: T[]): T {
   }
 
   return arrayOfItems[Math.floor(Math.random() * arrayOfItems.length)];
+}
+
+export function* numberGenerator(firstId: number) {
+  let id = firstId;
+  while (true) {
+    yield id++;
+  }
 }
 
 export function randomString(length: number): string {
