@@ -19,11 +19,19 @@ export function teardown() {
 }
 
 export default function () {
-  db.exec("INSERT INTO extension (`name`, definition) VALUES('connector name', 'sql-connector');");
+  db.exec(
+    "INSERT INTO extension (`name`, definition) VALUES('connector name', 'sql-connector');"
+  );
 
-  let results = sql.query(db, "SELECT * FROM extension WHERE `definition` = :1", 'sql-connector');
+  let results = sql.query(
+    db,
+    'SELECT * FROM extension WHERE `definition` = :1',
+    'sql-connector'
+  );
   for (const row of results) {
     // Convert array of ASCII integers into strings. See https://github.com/grafana/xk6-sql/issues/12
-    console.log(`name: ${String.fromCharCode(...row.name)}, definition: ${String.fromCharCode(...row.definition)}`);
+    console.log(
+      `name: ${String.fromCharCode(...row.name)}, definition: ${String.fromCharCode(...row.definition)}`
+    );
   }
 }

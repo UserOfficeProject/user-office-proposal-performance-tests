@@ -16,14 +16,6 @@ export type EnvironmentConfigurations = {
   SETUP_TOTAL_USERS: number;
 };
 
-function getConfigDirectory(): string {
-  const dirs = ['apps', 'k6-tests'];
-  const currentDirs = __ENV.PWD.split('/');
-  const rootDir = currentDirs.filter((x) => !dirs.includes(x));
-
-  return `${rootDir.join('/')}/${dirs.join('/')}`;
-}
-
 export function getExecutionOptions(
   browserVus?: number,
   browserIterations?: number,
@@ -73,7 +65,7 @@ export function getExecutionOptions(
 }
 
 export function getEnvironmentConfigurations(): EnvironmentConfigurations {
-  const configDir = getConfigDirectory();
+  const configDir = __ENV.PWD;
   const defaultEnv: EnvironmentConfigurations = {
     SETUP_RETRIES: +__ENV.SETUP_RETRIES || 5,
     SETUP_RETRY_INTERVAL: +__ENV.SETUP_RETRY_INTERVAL || 1000,

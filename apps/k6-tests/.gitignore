@@ -1,6 +1,0 @@
-node_modules
-test
-screenshots
-
-#.k6rc env file
-/.k6rc
