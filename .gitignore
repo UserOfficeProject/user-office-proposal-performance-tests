@@ -1,6 +1,3 @@
 node_modules
-apps/user-setup/node_modules
-apps/user-setup/.env
-apps/user-setup/build/
 .DS_Store
 screenshots
