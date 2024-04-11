@@ -105,45 +105,47 @@ pipeline {
       }
       
     }
-    // stage('Run load tests') {
+    stage('Run load tests') {
 
-    //   agent {
-    //     label 'k6'
-    //   }
+      agent {
+        label 'k6'
+      }
 
-    //   environment {
-    //     GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
-    //     BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
-    //     GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
-    //     XK6_BROWSER_LOG="fatal"
-    //     K6_BROWSER_LOG="error"
-    //     SC1_BROWSER_VUS = "${params.BROWSER_VUS}"
-    //     SC1_BROWSER_VUS_ITERATIONS = "${params.BROWSER_VUS_ITERATIONS}"
-    //     SC1_GRAPHQL_VUS = "${params.GRAPHQL_VUS}"
-    //     SC1_GRAPHQL_ITERATIONS = "${params.GRAPHQL_ITERATIONS}"
-    //     SC1_BROWSER_REQ_FAIL_THRESHOLD = "${params.BROWSER_REQ_FAIL_THRESHOLD}"
-    //     SC1_HTTP_REQ_FAIL_THRESHOLD = "${params.HTTP_REQ_FAIL_THRESHOLD}"
-    //     SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD = "${params.PROPOSALS_SUBMITTED_FAIL_THRESHOLD}"
-    //     SC1_CHECK_FAIL_THRESHOLD = "${params.CHECK_FAIL_THRESHOLD}"
-    //     SETUP_TOTAL_USERS = "${params.SETUP_TOTAL_USERS}"
-    //  }
+      environment {
+        GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
+        BROWSER_BASE_URL = 'https://devproposal.facilities.rl.ac.uk'
+        GRAPHQL_URL = 'https://devproposal.facilities.rl.ac.uk/graphql'
+        XK6_BROWSER_LOG="fatal"
+        K6_BROWSER_LOG="error"
+        SC1_BROWSER_VUS = "${params.BROWSER_VUS}"
+        SC1_BROWSER_VUS_ITERATIONS = "${params.BROWSER_VUS_ITERATIONS}"
+        SC1_GRAPHQL_VUS = "${params.GRAPHQL_VUS}"
+        SC1_GRAPHQL_ITERATIONS = "${params.GRAPHQL_ITERATIONS}"
+        SC1_BROWSER_REQ_FAIL_THRESHOLD = "${params.BROWSER_REQ_FAIL_THRESHOLD}"
+        SC1_HTTP_REQ_FAIL_THRESHOLD = "${params.HTTP_REQ_FAIL_THRESHOLD}"
+        SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD = "${params.PROPOSALS_SUBMITTED_FAIL_THRESHOLD}"
+        SC1_CHECK_FAIL_THRESHOLD = "${params.CHECK_FAIL_THRESHOLD}"
+        SETUP_TOTAL_USERS = "${params.SETUP_TOTAL_USERS}"
+     }
 
-    //   steps {
-    //     copyArtifacts(
-    //       projectName: 'Dev_Build_BisAppSettings',
-    //       filter: 'BISAppSettings/proposal-load-tester/k6/dev/.k6rc',
-    //       selector: lastSuccessful(),
-    //       fingerprintArtifacts: true,
-    //       flatten: true
-    //     )
+      steps {
+        copyArtifacts(
+          projectName: 'Dev_Build_BisAppSettings',
+          filter: 'BISAppSettings/proposal-load-tester/k6/dev/.k6rc',
+          selector: lastSuccessful(),
+          fingerprintArtifacts: true,
+          flatten: true
+        )
            
-    //   sh """
-    //      k6 run test/sc1-load-test.js
-    //   """
+      sh """
+         ls -l
+         #check k6 version 
+         k6 version
+      """
 
-    //   }
+      }
       
-    // }
+    }
 
 
   }
