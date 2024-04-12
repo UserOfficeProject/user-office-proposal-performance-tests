@@ -136,10 +136,7 @@ pipeline {
           fingerprintArtifacts: true,
           flatten: true
         )
-           
-      sh """
-         k6 run --no-usage-report - < <(cat ./test/sc1-load-test.js)
-      """
+        sh 'k6 run loadtests/your-test-script.js' // Replace with your test script path
 
       }
       
