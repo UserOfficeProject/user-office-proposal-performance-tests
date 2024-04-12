@@ -115,7 +115,7 @@ pipeline {
       }
       steps {
 
-        sh './k6 run test/simple-test.js' // Replace with your test script path
+        sh 'k6 run test/simple-test.js' // Replace with your test script path
 
       }
       
