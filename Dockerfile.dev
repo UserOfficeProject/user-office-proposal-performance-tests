@@ -4,8 +4,8 @@ ADD . .
 RUN apk --no-cache add build-base git
 RUN go install go.k6.io/xk6/cmd/xk6@latest
 RUN CGO_ENABLED=1 xk6 build \
-    --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-sql-connector="$PWD/././extensions/xk6-sql-connector" \
-    --with github.com/grafana/xk6-browser \
+    --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-sql-connector="$PWD/extensions/xk6-sql-connector" \
+    --with github.com/grafana/xk6-browser@v1.4.3 \
     --output /tmp/k6
 
 FROM alpine:3.18 as release
