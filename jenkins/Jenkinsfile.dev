@@ -105,6 +105,18 @@ pipeline {
       }
       
     }
+    stage('Run simple load test') {
+
+      agent {
+        label 'k6'
+      }
+      steps {
+
+        sh 'k6 run test/simple-test.js' // Replace with your test script path
+
+      }
+      
+    }
     stage('Run load tests') {
 
       agent {
