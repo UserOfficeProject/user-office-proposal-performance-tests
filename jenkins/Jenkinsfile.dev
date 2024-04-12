@@ -136,7 +136,7 @@ pipeline {
           fingerprintArtifacts: true,
           flatten: true
         )
-        sh 'k6 run loadtests/your-test-script.js' // Replace with your test script path
+        sh 'k6 run test/sc1-load-test.js' // Replace with your test script path
 
       }
       
