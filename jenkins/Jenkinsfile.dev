@@ -84,7 +84,7 @@ pipeline {
 
       agent {
         docker {
-          label 'linux && docker'
+          label 'k6'
           image 'node:21-alpine'
           alwaysPull true
         }
