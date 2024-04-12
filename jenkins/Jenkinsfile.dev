@@ -138,8 +138,6 @@ pipeline {
         )
            
       sh """
-         #check k6 version 
-         k6 version
          k6 run --no-usage-report - < <(cat ./test/sc1-load-test.js)
       """
 
