@@ -108,11 +108,14 @@ pipeline {
     stage('Run simple load test') {
 
       agent {
-        label 'k6'
+        dockerfile {
+          filename 'Dockerfile.run'
+          label 'k6'
+        }
       }
       steps {
 
-        sh 'k6 run test/simple-test.js' // Replace with your test script path
+        sh './k6 run test/simple-test.js' // Replace with your test script path
 
       }
       
@@ -120,7 +123,10 @@ pipeline {
     stage('Run load tests') {
 
       agent {
-        label 'k6'
+        dockerfile {
+          filename 'Dockerfile.run'
+          label 'k6'
+        }
       }
 
       environment {
@@ -148,7 +154,7 @@ pipeline {
           fingerprintArtifacts: true,
           flatten: true
         )
-        sh 'k6 run test/sc1-load-test.js' // Replace with your test script path
+        sh './k6 run test/sc1-load-test.js' // Replace with your test script path
 
       }
       
