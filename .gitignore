@@ -1,6 +1,6 @@
 node_modules
-apps/user-setup/node_modules
-apps/user-setup/.env
-apps/user-setup/build/
 .DS_Store
 screenshots
+test
+#.k6rc env file
+.k6rc
