@@ -1,0 +1,6 @@
+node_modules
+.DS_Store
+screenshots
+test
+#.k6rc env file
+.k6rc
