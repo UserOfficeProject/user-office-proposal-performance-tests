@@ -1,0 +1,6 @@
+{
+  "GRAPHQL_TOKEN": "Bearer <token>",// API token can be is created in the proposal system
+  "USER_DB_USERNAME": "isisuserdb",// Oracle database username 
+  "USER_DB_PASSWORD": "pa55w0rdTolocalDB",// Oracle database password
+  "USER_DB_CONNECTION_STRING":"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=xepdb)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))" // Oracle database connection string 
+}
