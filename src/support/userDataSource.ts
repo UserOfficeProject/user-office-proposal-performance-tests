@@ -18,6 +18,9 @@ export class UserDataSource {
   }
 
   async getUser(userId: number): Promise<UserLogin> {
+    if (!userId) {
+      throw new Error(`UserId is null or undefined: ${userId}`);
+    }
     const transaction = this.db.begin();
     try {
       const uuid = randomUUIDv4();
@@ -54,7 +57,7 @@ export class UserDataSource {
       );
 
       transaction.exec(
-        `INSERT INTO login (session_id, user_id, last_access_time) VALUES (:uuid, :userId, CURRENT_DATE)`,
+        `INSERT INTO login (session_id, user_id, last_access_time) VALUES (:uuid, :userId, CURRENT_DATE + INTERVAL '4' HOUR)`,
         uuid,
         userId
       );
