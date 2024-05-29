@@ -1,8 +1,13 @@
 import { Options } from 'k6/options';
 
 import { proposal } from './browser/proposalTest';
-import { call } from './graphql/callTest';
-import { tokenLogin } from './graphql/userTest';
+import { callTests } from './graphql/call';
+import { instrumentTests } from './graphql/instrument';
+import { pageContentTests } from './graphql/pageContent';
+import { proposalTests } from './graphql/proposal';
+import { questionaryTests } from './graphql/questionary';
+import { settingsTests } from './graphql/settings';
+import { userTests } from './graphql/user';
 import {
   getEnvironmentConfigurations,
   getExecutionOptions,
@@ -30,7 +35,15 @@ export async function setup() {
 export const options: Options = { ...executionOptions };
 
 export async function graphqlTests(sharedData: SharedData) {
-  return await Promise.all([call(sharedData), tokenLogin(sharedData)]);
+  return await Promise.all([
+    callTests(sharedData),
+    userTests(sharedData),
+    questionaryTests(sharedData),
+    settingsTests(sharedData),
+    pageContentTests(sharedData),
+    instrumentTests(sharedData),
+    proposalTests(sharedData),
+  ]);
 }
 
 export async function browserTests(sharedData: SharedData) {
