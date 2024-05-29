@@ -18,6 +18,15 @@ export class Template {
           templateId
           name
           description
+          steps {
+            topic {
+              id
+              templateId
+              title
+              isEnabled
+              sortOrder
+            }
+          }
         }
       }`;
 
@@ -50,6 +59,15 @@ export class Template {
                 templateId
                 name
                 groupId
+                steps {
+                  topic {
+                    id
+                    templateId
+                    title
+                    isEnabled
+                    sortOrder
+                  }
+                }
                 }
             }`;
 
@@ -59,7 +77,6 @@ export class Template {
     const response = this.apiClient(
       JSON.stringify({ query: mutation, variables })
     );
-
     const responseData = response.json() as TemplateQueryResponse;
 
     if (
@@ -68,7 +85,7 @@ export class Template {
           r.status === 200 && !!responseData.data.deleteTemplate.templateId,
       })
     ) {
-      console.log('Fail to delete template', response.error);
+      console.error('Fail to delete template', response.error);
     }
 
     return deleteTemplateId;

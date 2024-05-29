@@ -6,6 +6,7 @@ import { EnvironmentConfigurations } from './configurations';
 import { getClientApi } from './graphql';
 import { UserDataSource } from './userDataSource';
 import { Call } from '../graphql/support/call';
+import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
 import { SharedData } from '../utils/sharedType';
 
@@ -86,6 +87,24 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     );
   }
   const testCall = call.createTestCall(template.createTemplate().templateId);
+
+  if (testCall) {
+    const instrument = new Instrument(apiClient);
+    const callInstrument = instrument.createInstrument(1);
+    if (callInstrument) {
+      const callWithInstruments = call.assignInstrumentsToCall(
+        testCall.id,
+        callInstrument.id
+      );
+      testCall.instruments = [...callWithInstruments.instruments];
+    } else {
+      console.error('Failed to create instrument aborting test');
+      exec.test.abort();
+    }
+  } else {
+    console.error('Failed to create test call aborting test');
+    exec.test.abort();
+  }
 
   return {
     users,

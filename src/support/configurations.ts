@@ -14,6 +14,7 @@ export type EnvironmentConfigurations = {
   SETUP_RETRIES: number;
   SETUP_RETRY_INTERVAL: number;
   SETUP_TOTAL_USERS: number;
+  USER_STARTING_ID: number;
 };
 
 export function getExecutionOptions(
@@ -74,6 +75,7 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     USER_DB_USERNAME: __ENV.SER_DB_USERNAME || '',
     USER_DB_PASSWORD: __ENV.USER_DB_PASSWORD || '',
     USER_DB_CONNECTION_STRING: __ENV.USER_DB_CONNECTION_STRING || '',
+    USER_STARTING_ID: +__ENV.USER_STARTING_ID || -220800000,
   };
 
   try {
