@@ -18,15 +18,6 @@ export class Template {
           templateId
           name
           description
-          steps {
-            topic {
-              id
-              templateId
-              title
-              isEnabled
-              sortOrder
-            }
-          }
         }
       }`;
 
@@ -59,15 +50,6 @@ export class Template {
                 templateId
                 name
                 groupId
-                steps {
-                  topic {
-                    id
-                    templateId
-                    title
-                    isEnabled
-                    sortOrder
-                  }
-                }
                 }
             }`;
 
