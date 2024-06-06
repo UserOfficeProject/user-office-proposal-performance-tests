@@ -5,14 +5,14 @@ import { User } from './support/user';
 import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function settingsTests(sharedData: SharedData) {
+export function settingsTest(sharedData: SharedData) {
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
   const currentUser =
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
   const userToken = user.getUserToken(`${currentUser.sessionId}`);
-  group('settingsTests', () => {
+  group('settings', () => {
     group('Settings query should return app settings', () => {
       const response = apiClient(
         JSON.stringify({
@@ -39,8 +39,8 @@ export function settingsTests(sharedData: SharedData) {
               !!data.data?.settings[0].description
             );
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing settingsTests settings query VU_ID: ${exec.vu.idInTest}
-          Error response settingsTests settings query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing settingsTest settings query VU_ID: ${exec.vu.idInTest}
+          Error response settingsTest settings query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });

@@ -5,14 +5,13 @@ import { User } from './support/user';
 import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function pageContentTests(sharedData: SharedData) {
+export function pageContentTest(sharedData: SharedData) {
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
-  const currentUser =
-    sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
+  const currentUser = sharedData.users[exec.vu.idInTest];
   const userToken = user.getUserToken(`${currentUser.sessionId}`);
-  group('PageContent Tests', () => {
+  group('PageContent Test', () => {
     group('PageContent query should return HOMEPAGE content', () => {
       const response = apiClient(
         JSON.stringify({
@@ -35,9 +34,9 @@ export function pageContentTests(sharedData: SharedData) {
 
             return data.data?.pageContent === 'HOMEPAGE';
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTests pageContent 
+            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTest pageContent 
             HOMEPAGE query VU_ID: ${exec.vu.idInTest}
-            Error response pageContentTests pageContent 
+            Error response pageContentTest pageContent 
             HOMEPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
@@ -66,9 +65,9 @@ export function pageContentTests(sharedData: SharedData) {
 
             return data.data?.pageContent === 'PRIVACYPAGE';
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTests pageContent 
+            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTest pageContent 
             PRIVACYPAGE query VU_ID: ${exec.vu.idInTest}
-            Error response pageContentTests pageContent 
+            Error response pageContentTest pageContent 
             PRIVACYPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
@@ -98,9 +97,9 @@ export function pageContentTests(sharedData: SharedData) {
 
             return data.data?.pageContent === 'PRIVACYPAGE';
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTests pageContent 
+            fail(`SCENARIO: ${exec.scenario.name} Executing pageContent pageContent 
             PRIVACYPAGE query VU_ID: ${exec.vu.idInTest}
-            Error response pageContentTests pageContent 
+            Error response pageContentTest pageContent 
             PRIVACYPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
@@ -129,9 +128,9 @@ export function pageContentTests(sharedData: SharedData) {
 
             return data.data?.pageContent === 'HELPPAGE';
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTests pageContent 
+            fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTest pageContent 
               HELPPAGE query VU_ID: ${exec.vu.idInTest}
-              Error response pageContentTests pageContent 
+              Error response pageContentTest pageContent 
               HELPPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },

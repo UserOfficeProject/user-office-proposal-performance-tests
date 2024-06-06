@@ -5,15 +5,14 @@ import { User } from './support/user';
 import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function questionaryTests(sharedData: SharedData) {
+export function questionaryTest(sharedData: SharedData) {
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
-  const currentUser =
-    sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
+  const currentUser = sharedData.users[exec.vu.idInTest];
   const userToken = user.getUserToken(`${currentUser.sessionId}`);
 
-  group('Questionary Tests', () => {
+  group('Questionary Test', () => {
     group(
       'BlankQuestionaryStepsByCallId query should return blank questionary',
       () => {
@@ -52,8 +51,8 @@ export function questionaryTests(sharedData: SharedData) {
                 !data.data?.blankQuestionaryStepsByCallId[0].isCompleted
               );
             } catch (error) {
-              fail(`SCENARIO: ${exec.scenario.name} Executing questionaryTests blankQuestionaryStepsByCallId query VU_ID: ${exec.vu.idInTest}
-              Error response questionaryTests blankQuestionaryStepsByCallId query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              fail(`SCENARIO: ${exec.scenario.name} Executing questionaryTest blankQuestionaryStepsByCallId query VU_ID: ${exec.vu.idInTest}
+              Error response questionaryTest blankQuestionaryStepsByCallId query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
             }
           },
         });
@@ -95,8 +94,8 @@ export function questionaryTests(sharedData: SharedData) {
                 !data.data?.blankQuestionary.isCompleted
               );
             } catch (error) {
-              fail(`SCENARIO: ${exec.scenario.name} Executing class questionaryTests blankQuestionary query VU_ID: ${exec.vu.idInTest}
-              Error response questionaryTests blankQuestionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              fail(`SCENARIO: ${exec.scenario.name} Executing class questionaryTest blankQuestionary query VU_ID: ${exec.vu.idInTest}
+              Error response questionaryTest blankQuestionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
             }
           },
         });

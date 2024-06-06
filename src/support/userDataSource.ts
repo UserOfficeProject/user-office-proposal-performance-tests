@@ -1,4 +1,4 @@
-import { getDatabaseClient } from './database';
+import { getDatabaseClient, sqlQuery } from './database';
 import { numberGenerator, randomUUIDv4 } from '../utils/helperFunctions';
 import { DatabaseClientConnector, UserLogin } from '../utils/sharedType';
 
@@ -9,7 +9,30 @@ export class UserDataSource {
     private connectionString: string
   ) {}
 
-  async getUser(userId: number): Promise<UserLogin> {
+  async checkUserExist(userId: number): Promise<boolean> {
+    let userList = [];
+    if (!userId) {
+      throw new Error(`UserId is null or undefined: ${userId}`);
+    }
+    const db = getDatabaseClient(
+      DatabaseClientConnector.ORACLE,
+      this.username,
+      this.password,
+      this.connectionString
+    );
+    try {
+      const query = `SELECT USER_NUMBER FROM person WHERE rid = ${userId.toString()}`;
+      userList = sqlQuery(db, query);
+    } catch (error) {
+      throw new Error(`Fail to query user details userId: ${userId}`);
+    } finally {
+      db.close();
+    }
+
+    return userList.length > 0;
+  }
+
+  async createUser(userId: number): Promise<UserLogin> {
     if (!userId) {
       throw new Error(`UserId is null or undefined: ${userId}`);
     }
@@ -141,12 +164,18 @@ export class UserDataSource {
     firstUserId: number,
     lastUserId: number
   ): Promise<UserLogin[]> {
-    await this.deleteUsersBetween(firstUserId, lastUserId);
     const userIdGenerator = numberGenerator(firstUserId);
     const userPromises: Promise<UserLogin>[] = [];
     let userId;
     while ((userId = userIdGenerator.next().value) && userId < lastUserId) {
-      userPromises.push(this.getUser(userId));
+      const userExists = await this.checkUserExist(userId);
+      if (!userExists) {
+        userPromises.push(this.createUser(userId));
+      } else {
+        console.error(
+          `Error during creating user credentials for userId: ${userId} already exists`
+        );
+      }
     }
     const users = await Promise.all(userPromises);
 

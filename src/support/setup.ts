@@ -24,16 +24,19 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
   const call = new Call(apiClient);
   const template = new Template(apiClient);
-  const startingId = -220800000;
 
   const usersDataSource = new UserDataSource(
     environmentConfig.USER_DB_USERNAME,
     environmentConfig.USER_DB_PASSWORD,
     environmentConfig.USER_DB_CONNECTION_STRING
   );
+  await usersDataSource.deleteUsersBetween(
+    environmentConfig.USER_STARTING_ID,
+    environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
+  );
   const users = await usersDataSource.getUsersBetween(
-    startingId,
-    startingId + environmentConfig.SETUP_TOTAL_USERS
+    environmentConfig.USER_STARTING_ID,
+    environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
   );
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);

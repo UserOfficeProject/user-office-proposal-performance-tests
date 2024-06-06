@@ -5,14 +5,13 @@ import { User } from './support/user';
 import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function callTests(sharedData: SharedData) {
+export function callTest(sharedData: SharedData) {
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
-  const currentUser =
-    sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
+  const currentUser = sharedData.users[exec.vu.iterationInScenario];
   const userToken = user.getUserToken(`${currentUser.sessionId}`);
-  group('Call Tests', () => {
+  group('Call Test', () => {
     group('Calls query should return active calls', () => {
       const response = apiClient(
         JSON.stringify({
@@ -42,8 +41,8 @@ export function callTests(sharedData: SharedData) {
 
             return data.data?.calls.length > 0 && !!data.data?.calls[0].id;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing callTests calls query VU_ID: ${exec.vu.idInTest}
-          Error response callTests calls query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing callTest calls query VU_ID: ${exec.vu.idInTest}
+          Error response callTest calls query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -75,8 +74,8 @@ export function callTests(sharedData: SharedData) {
 
             return !!data.data?.call.id;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing callTests call query VU_ID: ${exec.vu.idInTest}
-          Error response callTests call query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing callTest call query VU_ID: ${exec.vu.idInTest}
+          Error response callTest call query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -108,8 +107,8 @@ export function callTests(sharedData: SharedData) {
 
             return !!data.data?.template.templateId;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing callTests template query VU_ID: ${exec.vu.idInTest}
-          Error response callTests template query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing callTest template query VU_ID: ${exec.vu.idInTest}
+          Error response callTest template query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });

@@ -6,14 +6,13 @@ import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
 
-export function userTests(sharedData: SharedData) {
+export function userTest(sharedData: SharedData) {
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
-  const currentUser =
-    sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
+  const currentUser = sharedData.users[exec.vu.idInTest];
   const userToken = user.getUserToken(`${currentUser.sessionId}`);
-  group('User Tests', () => {
+  group('User Test', () => {
     group('Me query should return current user details', () => {
       const response = apiClient(
         JSON.stringify({
@@ -42,8 +41,8 @@ export function userTests(sharedData: SharedData) {
 
             return !!data.data?.me.id;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing userTests me query VU_ID: ${exec.vu.idInTest}
-          Error response userTests me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing userTest me query VU_ID: ${exec.vu.idInTest}
+          Error response userTest me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
         'Me query returned current user roles': (res) => {
@@ -54,8 +53,8 @@ export function userTests(sharedData: SharedData) {
               data.data?.me.roles.length > 0 && !!data.data?.me.roles[0].id
             );
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing  userTests me query VU_ID: ${exec.vu.idInTest}
-          Error response userTests me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing  userTest me query VU_ID: ${exec.vu.idInTest}
+          Error response userTest me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -89,7 +88,7 @@ export function userTests(sharedData: SharedData) {
 
               return !!data.data?.basicUserDetailsByEmail.id;
             } catch (error) {
-              fail(`SCENARIO: ${exec.scenario.name} Executing userTests basicUserDetailsByEmail VU_ID: ${exec.vu.idInTest}
+              fail(`SCENARIO: ${exec.scenario.name} Executing userTest basicUserDetailsByEmail VU_ID: ${exec.vu.idInTest}
             Error response basicUserDetailsByEmail ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
             }
           },

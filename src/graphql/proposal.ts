@@ -6,23 +6,22 @@ import { User } from './support/user';
 import { getClientApi } from '../support/graphql';
 import { randomIntBetween, randomString } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function proposalTests(sharedData: SharedData) {
+export function proposalTest(sharedData: SharedData) {
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
 
   sleep(randomIntBetween(5, 20));
-  const currentUser =
-    sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
+  const currentUser = sharedData.users[exec.vu.idInTest];
   const userToken = user.getUserToken(`${currentUser.sessionId}`);
 
   const apiUserClient = getClientApi(sharedData.graphqlUrl, userToken);
   const proposal = new Proposal(apiUserClient);
   const userTestProposal = proposal.createProposal(sharedData.testCall.id);
   if (!userTestProposal) {
-    fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests VU_ID: ${exec.vu.idInTest}
+    fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest VU_ID: ${exec.vu.idInTest}
            Failed to create user test proposal`);
   }
-  group('Proposal Tests', () => {
+  group('Proposal Test', () => {
     group('Proposal query should return proposal details', () => {
       const response = apiClient(
         JSON.stringify({
@@ -51,8 +50,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.proposal.primaryKey;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests proposal query VU_ID: ${exec.vu.idInTest}
-            Error response proposalTests proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest proposal query VU_ID: ${exec.vu.idInTest}
+            Error response proposalTest proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -84,8 +83,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.proposalById.proposalId;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests proposal query VU_ID: ${exec.vu.idInTest}
-            Error response proposalTests proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest proposal query VU_ID: ${exec.vu.idInTest}
+            Error response proposalTest proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -118,8 +117,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.proposalStatus.id;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests proposalStatus query VU_ID: ${exec.vu.idInTest}
-              Error response proposalTests proposalStatus query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest proposalStatus query VU_ID: ${exec.vu.idInTest}
+              Error response proposalTest proposalStatus query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -152,8 +151,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.genericTemplates;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests genericTemplates query VU_ID: ${exec.vu.idInTest}
-              Error response proposalTests genericTemplates query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest genericTemplates query VU_ID: ${exec.vu.idInTest}
+              Error response proposalTest genericTemplates query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -191,8 +190,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.questionary.questionaryId;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests questionary query VU_ID: ${exec.vu.idInTest}
-              Error response proposalTests questionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest questionary query VU_ID: ${exec.vu.idInTest}
+              Error response proposalTest questionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -229,8 +228,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.updateProposal.proposalId;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests updateProposal mutation VU_ID: ${exec.vu.idInTest}
-              Error response proposalTests updateProposal mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest updateProposal mutation VU_ID: ${exec.vu.idInTest}
+              Error response proposalTest updateProposal mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
@@ -269,8 +268,8 @@ export function proposalTests(sharedData: SharedData) {
 
             return !!data.data?.answerTopic;
           } catch (error) {
-            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTests answerTopic mutation VU_ID: ${exec.vu.idInTest}
-                Error response proposalTests answerTopic mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest answerTopic mutation VU_ID: ${exec.vu.idInTest}
+                Error response proposalTest answerTopic mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
           }
         },
       });
