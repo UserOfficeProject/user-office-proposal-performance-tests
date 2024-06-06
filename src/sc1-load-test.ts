@@ -1,13 +1,15 @@
 import { Options } from 'k6/options';
 
-import { proposal } from './browser/proposalTest';
-import { callTests } from './graphql/call';
-import { instrumentTests } from './graphql/instrument';
-import { pageContentTests } from './graphql/pageContent';
-import { proposalTests } from './graphql/proposal';
-import { questionaryTests } from './graphql/questionary';
-import { settingsTests } from './graphql/settings';
-import { userTests } from './graphql/user';
+import proposalSubmissionTest from './browser/proposalSubmission';
+import userCallsTest from './browser/userCalls';
+import userHomeTest from './browser/userHome';
+import { callTest } from './graphql/call';
+import { instrumentTest } from './graphql/instrument';
+import { pageContentTest } from './graphql/pageContent';
+import { proposalTest } from './graphql/proposal';
+import { questionaryTest } from './graphql/questionary';
+import { settingsTest } from './graphql/settings';
+import { userTest } from './graphql/user';
 import {
   getEnvironmentConfigurations,
   getExecutionOptions,
@@ -34,20 +36,23 @@ export async function setup() {
 //This set the execution options
 export const options: Options = { ...executionOptions };
 
-export async function graphqlTests(sharedData: SharedData) {
-  return await Promise.all([
-    callTests(sharedData),
-    userTests(sharedData),
-    questionaryTests(sharedData),
-    settingsTests(sharedData),
-    pageContentTests(sharedData),
-    instrumentTests(sharedData),
-    proposalTests(sharedData),
-  ]);
+export async function graphqlTest(sharedData: SharedData) {
+  callTest(sharedData);
+  userTest(sharedData);
+  questionaryTest(sharedData);
+  settingsTest(sharedData);
+  pageContentTest(sharedData);
+  instrumentTest(sharedData);
+  proposalTest(sharedData);
 }
-
-export async function browserTests(sharedData: SharedData) {
-  return proposal(sharedData);
+export function browserProposalSubmissionTest(sharedData: SharedData) {
+  proposalSubmissionTest(sharedData);
+}
+export function browserUserHomeTest(sharedData: SharedData) {
+  userHomeTest(sharedData);
+}
+export function browserUserCallsTest(sharedData: SharedData) {
+  userCallsTest(sharedData);
 }
 
 export function teardown(sharedData: SharedData) {

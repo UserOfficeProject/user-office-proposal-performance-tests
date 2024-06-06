@@ -47,7 +47,7 @@ export async function sc1TearDown(
     environmentConfig.USER_DB_PASSWORD,
     environmentConfig.USER_DB_CONNECTION_STRING
   );
-  await usersDataSource.getUsersBetween(
+  await usersDataSource.deleteUsersBetween(
     environmentConfig.USER_STARTING_ID,
     environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
   );
