@@ -74,6 +74,12 @@ pipeline {
       defaultValue: '300',
       trim: true
     )
+    string(
+      name: 'USER_STARTING_ID',
+      description: 'There starting user identification number',
+      defaultValue: '-260800000',
+      trim: true
+    )
   }
   environment {
     GRAPHQL_TOKEN = credentials('dev-load-testing-proposal-api-key')
@@ -90,7 +96,7 @@ pipeline {
     SC1_PROPOSALS_SUBMITTED_FAIL_THRESHOLD = "${params.PROPOSALS_SUBMITTED_FAIL_THRESHOLD}"
     SC1_CHECK_FAIL_THRESHOLD = "${params.CHECK_FAIL_THRESHOLD}"
     SETUP_TOTAL_USERS = "${params.SETUP_TOTAL_USERS}"
-    USER_STARTING_ID = "${params.SETUP_TOTAL_USERS}"
+    USER_STARTING_ID = "${params.USER_STARTING_ID}"
   }
 
   stages {
