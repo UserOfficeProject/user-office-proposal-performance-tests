@@ -131,12 +131,10 @@ export class Proposal {
     const responseData = response.json() as ProposalsQueryResponse;
 
     if (
-      !check(response, {
-        'Get proposals': (r) =>
-          r.status === 200 && responseData.data.proposals.proposals.length > 0,
-      })
+      response.status === 200 &&
+      responseData.data.proposals.proposals.length > 0
     ) {
-      console.error('Proposals where not found', response.error);
+      console.warn('No proposals where not found', response.error);
     }
 
     return responseData.data.proposals.proposals;
