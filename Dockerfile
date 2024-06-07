@@ -36,11 +36,12 @@ RUN apk add --no-cache \
   chromium-swiftshader \
   ca-certificates \
   nodejs \
-  npm \
-  && adduser -D -u 12345 -g 12345 k6
+  npm 
 
 # Install build dependencies for k6
-COPY --from=k6-builder /tmp/k6 /usr/bin/k6
+COPY --from=k6-builder /tmp/k6 /bin/
+
+USER root
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
@@ -63,6 +64,3 @@ ARG XK6_BROWSER_LOG=fatal
 
 ENV XK6_BROWSER_LOG="$XK6_BROWSER_LOG"
 
-USER 12345
-
-WORKDIR /home/k6
