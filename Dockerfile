@@ -13,7 +13,7 @@ RUN CGO_ENABLED=1 xk6 build \
     --with github.com/grafana/xk6-browser@v1.4.3 \
     --output /tmp/k6
 
-FROM alpine:3.20.0 as release
+FROM alpine:3.18 as release
 
 # Download and install Oracle Instant Client
 RUN apk --no-cache add libaio libnsl libc6-compat curl && \
