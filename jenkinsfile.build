@@ -30,7 +30,7 @@ pipeline {
       steps {
         withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
             sh(
-            "docker build --pull -t user-office-proposal-performance-tests:autobuild ."
+            "docker build --build-arg ENVIRONMENT=develop --pull -t user-office-proposal-performance-tests:autobuild ."
             )
         }
       }
