@@ -37,9 +37,9 @@ pipeline {
     }
 
     stage('Publish') {
-      when {
-        branch 'develop'
-      }
+      // when {
+      //   branch 'develop'
+      // }
 
       steps {
         withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
