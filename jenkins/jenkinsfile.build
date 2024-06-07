@@ -36,41 +36,41 @@ pipeline {
       }
     }
 
-    // stage('Publish') {
-    //   when {
-    //     branch 'develop'
-    //   }
+    stage('Publish') {
+      when {
+        branch 'develop'
+      }
 
-    //   steps {
-    //     withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
-    //       sh(
-    //         """
-    //         docker tag user-office-proposal-performance-tests:autobuild harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
-    //         docker push harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
-    //         """
-    //       )
-    //     }
-    //   }
-    // }
+      steps {
+        withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
+          sh(
+            """
+            docker tag user-office-proposal-performance-tests:autobuild harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
+            docker push harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
+            """
+          )
+        }
+      }
+    }
   }
 
-  post {
-    // regression {
-    //   emailext (
-    //     subject: '$DEFAULT_SUBJECT',
-    //     body: '$DEFAULT_CONTENT',
-    //     to: '$DEFAULT_RECIPIENTS',
-    //     recipientProviders: [developers()]
-    //   )
-    // }
+//   post {
+//     // regression {
+//     //   emailext (
+//     //     subject: '$DEFAULT_SUBJECT',
+//     //     body: '$DEFAULT_CONTENT',
+//     //     to: '$DEFAULT_RECIPIENTS',
+//     //     recipientProviders: [developers()]
+//     //   )
+//     // }
 
-    // fixed {
-    //   emailext (
-    //     subject: '$DEFAULT_SUBJECT',
-    //     body: '$DEFAULT_CONTENT',
-    //     to: '$DEFAULT_RECIPIENTS',
-    //     recipientProviders: [developers()]
-    //   )
-    // }
-  }
+//     // fixed {
+//     //   emailext (
+//     //     subject: '$DEFAULT_SUBJECT',
+//     //     body: '$DEFAULT_CONTENT',
+//     //     to: '$DEFAULT_RECIPIENTS',
+//     //     recipientProviders: [developers()]
+//     //   )
+//     // }
+//   }
 }
