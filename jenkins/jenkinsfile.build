@@ -36,22 +36,22 @@ pipeline {
       }
     }
 
-    stage('Publish') {
-      when {
-        branch 'develop'
-      }
+    // stage('Publish') {
+    //   when {
+    //     branch 'develop'
+    //   }
 
-      steps {
-        withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
-          sh(
-            """
-            docker tag user-office-proposal-performance-tests:autobuild harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
-            docker push harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
-            """
-          )
-        }
-      }
-    }
+    //   steps {
+    //     withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
+    //       sh(
+    //         """
+    //         docker tag user-office-proposal-performance-tests:autobuild harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
+    //         docker push harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev
+    //         """
+    //       )
+    //     }
+    //   }
+    // }
   }
 
   post {
@@ -72,13 +72,5 @@ pipeline {
     //     recipientProviders: [developers()]
     //   )
     // }
-  }
-}
-
-def GET_NUMBER_BUILDS_TO_KEEP(Branch_Name) {
-  if("develop".equals(Branch_Name)) {
-    return '20';
-  } else {
-    return '1';
   }
 }
