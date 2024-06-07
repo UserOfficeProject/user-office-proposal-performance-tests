@@ -32,6 +32,7 @@ We made it much easier to run performance tests in STFC dev environment.
   7. ProposalMutations.delete
   8. CallMutations.delete
   9. CallMutations.create
+  10. QuestionaryQueries.getQuestionaryOrDefault
 * Create a local file ``.k6rc`` in the test root directory.The the minimum field are set in ``k6rc.example``.
 * Build tests image with ``fba-compose build proposal-performance-test`` this build an image with all the necessary files.
 * Run tests with ``fba-compose run proposal-performance-test``.If you have included a new test file update ``rundevtests.sh`` 
