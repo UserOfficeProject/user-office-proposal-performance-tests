@@ -1,6 +1,14 @@
 pipeline {
   
-  agent none
+  agent {
+    docker {
+      label 'k6 && docker'
+      image 'harbor.stfc.ac.uk/isisbusapps/user-office-proposal-performance-tests:dev'
+      alwaysPull true
+      registryCredentialsId 'harbor-scd-cloud-image-pusher'
+      registryUrl 'https://harbor.stfc.ac.uk/isisbusapps'
+    }
+  }
 
   options {
     disableConcurrentBuilds()
@@ -95,14 +103,6 @@ pipeline {
   stages {
     stage('Build and run load tests') {
 
-      agent {
-        dockerfile {
-          filename 'Dockerfile.run'
-          label 'k6'
-          reuseNode true
-        }
-      }
-
       steps {
         copyArtifacts(
           projectName: 'Dev_Build_BisAppSettings',
@@ -128,23 +128,23 @@ pipeline {
 
   }
 
-  post {
-    regression {
-        emailext(
-          subject: '$DEFAULT_SUBJECT',
-          body: '$DEFAULT_CONTENT',
-          to: '$DEFAULT_RECIPIENTS',
-          recipientProviders: [developers()]
-        )
-      }
+  // post {
+  //   regression {
+  //       emailext(
+  //         subject: '$DEFAULT_SUBJECT',
+  //         body: '$DEFAULT_CONTENT',
+  //         to: '$DEFAULT_RECIPIENTS',
+  //         recipientProviders: [developers()]
+  //       )
+  //     }
 
-    fixed {
-      emailext(
-      subject: '$DEFAULT_SUBJECT',
-      body: '$DEFAULT_CONTENT',
-      to: '$DEFAULT_RECIPIENTS',
-      recipientProviders: [developers()]
-    )
-    }
-  }
+  //   fixed {
+  //     emailext(
+  //     subject: '$DEFAULT_SUBJECT',
+  //     body: '$DEFAULT_CONTENT',
+  //     to: '$DEFAULT_RECIPIENTS',
+  //     recipientProviders: [developers()]
+  //   )
+  //   }
+  // }
 }
