@@ -1,19 +1,14 @@
 FROM golang:1.22-alpine as k6-builder
-
 WORKDIR $GOPATH/src/go.k6.io/k6
-
 ADD . .
-
 RUN apk --no-cache add build-base git
-
 RUN go install go.k6.io/xk6/cmd/xk6@latest
-
 RUN CGO_ENABLED=1 xk6 build \
     --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-sql-connector="$PWD/extensions/xk6-sql-connector" \
     --with github.com/grafana/xk6-browser@v1.4.3 \
     --output /tmp/k6
 
-FROM alpine:3.19 as release
+FROM alpine:3.18.6 as release
 
 # Download and install Oracle Instant Client
 RUN apk --no-cache add libaio libnsl libc6-compat curl && \
@@ -34,14 +29,22 @@ ENV LD_LIBRARY_PATH /usr/lib/instantclient
 
 RUN apk add --no-cache \
   chromium-swiftshader \
-  ca-certificates \
-  nodejs \
-  npm 
+  ca-certificates 
+
+USER root
+
+RUN echo "@personal http://dl-cdn.alpinelinux.org/alpine/v3.20/main" >> /etc/apk/repositories
+RUN apk add nodejs@personal npm@personal
 
 # Install build dependencies for k6
 COPY --from=k6-builder /tmp/k6 /bin/
 
-USER root
+WORKDIR /app
+
+COPY ./ ./
+
+# Install Node.js dependencies
+RUN npm ci --loglevel verbose
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
@@ -56,7 +59,7 @@ ARG K6_BROWSER_LOG=error
 
 ENV K6_BROWSER_LOG="$K6_BROWSER_LOG"
 
-ARG ENVIRONMENT=development
+ARG ENVIRONMENT=develop
 
 ENV ENVIRONMENT="$ENVIRONMENT"
 
