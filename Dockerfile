@@ -8,6 +8,13 @@ RUN CGO_ENABLED=1 xk6 build \
     --with github.com/grafana/xk6-browser@v1.4.3 \
     --output /tmp/k6
 
+FROM node:22-alpine AS  K6-test-build
+
+WORKDIR /app
+COPY package*.json /src webpack.config.js ./
+RUN npm ci
+RUN npm run build
+
 FROM alpine:3.18.6 as release
 
 # Download and install Oracle Instant Client
@@ -30,21 +37,8 @@ ENV LD_LIBRARY_PATH /usr/lib/instantclient
 RUN apk add --no-cache \
   chromium-swiftshader \
   ca-certificates 
-
-USER root
-
-RUN echo "@personal http://dl-cdn.alpinelinux.org/alpine/v3.20/main" >> /etc/apk/repositories
-RUN apk add nodejs@personal npm@personal
-
 # Install build dependencies for k6
 COPY --from=k6-builder /tmp/k6 /bin/
-
-WORKDIR /app
-
-COPY ./ ./
-
-# Install Node.js dependencies
-RUN npm ci --loglevel verbose
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
@@ -54,10 +48,17 @@ ENV K6_BROWSER_HEADLESS=true
 # no-sandbox chrome arg is required to run chrome browser in
 # alpine and avoids the usage of SYS_ADMIN Docker capability
 ENV K6_BROWSER_ARGS=no-sandbox
-
-ENV XK6_BROWSER_LOG="fatal"
-
 ENV K6_BROWSER_LOG="error"
-
 ENV ENVIRONMENT="develop"
+ENV XK6_BROWSER_LOG="fatal"
+ENV K6_TEST="sc1-load-test"
 
+RUN adduser -D -u 12345 -g 12345 k6
+
+USER k6
+
+WORKDIR /app
+
+COPY --from=K6-test-build /app/test/* ./
+
+CMD ["sh","-c","./${K6_TEST}"]
