@@ -8,7 +8,7 @@ RUN CGO_ENABLED=1 xk6 build \
     --with github.com/grafana/xk6-browser@v1.4.3 \
     --output /tmp/k6
 
-FROM alpine:3.18.6 as release
+FROM alpine:3.18 as release
 # Download and install Oracle Instant Client
 RUN apk --no-cache add libaio libnsl libc6-compat curl && \
     cd /tmp && \
@@ -28,8 +28,10 @@ ENV LD_LIBRARY_PATH /usr/lib/instantclient
 
 RUN apk add --no-cache \
   chromium-swiftshader \
-  ca-certificates 
-  
+  ca-certificates \
+  nodejs \
+  npm 
+
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
 ENV CHROME_PATH=/usr/lib/chromium/
@@ -42,11 +44,10 @@ ENV K6_BROWSER_LOG="error"
 ENV ENVIRONMENT="develop"
 ENV XK6_BROWSER_LOG="fatal"
 # Install build dependencies for k6
-RUN adduser -D -u 12345 -g 12345 k6
-COPY --from=k6-builder /tmp/k6 /usr/bin/k6
 
-USER k6
-USER 12345
-WORKDIR /home/k6
+COPY --from=k6-builder /tmp/k6 /bin/
+
+USER root
+WORKDIR /app
 
 ENTRYPOINT ["k6"]
