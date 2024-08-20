@@ -1,4 +1,7 @@
-import { randomString } from '../utils/helperFunctions';
+import {
+  randomString,
+  randomAlphaNumericString,
+} from '../utils/helperFunctions';
 import { AllocationTimeUnits, InitData } from '../utils/sharedType';
 
 export function getInitData(): InitData {
@@ -42,6 +45,11 @@ export function getInitData(): InitData {
         id: 1,
       },
       defaultDroppableGroup: 'proposalWorkflowConnections_0',
+    },
+    instrument: {
+      name: 'Performance test' + ' ' + randomString(5),
+      shortCode: randomAlphaNumericString(15),
+      description: randomString(8),
     },
   };
 

@@ -41,8 +41,8 @@ export function getDevelopOption(
       checks: [checksFailThreshold || 'rate>0.90'],
     },
     scenarios: {
-      SC1_BROWSER: {
-        exec: 'browserTests',
+      browserProposalSubmissionTest: {
+        exec: 'browserProposalSubmissionTest',
         executor: 'per-vu-iterations',
         vus: browserVus || 10,
         iterations: browserIterations || 1,
@@ -52,8 +52,30 @@ export function getDevelopOption(
           },
         },
       },
-      SC1_GRAPHQL: {
-        exec: 'graphqlTests',
+      browserUserHomeTest: {
+        exec: 'browserUserHomeTest',
+        executor: 'per-vu-iterations',
+        vus: browserVus || 10,
+        iterations: browserIterations || 1,
+        options: {
+          browser: {
+            type: 'chromium',
+          },
+        },
+      },
+      browserUserCallsTest: {
+        exec: 'browserUserCallsTest',
+        executor: 'per-vu-iterations',
+        vus: browserVus || 10,
+        iterations: browserIterations || 1,
+        options: {
+          browser: {
+            type: 'chromium',
+          },
+        },
+      },
+      graphqlTest: {
+        exec: 'graphqlTest',
         executor: 'per-vu-iterations',
         vus: graphqlVus || 50,
         iterations: graphqlIterations || 1,
@@ -104,8 +126,8 @@ export function getProductionOption(
       checks: [checksFailThreshold || 'rate>0.90'],
     },
     scenarios: {
-      SC1_BROWSER: {
-        exec: 'browserTests',
+      browserProposalSubmissionTest: {
+        exec: 'browserProposalSubmissionTest',
         executor: 'per-vu-iterations',
         vus: browserVus || 10,
         iterations: browserIterations || 1,
@@ -115,8 +137,30 @@ export function getProductionOption(
           },
         },
       },
-      SC1_GRAPHQL: {
-        exec: 'graphqlTests',
+      browserUserHomeTest: {
+        exec: 'browserUserHomeTest',
+        executor: 'per-vu-iterations',
+        vus: browserVus || 10,
+        iterations: browserIterations || 1,
+        options: {
+          browser: {
+            type: 'chromium',
+          },
+        },
+      },
+      browserUserCallsTest: {
+        exec: 'browserUserCallsTest',
+        executor: 'per-vu-iterations',
+        vus: browserVus || 10,
+        iterations: browserIterations || 1,
+        options: {
+          browser: {
+            type: 'chromium',
+          },
+        },
+      },
+      graphqlTest: {
+        exec: 'graphqlTest',
         executor: 'per-vu-iterations',
         vus: graphqlVus || 50,
         iterations: graphqlIterations || 1,
@@ -167,8 +211,8 @@ export function getLocalOption(
       checks: [checksFailThreshold || 'rate>0.90'],
     },
     scenarios: {
-      SC1_BROWSER: {
-        exec: 'browserTests',
+      browserProposalSubmissionTest: {
+        exec: 'browserProposalSubmissionTest',
         executor: 'per-vu-iterations',
         vus: browserVus || 10,
         iterations: browserIterations || 1,
@@ -178,8 +222,30 @@ export function getLocalOption(
           },
         },
       },
-      SC1_GRAPHQL: {
-        exec: 'graphqlTests',
+      browserUserHomeTest: {
+        exec: 'browserUserHomeTest',
+        executor: 'per-vu-iterations',
+        vus: browserVus || 10,
+        iterations: browserIterations || 1,
+        options: {
+          browser: {
+            type: 'chromium',
+          },
+        },
+      },
+      browserUserCallsTest: {
+        exec: 'browserUserCallsTest',
+        executor: 'per-vu-iterations',
+        vus: browserVus || 10,
+        iterations: browserIterations || 1,
+        options: {
+          browser: {
+            type: 'chromium',
+          },
+        },
+      },
+      graphqlTest: {
+        exec: 'graphqlTest',
         executor: 'per-vu-iterations',
         vus: graphqlVus || 50,
         iterations: graphqlIterations || 1,

@@ -1,24 +1,52 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RefinedResponse } from 'k6/http';
 export enum AllocationTimeUnits {
   DAY = 'Day',
   HOUR = 'Hour',
 }
-
+export type Instrument = {
+  id: number;
+  name: string;
+  shortCode: string;
+  description: string;
+  managerUserId: number;
+};
 export type Call = {
   id: number;
   shortCode: string;
   title: string;
   templateId: number;
+  instruments: [Instrument];
+};
+export type TemplateStep = {
+  topic: {
+    id: number;
+    templateId: number;
+    title: string;
+    isEnabled: boolean;
+  };
 };
 export type Template = {
   templateId: number;
   name: string;
   description: string;
+  steps: [TemplateStep];
+};
+type Questionary = {
+  steps: [TemplateStep];
+  questionaryId: number;
+  templateId: number;
 };
 export type Proposal = {
   primaryKey: number;
   proposalId: string;
   callId: number;
+  status: {
+    id: string;
+    name: string;
+    shortCode: string;
+  };
+  questionary: Questionary;
 };
 export type Proposals = {
   proposals: [Proposal];
@@ -30,7 +58,6 @@ export type SharedData = {
   testCall: Call;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ClientResponse = RefinedResponse<any>;
 
 export type ClientApi = (body: string, userToken?: string) => ClientResponse;
@@ -52,6 +79,9 @@ export type ProposalsQueryResponse = {
 };
 export type ProposalQueryResponse = {
   data: { [name: string]: Proposal };
+};
+export type GenericQueryResponse = {
+  data: { [name: string]: any };
 };
 
 export type InitData = {
@@ -97,6 +127,7 @@ export type InitData = {
     };
     defaultDroppableGroup: string;
   };
+  instrument: Partial<Instrument>;
 };
 export type CallsFilter = {
   fapIds?: number;
@@ -112,7 +143,7 @@ export type CallsFilter = {
   templateIds?: number;
 };
 
-export type UserLogin = { userId: number; sessionId: string };
+export type UserLogin = { userId: number; sessionId: string; email: string };
 
 export enum DatabaseClientConnector {
   ORACLE = 'oracle',
@@ -120,6 +151,6 @@ export enum DatabaseClientConnector {
 }
 
 export interface DatabaseClient {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  close(): any;
   begin(): any;
 }

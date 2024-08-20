@@ -2,6 +2,7 @@ import { EnvironmentConfigurations } from './configurations';
 import { getClientApi } from './graphql';
 import { UserDataSource } from './userDataSource';
 import { Call } from '../graphql/support/call';
+import { Instrument } from '../graphql/support/instrument';
 import { Proposal } from '../graphql/support/proposal';
 import { Template } from '../graphql/support/template';
 import { SharedData } from '../utils/sharedType';
@@ -16,11 +17,21 @@ export async function sc1TearDown(
   );
   const proposal = new Proposal(apiClient);
   const template = new Template(apiClient);
+  const instrument = new Instrument(apiClient);
 
   console.log('Cleaning proposals');
   proposal.deleteCallProposals(sharedData.testCall.id);
 
   const call = new Call(apiClient);
+
+  console.log('Cleaning up call instruments');
+
+  if (sharedData.testCall.instruments.length > 0) {
+    sharedData.testCall.instruments.forEach((inst) => {
+      call.removeAssignedInstrumentFromCall(sharedData.testCall.id, inst.id);
+      instrument.deleteInstrument(inst.id);
+    });
+  }
   console.log('Cleaning up test call');
 
   call.deleteCall(sharedData.testCall.id);
@@ -37,7 +48,7 @@ export async function sc1TearDown(
     environmentConfig.USER_DB_CONNECTION_STRING
   );
   await usersDataSource.deleteUsersBetween(
-    -270800000,
-    -270800000 + environmentConfig.SETUP_TOTAL_USERS
+    environmentConfig.USER_STARTING_ID,
+    environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
   );
 }

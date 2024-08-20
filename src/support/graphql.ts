@@ -2,6 +2,13 @@ import http from 'k6/http';
 
 import { ClientApi } from '../utils/sharedType';
 
+function generateBearerToken(text: string): string {
+  if (!text.startsWith('Bearer')) {
+    return `Bearer ${text}`;
+  }
+
+  return text;
+}
 export function getClientApi(graphqlUrl: string): ClientApi;
 export function getClientApi(
   graphqlUrl: string,
@@ -15,7 +22,9 @@ export function getClientApi(
     return function (body: string, userToken?: string) {
       return http.post(graphqlUrl, body, {
         headers: {
-          Authorization: userToken ? `Bearer ${userToken}` : bearerToken,
+          Authorization: userToken
+            ? generateBearerToken(userToken)
+            : generateBearerToken(bearerToken),
           'Content-Type': 'application/json',
         },
       });
@@ -26,7 +35,7 @@ export function getClientApi(
     if (userToken) {
       return http.post(graphqlUrl, body, {
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: generateBearerToken(userToken),
           'Content-Type': 'application/json',
         },
       });

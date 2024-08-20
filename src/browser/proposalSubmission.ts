@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { check, sleep } from 'k6';
 import exec from 'k6/execution';
 import { browser } from 'k6/experimental/browser';
@@ -17,17 +16,15 @@ const proposalSubmissionDuration = new Trend(
 );
 
 const proposalsSubmitted = new Counter('proposals_submitted', false);
-export async function proposal(sharedData: SharedData) {
+export default async function proposalSubmissionTest(sharedData: SharedData) {
   const startTime = Date.now();
-  const sessionId =
-    sharedData.users[Math.floor(Math.random() * (sharedData.users.length / 2))]
-      .sessionId;
+  const currentUser = sharedData.users[exec.vu.iterationInScenario];
   const context = browser.newContext();
   context.setDefaultTimeout(240000);
   const page = context.newPage();
   const proposalTitle = randomString(10);
   try {
-    const user = new User(sharedData.browserBaseUrl, sessionId);
+    const user = new User(sharedData.browserBaseUrl, currentUser.sessionId);
 
     await page.goto(user.getLoginURL());
     await Promise.all([page.waitForNavigation()]);
@@ -54,9 +51,6 @@ export async function proposal(sharedData: SharedData) {
         page
           .waitForSelector(call.getTestCall(sharedData.testCall.title))
           .isEnabled(),
-    });
-
-    check(page, {
       'User can see test call': () =>
         page
           .waitForSelector(call.getTestCall(sharedData.testCall.title))

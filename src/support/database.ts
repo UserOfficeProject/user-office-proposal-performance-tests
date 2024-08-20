@@ -2,6 +2,7 @@
 import sql from 'k6/x/sql';
 
 import { DatabaseClientConnector, DatabaseClient } from '../utils/sharedType';
+
 export function getDatabaseClient(
   client: DatabaseClientConnector,
   username: string,
@@ -21,4 +22,12 @@ export function getDatabaseClient(
       'Could not create database client verify you connection string and credentials'
     );
   }
+}
+
+export function sqlQuery(db: DatabaseClient, query: string, args?: string) {
+  if (args) {
+    return sql.query(db, query, args);
+  }
+
+  return sql.query(db, query);
 }

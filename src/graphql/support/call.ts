@@ -74,7 +74,7 @@ export class Call {
           r.status === 200 && !!responseData.data.deleteCall.id && true,
       })
     ) {
-      console.log('Fail to delete call', response.error);
+      console.error('Fail to delete call', response.error);
     }
 
     return deleteCallId;
@@ -104,7 +104,7 @@ export class Call {
           r.status === 200 && !!responseData.data.call.id && true,
       })
     ) {
-      console.log('Call was not found', response.error);
+      console.error('Call was not found', response.error);
     }
 
     return responseData.data?.call;
@@ -155,5 +155,95 @@ export class Call {
       fail(`SCENARIO: ${exec.scenario.name} Executing class Call.getUserCalls VU_ID: ${exec.vu.idInTest}
       Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
     }
+  }
+
+  assignInstrumentsToCall(callId: number, instrumentId: number): CallType {
+    const mutation = `
+    mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {
+      assignInstrumentsToCall(assignInstrumentsToCallInput: $assignInstrumentsToCallInput) {
+        id
+        shortCode
+        title
+        templateId
+        instruments {
+          id
+          managerUserId
+          name
+          shortCode
+        }
+      }
+    }`;
+    const variables = {
+      assignInstrumentsToCallInput: {
+        callId,
+        instrumentFapIds: [{ instrumentId }],
+      },
+    };
+
+    const response = this.apiClient(
+      JSON.stringify({ query: mutation, variables })
+    );
+    const responseData = response.json() as CallQueryResponse;
+
+    if (
+      !check(response, {
+        'Instruments assigned to call': (r) =>
+          r.status === 200 &&
+          !!responseData.data.assignInstrumentsToCall.id &&
+          true,
+      })
+    ) {
+      console.error('Fail to assign instruments to call', response.error);
+    }
+
+    return responseData.data?.assignInstrumentsToCall as CallType;
+  }
+
+  removeAssignedInstrumentFromCall(
+    callId: number,
+    instrumentId: number
+  ): CallType {
+    const mutation = `
+    mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {
+      removeAssignedInstrumentFromCall(removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput) {
+        id
+        shortCode
+        title
+        templateId
+        instruments {
+          id
+          managerUserId
+          name
+          shortCode
+        }
+      }
+    }`;
+    const variables = {
+      removeAssignedInstrumentFromCallInput: {
+        callId,
+        instrumentId,
+      },
+    };
+
+    const response = this.apiClient(
+      JSON.stringify({ query: mutation, variables })
+    );
+    const responseData = response.json() as CallQueryResponse;
+
+    if (
+      !check(response, {
+        'Instruments assigned to call removed': (r) =>
+          r.status === 200 &&
+          !!responseData.data.removeAssignedInstrumentFromCall.id &&
+          true,
+      })
+    ) {
+      console.error(
+        'Fail to remove instruments assigned to call',
+        response.error
+      );
+    }
+
+    return responseData.data?.removeAssignedInstrumentFromCall as CallType;
   }
 }

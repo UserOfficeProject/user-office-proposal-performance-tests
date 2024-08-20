@@ -42,6 +42,20 @@ export function randomString(length: number): string {
   return res;
 }
 
+export function randomAlphaNumericString(length: number) {
+  // Handle negative or zero length:
+  if (length <= 0) {
+    throw new Error('Length must be positive');
+  }
+  const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let res = '';
+  while (length--) {
+    res += charset[Math.floor(Math.random() * charset.length)];
+  }
+
+  return res;
+}
+
 export function findBetween(
   content: string,
   left: string,
