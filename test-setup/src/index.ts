@@ -10,9 +10,9 @@ import heathCheck from './middlewares/heathCheck';
 /**
  * Set this to dotenv.config() when running script in local non containerized environment
  */
-if (process.env.USER_SETUP_DOTENV_PATH) {
+if (process.env.TEST_SETUP_DOTENV_PATH) {
   dotenv.config({
-    path: validate<string>(process.env.USER_SETUP_DOTENV_PATH as string, 'USER_SETUP_DOTENV_PATH'),
+    path: validate<string>(process.env.TEST_SETUP_DOTENV_PATH as string, 'USER_SETUP_DOTENV_PATH'),
   });
 } else {
   dotenv.config();

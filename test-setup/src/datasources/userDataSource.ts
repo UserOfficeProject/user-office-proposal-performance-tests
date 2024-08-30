@@ -30,10 +30,10 @@ export class UserDataSource {
         min: Math.min(first, last),
         max: Math.max(first, last),
       };
-
-      const { rowsAffected: loginsDeleted } = await connection.execute(
-        `DELETE FROM login
-         WHERE user_id BETWEEN :min AND :max`,
+      const { rowsAffected: peopleDeleted } = await connection.execute(
+        `DELETE FROM person
+          WHERE user_number BETWEEN :min AND :max
+                OR rid BETWEEN :min AND :max`,
         bind
       );
       const { rowsAffected: privacyDeleted } = await connection.execute(
@@ -41,9 +41,15 @@ export class UserDataSource {
           WHERE privacy_id BETWEEN :min AND :max`,
         bind
       );
-      const { rowsAffected: peopleDeleted } = await connection.execute(
-        `DELETE FROM person
-          WHERE user_number BETWEEN :min AND :max
+      const { rowsAffected: loginsDeleted } = await connection.execute(
+        `DELETE FROM login
+         WHERE user_id BETWEEN :min AND :max`,
+        bind
+      );
+
+      const { rowsAffected: addressesDeleted } = await connection.execute(
+        `DELETE FROM address
+          WHERE postal_address_id BETWEEN :min AND :max
                 OR rid BETWEEN :min AND :max`,
         bind
       );
@@ -51,13 +57,6 @@ export class UserDataSource {
       const { rowsAffected: establishmentsDeleted } = await connection.execute(
         `DELETE FROM establishment
           WHERE establishment_id BETWEEN :min AND :max
-                OR rid BETWEEN :min AND :max`,
-        bind
-      );
-
-      const { rowsAffected: addressesDeleted } = await connection.execute(
-        `DELETE FROM address
-          WHERE postal_address_id BETWEEN :min AND :max
                 OR rid BETWEEN :min AND :max`,
         bind
       );
