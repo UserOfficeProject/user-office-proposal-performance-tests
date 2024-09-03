@@ -44,12 +44,13 @@ export default function (pool: oracledb.Pool) {
         firstUserId = lastUserId;
         lastUserId = temp;
       }
-      const totalLength = firstUserId - lastUserId;
+      const totalLength = Math.abs(firstUserId - lastUserId);
       if (totalLength > maximumNumberOfIds) {
         logger.logException('Attempt to create users greater than the maximum', {
           requestedUsers: totalLength,
         });
         res.status(500).send(`Attempt to create users greater than the maximum`);
+        return;
       }
 
       const dataSource: UserDataSource = await createUserDataSource(pool);
