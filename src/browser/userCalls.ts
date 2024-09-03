@@ -1,48 +1,49 @@
-import { check, sleep } from 'k6';
+import { check } from 'k6';
+import { browser } from 'k6/browser';
 import exec from 'k6/execution';
-import { browser } from 'k6/experimental/browser';
 import { Trend } from 'k6/metrics';
 
-import { Call } from './support/call';
-import { Dashboard } from './support/dashboard';
 import { logFailedTest } from './support/logger';
-import { User } from './support/user';
-import { randomIntBetween } from '../utils/helperFunctions';
 import { SharedData } from '../utils/sharedType';
 
 const userCallsResponseTime = new Trend('user_calls_response_time', true);
 export default async function userCallsTest(sharedData: SharedData) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
   const startTime = Date.now();
-  const context = browser.newContext();
-  context.setDefaultTimeout(240000);
-  const page = context.newPage();
   const currentUser = sharedData.users[exec.vu.iterationInScenario];
+  context.setDefaultTimeout(240000);
   try {
-    const user = new User(sharedData.browserBaseUrl, currentUser.sessionId);
-    await page.goto(user.getLoginURL());
+    await page.goto(
+      `${sharedData.browserBaseUrl}/external-auth?token=${currentUser.sessionId}`
+    );
     await Promise.all([page.waitForNavigation()]);
-    const dashboard = new Dashboard();
-    await page.goto(sharedData.browserBaseUrl);
-    sleep(randomIntBetween(60, 300));
+
+    const userDashboardIsVisible = await page
+      .waitForSelector('//h1[contains(text(), "User Office / Dashboard")]')
+      .then((e) => e.isVisible());
+    check(page, {
+      'User can see home page': () => userDashboardIsVisible,
+    });
+
+    const proposalMenuItem = page.locator('//a[@aria-label="New Proposal"]');
     await Promise.all([
-      page.waitForNavigation({
-        waitUntil: 'networkidle',
-      }),
-      page.waitForSelector(dashboard.proposalMenuItem()).isVisible(),
-      page.waitForSelector(dashboard.proposalMenuItem()).tap(),
+      page.waitForNavigation(),
+      proposalMenuItem.isVisible(),
+      proposalMenuItem.tap(),
     ]);
-    const call = new Call();
+
+    const testCall = await page.waitForSelector(
+      `//h3[contains(text(), "${sharedData.testCall.title}")]`
+    );
+    const testCallIsVisible = await testCall.isVisible();
+    const testCallIsEnabled = await testCall.isEnabled();
 
     check(page, {
-      'New proposal menu is enabled': () =>
-        page
-          .waitForSelector(call.getTestCall(sharedData.testCall.title))
-          .isEnabled(),
-      'User can see test call': () =>
-        page
-          .waitForSelector(call.getTestCall(sharedData.testCall.title))
-          .isVisible(),
+      'New proposal menu is enabled': () => testCallIsEnabled,
+      'User can see test call': () => testCallIsVisible,
     });
+
     userCallsResponseTime.add((Date.now() - startTime) / 1000);
   } catch (error) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: userCalls VU_ID: ${exec.vu.idInTest}`;
