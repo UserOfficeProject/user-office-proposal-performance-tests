@@ -1,11 +1,3 @@
-import { Options } from 'k6/options';
-
-import {
-  getLocalOption,
-  getDevelopOption,
-  getProductionOption,
-} from './options';
-
 export type EnvironmentConfigurations = {
   GRAPHQL_TOKEN: string;
   USER_DB_USERNAME: string;
@@ -16,54 +8,6 @@ export type EnvironmentConfigurations = {
   SETUP_TOTAL_USERS: number;
   USER_STARTING_ID: number;
 };
-
-export function getExecutionOptions(
-  browserVus?: number,
-  browserIterations?: number,
-  graphqlVus?: number,
-  graphqlIterations?: number,
-  browserReqFailThreshold?: string,
-  httpReqFailThreshold?: string,
-  proposalSubmittedFailThreshold?: string,
-  checksFailThreshold?: string
-): Options {
-  if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'develop') {
-    return getDevelopOption(
-      browserVus,
-      browserIterations,
-      graphqlVus,
-      graphqlIterations,
-      browserReqFailThreshold,
-      httpReqFailThreshold,
-      proposalSubmittedFailThreshold,
-      checksFailThreshold
-    );
-  }
-
-  if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'production') {
-    return getProductionOption(
-      browserVus,
-      browserIterations,
-      graphqlVus,
-      graphqlIterations,
-      browserReqFailThreshold,
-      httpReqFailThreshold,
-      proposalSubmittedFailThreshold,
-      checksFailThreshold
-    );
-  }
-
-  return getLocalOption(
-    browserVus,
-    browserIterations,
-    graphqlVus,
-    graphqlIterations,
-    browserReqFailThreshold,
-    httpReqFailThreshold,
-    proposalSubmittedFailThreshold,
-    checksFailThreshold
-  );
-}
 
 export function getEnvironmentConfigurations(): EnvironmentConfigurations {
   const configDir = __ENV.PWD;

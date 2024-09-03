@@ -1,6 +1,7 @@
+import { sleep } from 'k6';
+
 import { EnvironmentConfigurations } from './configurations';
 import { getClientApi } from './graphql';
-import { UserDataSource } from './userDataSource';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Proposal } from '../graphql/support/proposal';
@@ -29,6 +30,7 @@ export async function sc1TearDown(
   if (sharedData.testCall.instruments.length > 0) {
     sharedData.testCall.instruments.forEach((inst) => {
       call.removeAssignedInstrumentFromCall(sharedData.testCall.id, inst.id);
+      sleep(5);
       instrument.deleteInstrument(inst.id);
     });
   }
@@ -41,14 +43,4 @@ export async function sc1TearDown(
   template.deleteTemplate(sharedData.testCall.templateId);
 
   console.log('Cleaning up user set up');
-
-  const usersDataSource = new UserDataSource(
-    environmentConfig.USER_DB_USERNAME,
-    environmentConfig.USER_DB_PASSWORD,
-    environmentConfig.USER_DB_CONNECTION_STRING
-  );
-  await usersDataSource.deleteUsersBetween(
-    environmentConfig.USER_STARTING_ID,
-    environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
-  );
 }

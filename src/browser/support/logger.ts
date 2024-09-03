@@ -1,5 +1,5 @@
 import { fail } from 'k6';
-import { Page } from 'k6/experimental/browser';
+import { Page } from 'k6/browser';
 
 export function logFailedTest(
   context: string,

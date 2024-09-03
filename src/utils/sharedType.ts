@@ -56,6 +56,7 @@ export type SharedData = {
   browserBaseUrl: string;
   graphqlUrl: string;
   testCall: Call;
+  testSetupBaseUrl: string;
 };
 
 export type ClientResponse = RefinedResponse<any>;
