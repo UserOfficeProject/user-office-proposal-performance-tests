@@ -45,7 +45,7 @@ pipeline {
           steps {
             withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
               sh """
-              ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} ./test
+              ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} test-setup
               """
             }
           }
