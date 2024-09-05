@@ -32,27 +32,29 @@ pipeline {
 
   stages {
     stage('Build and deploy') {
-        stage('k6-test') {
-          steps {
-            withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
-              sh """
-              ./build-push-image.sh uop-performance-tests-k6 ${params.K6_VERSION_TAG} .
-              """
+       stages {
+          stage('k6-test') {
+            steps {
+              withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
+                sh """
+                ./build-push-image.sh uop-performance-tests-k6 ${params.K6_VERSION_TAG} .
+                """
+              }
             }
           }
-        }
+      
+          stage('test-setup') {
+                steps {
+                  withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
+                    sh """
+                    ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} test-setup
+                    """
+                  }
+                }
+          }
+       }
     }
-    stage('test-setup') {
-          steps {
-            withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
-              sh """
-              ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} test-setup
-              """
-            }
-          }
-        }
   }
-
   // post {
   //   regression {
   //     emailext (
