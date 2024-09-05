@@ -32,12 +32,11 @@ pipeline {
 
   stages {
     stage('Build and deploy') {
-      parallel {
         stage('k6-test') {
           steps {
             withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
               sh """
-              ./build-push-image.sh uop-performance-tests-k6 ${params.K6_VERSION_TAG} test
+              ./build-push-image.sh uop-performance-tests-k6 ${params.K6_VERSION_TAG} .
               """
             }
           }
@@ -46,13 +45,13 @@ pipeline {
           steps {
             withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
               sh """
-              ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} .
+              ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} ./test
               """
             }
           }
         }
 
-      }
+      
     }
   }
 
