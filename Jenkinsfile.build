@@ -41,7 +41,8 @@ pipeline {
             }
           }
         }
-        stage('test-setup') {
+    }
+    stage('test-setup') {
           steps {
             withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
               sh """
@@ -50,9 +51,6 @@ pipeline {
             }
           }
         }
-
-      
-    }
   }
 
   // post {
