@@ -43,7 +43,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     ]);
 
     const testCall = await page.waitForSelector(
-      `//h3[contains(text(), "${sharedData.testCall.title}")]`
+      `//h3[contains(text(), "${sharedData.testCall.shortCode}")]`
     );
     const testCallIsVisible = await testCall.isVisible();
     const testCallIsEnabled = await testCall.isEnabled();
