@@ -18,6 +18,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let retryCount = 0;
   let proposalHealthCheck = false;
   let users = null;
+  let testCall = null;
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
@@ -89,22 +90,28 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       } `
     );
   }
-  const testCall = call.createTestCall(template.createTemplate().templateId);
 
-  if (testCall) {
-    const instrument = new Instrument(apiClient);
-    const callInstrument = instrument.createInstrument(1);
-    if (callInstrument) {
-      const callWithInstruments = call.assignInstrumentsToCall(
-        testCall.id,
-        callInstrument.id
-      );
-      testCall.instruments = [...callWithInstruments.instruments];
-    } else {
-      console.error('Failed to create instrument aborting test');
-      exec.test.abort();
-    }
+  if (__ENV.TEST_SETUP_CALL_ID) {
+    testCall = call.getCall(+__ENV.TEST_SETUP_CALL_ID);
   } else {
+    testCall = call.createTestCall(template.createTemplate().templateId);
+    if (testCall) {
+      const instrument = new Instrument(apiClient);
+      const callInstrument = instrument.createInstrument(1);
+      if (callInstrument) {
+        const callWithInstruments = call.assignInstrumentsToCall(
+          testCall.id,
+          callInstrument.id
+        );
+        testCall.instruments = [...callWithInstruments.instruments];
+      } else {
+        console.error('Failed to create instrument aborting test');
+        exec.test.abort();
+      }
+    }
+  }
+
+  if (!testCall) {
     console.error('Failed to create test call aborting test');
     exec.test.abort();
   }

@@ -23,6 +23,9 @@ export async function sc1TearDown(
   console.log('Cleaning proposals');
   proposal.deleteCallProposals(sharedData.testCall.id);
 
+  if (__ENV.TEST_SETUP_CALL_ID) {
+    return;
+  }
   const call = new Call(apiClient);
 
   console.log('Cleaning up call instruments');
