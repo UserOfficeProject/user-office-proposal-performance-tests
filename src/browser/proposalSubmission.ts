@@ -13,6 +13,7 @@ const proposalSubmissionDuration = new Trend(
 
 const proposalsSubmitted = new Counter('proposals_submitted', false);
 export default async function proposalSubmissionTest(sharedData: SharedData) {
+  sleep(randomIntBetween(10, 100));
   const context = await browser.newContext();
   const page = await context.newPage();
   const startTime = Date.now();
@@ -33,7 +34,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     });
 
     await page.goto(sharedData.browserBaseUrl);
-    sleep(randomIntBetween(5, 10));
+    sleep(randomIntBetween(5, 20));
 
     const proposalMenuItem = page.locator('//a[@aria-label="New Proposal"]');
     await Promise.all([
@@ -41,7 +42,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
       proposalMenuItem.isVisible(),
       proposalMenuItem.tap(),
     ]);
-
+    sleep(randomIntBetween(5, 20));
     const testCall = await page.waitForSelector(
       `//h3[contains(text(), "${sharedData.testCall.shortCode}")]`
     );
@@ -54,12 +55,14 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     });
 
     await testCall.click();
+    sleep(randomIntBetween(5, 20));
     await page
       .locator('input[name="proposal_basis.title"]')
       .type(proposalTitle);
     await page
       .locator('textarea[name="proposal_basis.abstract"]')
       .type(`${randomString(8)} ${randomString(8)}`);
+    sleep(randomIntBetween(5, 20));
     const saveButtonVisible = await page
       .locator('//button[contains(text(), "Save and continue")]')
       .isVisible();
@@ -71,7 +74,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     await page
       .locator('//button[contains(text(), "Save and continue")]')
       .click();
-    sleep(randomIntBetween(5, 10));
+    sleep(randomIntBetween(5, 20));
     const saveMessageVisible = await page
       .locator('//div[contains(text(), "Saved")]')
       .isVisible();
@@ -81,7 +84,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     });
 
     await page.locator('//button[contains(text(), "Submit")]').click();
-    sleep(randomIntBetween(5, 10));
+    sleep(randomIntBetween(5, 20));
     const submitConfirmBoxIsVisible = await page
       .waitForSelector('//h2[contains(text(), "Please confirm")]')
       .then((e) => e.isVisible());
@@ -92,6 +95,8 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     });
 
     await page.locator('//button[contains(text(), "OK")]').click();
+
+    sleep(randomIntBetween(5, 20));
     const submissionMessageIsVisible = await page
       .waitForSelector(
         '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon.")]'

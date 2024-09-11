@@ -53,12 +53,8 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       }
     }
   }
-  const response = http.post(
-    `${testSetupBaseUrl}/users/${environmentConfig.USER_STARTING_ID}/${environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS}`,
-    '',
-    {
-      headers: { 'Content-Type': 'application/json' },
-    }
+  const response = http.get(
+    `${testSetupBaseUrl}/users/${environmentConfig.SETUP_TOTAL_USERS}`
   );
   check(response, {
     'User auth setup successful': (r) => {

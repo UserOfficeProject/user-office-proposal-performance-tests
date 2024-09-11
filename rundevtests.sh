@@ -17,6 +17,7 @@ export BROWSER_BASE_URL=http://duo-reverse-proxy:80
 export GRAPHQL_URL=http://duo-reverse-proxy:80/graphql
 export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-240800000
+export TEST_SETUP_CALL_ID=1
 
 while ! nc -z localhost 8100; do
     sleep 5
