@@ -2,10 +2,12 @@ import { logger } from '@user-office-software/duo-logger';
 import dotenv from 'dotenv';
 import express from 'express';
 import { validate } from './utils/helper-functions';
+import oracledb from 'oracledb';
 import database from './db/database';
 import { AddressInUseError } from './utils/customTypes';
-import users from './middlewares/users';
+import users, { FIRST_USER_ID, generateUserId, MAXIMUM_NUMBER_OF_USER_IDS } from './middlewares/users';
 import heathCheck from './middlewares/heathCheck';
+import { createUserDataSource, UserDataSource } from './datasources/userDataSource';
 
 /**
  * Set this to dotenv.config() when running script in local non containerized environment
@@ -22,13 +24,42 @@ async function startServer() {
     const db = await database();
     const port = process.env.PORT || 8000;
     const app = express();
-
+    const connectionPool: oracledb.Pool = db.getConnectionPool();
     app.use(users(db.getConnectionPool()));
     app.use(heathCheck());
     process.on('exit', async () => {
       await db.closeConnectionPool();
     });
+    const userDataSource: UserDataSource = await createUserDataSource(connectionPool);
+    
+      /*
+       * We clear down before we start so that we don't try to overwrite existing
+       * accounts.
+       */
+      logger.logInfo("Clearing down old data",{});
+      await userDataSource.deleteUsersBetween(FIRST_USER_ID, FIRST_USER_ID - MAXIMUM_NUMBER_OF_USER_IDS);
 
+      logger.logInfo("Pre create 500 users ",{});
+      const userIdGenerator = generateUserId();
+      const sessionIds = await Promise.all(
+        Array.from({ length: 500}, () => {
+          const userId = userIdGenerator.next().value;
+          if (userId) {
+            return userDataSource.createLoggedInUser(userId);
+          }
+          return;
+        })
+      );
+
+      if (sessionIds.length > 0) {
+        logger.logInfo('Created pre start up users', {
+          number:sessionIds.length,
+        });
+      }else{
+        logger.logException('Error starting server could not create users:',{});
+        process.exit();
+      }
+    
     logger.logInfo('Stating server ...', {});
     app
       .listen(port, () => {

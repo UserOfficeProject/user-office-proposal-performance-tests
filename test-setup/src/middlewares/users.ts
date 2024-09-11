@@ -3,9 +3,9 @@ import express, { Request, Response } from 'express';
 import oracledb from 'oracledb';
 import { createUserDataSource, UserDataSource } from '../datasources/userDataSource';
 
-const firstId = -220800000;
-const maximumNumberOfIds = 1000;
-const lastId = firstId - maximumNumberOfIds;
+export const FIRST_USER_ID = -220800000;
+export const MAXIMUM_NUMBER_OF_USER_IDS = 1000;
+const LAST_USER_ID = FIRST_USER_ID - MAXIMUM_NUMBER_OF_USER_IDS;
 
 function handleError(
   func: (req: Request, res: Response) => Promise<void>
@@ -19,17 +19,17 @@ function handleError(
     }
   };
 }
-function* generateId() {
-  let id = firstId;
+export function* generateUserId() {
+  let id = FIRST_USER_ID;
   while (true) {
     yield id--;
-    if (id < lastId) {
+    if (id < LAST_USER_ID) {
       throw new Error('Too many users');
     }
   }
 }
 
-const userIdGenerator = generateId();
+const userIdGenerator = generateUserId();
 const router = express.Router();
 
 export default function (pool: oracledb.Pool) {
@@ -37,15 +37,11 @@ export default function (pool: oracledb.Pool) {
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
       const { firstId, lastId } = req.params;
-      let firstUserId = +firstId;
-      let lastUserId = +lastId;
-      if (firstUserId > lastUserId) {
-        const temp = firstUserId;
-        firstUserId = lastUserId;
-        lastUserId = temp;
-      }
-      const totalLength = Math.abs(firstUserId - lastUserId);
-      if (totalLength > maximumNumberOfIds) {
+      const firstUserId = Math.max(+firstId, +lastId);
+      const lastUserId = Math.min(+firstId, +lastId);
+
+      const totalLength = Math.abs(firstUserId-lastUserId);
+      if (totalLength > MAXIMUM_NUMBER_OF_USER_IDS) {
         logger.logException('Attempt to create users greater than the maximum', {
           requestedUsers: totalLength,
         });
@@ -89,6 +85,28 @@ export default function (pool: oracledb.Pool) {
         });
       }
 
+      res.status(200).json(sessionIds);
+    })
+  );
+
+  router.get(
+    '/users/:number',
+    handleError(async (req: Request, res: Response) => {
+      const { number } = req.params;
+
+      if (+number  > MAXIMUM_NUMBER_OF_USER_IDS) {
+        logger.logException('Attempt to get users greater than the maximum', {
+          requestedUsers: MAXIMUM_NUMBER_OF_USER_IDS,
+        });
+        res.status(500).send(`Attempt to get users greater than the maximum`);
+        return;
+      }
+      const dataSource: UserDataSource = await createUserDataSource(pool);
+      const sessionIds = await dataSource.getUsersBetween(FIRST_USER_ID, FIRST_USER_ID - +number);
+
+      logger.logInfo('Returning logins,people,establishments and addresses', {
+        number: sessionIds.length,
+      });
       res.status(200).json(sessionIds);
     })
   );

@@ -11,6 +11,167 @@ export class UserDataSource {
     this.pool = pool;
   }
 
+  async getUsersBetween(firstUserId: number, lastUserId: number): Promise<UserResult[]> {
+    if (firstUserId === undefined) {
+      throw new Error('first undefined, will not clear down');
+    }
+    if (lastUserId === undefined) {
+      throw new Error('last undefined, will not clear down');
+    }
+    let connection;
+    const bind = {
+      min: Math.min(firstUserId, lastUserId),
+      max: Math.max(firstUserId, lastUserId),
+      limit: Math.abs(Math.max(firstUserId, lastUserId)- Math.min(firstUserId, lastUserId))
+    };
+    try {
+      connection = await this.pool.getConnection();
+      const result= await connection.execute(
+        `SELECT DISTINCT session_id, user_id, last_access_time FROM login
+          WHERE user_id BETWEEN :min AND :max ORDER BY last_access_time FETCH FIRST :limit  ROWS ONLY`,
+                bind
+      );
+      const users = result.rows as unknown as {SESSION_ID:string,USER_ID:number}[];
+      console.log("return users",JSON.stringify(users))
+      if(!users){
+        return [];
+      }
+
+      return users.map( user=>{
+        return {
+          userId: user.USER_ID,
+          sessionId: user.SESSION_ID,
+          email: `BISAPPSSINK${user.USER_ID}@stfc.ac.uk`,
+        };
+      })
+
+    } finally {
+      if (connection) {
+        await connection.close();
+      }
+    }
+  }
+  async getLoggedInUser(userId: number): Promise<UserResult> {
+    let connection;
+    try {
+      connection = await this.pool.getConnection();
+      const bind = {
+        rid: userId,
+      };
+
+      const uuid = randomUUID();
+      const uuidBind = {
+        uuid,
+      };
+
+      const { rowsAffected: addressCreated } = await connection.execute(
+        `
+        MERGE INTO address  AD
+        USING (
+          SELECT :rid AS rid FROM DUAL
+          ) S ON (AD.rid = S.rid)
+        WHEN NOT MATCHED THEN 
+          INSERT (rid,country,from_date) 
+          VALUES ( S.rid,'United Kingdom',CURRENT_DATE)
+        WHEN MATCHED THEN  
+            UPDATE 
+            SET AD.from_date = CURRENT_DATE`,
+        bind
+      );
+      const { rowsAffected: establishmentCreated } = await connection.execute(
+        `
+        MERGE INTO establishment ES
+        USING (
+          SELECT :rid AS rid FROM DUAL
+          ) S ON (ES.rid = S.rid)
+        WHEN NOT MATCHED THEN 
+          INSERT (rid, establishment_id, postal_address_id, org_name, dept_name, from_date) 
+          VALUES ( S.rid, :rid, :rid,'Test org', 'Test dept', CURRENT_DATE)
+        WHEN MATCHED THEN  
+            UPDATE 
+            SET ES.from_date = CURRENT_DATE`,
+        bind
+      );
+      const { rowsAffected: privacyCreated } = await connection.execute(
+        `
+        MERGE INTO privacy PR
+        USING (
+          SELECT :rid AS privacy_id FROM DUAL
+          ) S ON (PR.privacy_id = S.privacy_id)
+        WHEN NOT MATCHED THEN 
+          INSERT (privacy_id, searchable) 
+          VALUES ( S.privacy_id,'Yes')
+        WHEN MATCHED THEN  
+            UPDATE 
+            SET PR.searchable = 'Yes'`,
+        bind
+      );
+
+      const { rowsAffected: personCreated } = await connection.execute(
+        `
+        MERGE INTO person PS
+        USING (
+          SELECT :rid AS rid FROM DUAL
+          ) S ON (PS.rid = S.rid)
+        WHEN NOT MATCHED THEN 
+          INSERT (rid, user_number,
+                  title, given_name, family_name, status,
+                  email, work_phone,
+                  establishment_id, org_correspondence_id, home_correspondence_id,
+                  from_date, dpa, verified,
+                  isis_salt, sha2, lastpwdreset,privacy_id) 
+          VALUES ( S.rid, S.rid,
+                  'Mx', 'Test', 'Account', 'Postdoctoral Researcher',
+                  'BISAPPSSINK' || S.rid || '@stfc.ac.uk', '012345123456',
+                    S.rid, S.rid, S.rid,
+                    CURRENT_DATE, 'TRUE', 'Yes',
+                  'X', 'X', CURRENT_DATE,:rid)
+        WHEN MATCHED THEN  
+            UPDATE 
+            SET PS.from_date = CURRENT_DATE`,
+        bind
+      );
+
+      const { rowsAffected: loginCreated } = await connection.execute(
+        `
+        MERGE INTO login LG
+        USING (
+          SELECT :rid AS user_id , :uuid AS session_id FROM DUAL
+          ) S ON (LG.user_id = S.user_id AND LG.session_id = S.session_id )
+        WHEN NOT MATCHED THEN 
+          INSERT (session_id, user_id, last_access_time) 
+          VALUES ( S.session_id, S.user_id, CURRENT_DATE + INTERVAL '4' HOUR)
+        WHEN MATCHED THEN  
+            UPDATE 
+            SET LG.last_access_time = CURRENT_DATE + INTERVAL '4' HOUR`,
+        Object.assign({}, bind, uuidBind)
+      );
+      await connection.commit();
+
+      if (
+        !(
+          addressCreated &&
+          loginCreated &&
+          personCreated &&
+          addressCreated &&
+          privacyCreated &&
+          establishmentCreated
+        )
+      ) {
+        throw new Error('Fail to create user login details');
+      }
+
+      return {
+        userId,
+        sessionId: uuid,
+        email: `BISAPPSSINK${userId}@stfc.ac.uk`,
+      };
+    } finally {
+      if (connection) {
+        await connection.close();
+      }
+    }
+  }
   async deleteUsersBetween(first: number, last: number) {
     if (first === undefined) {
       throw new Error('first undefined, will not clear down');
