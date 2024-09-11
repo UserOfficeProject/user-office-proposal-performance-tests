@@ -28,15 +28,13 @@ async function startServer() {
     app.use(users(db.getConnectionPool()));
     app.use(heathCheck());
     process.on('exit', async () => {
+      logger.logInfo("Clearing user data",{});
+      await userDataSource.deleteUsersBetween(FIRST_USER_ID, FIRST_USER_ID - MAXIMUM_NUMBER_OF_USER_IDS);
       await db.closeConnectionPool();
     });
     const userDataSource: UserDataSource = await createUserDataSource(connectionPool);
     
-      /*
-       * We clear down before we start so that we don't try to overwrite existing
-       * accounts.
-       */
-      logger.logInfo("Clearing down old data",{});
+      logger.logInfo("Clearing user data",{});
       await userDataSource.deleteUsersBetween(FIRST_USER_ID, FIRST_USER_ID - MAXIMUM_NUMBER_OF_USER_IDS);
 
       logger.logInfo("Pre create 500 users ",{});
