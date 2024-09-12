@@ -40,7 +40,7 @@ export default function (pool: oracledb.Pool) {
       const firstUserId = Math.max(+firstId, +lastId);
       const lastUserId = Math.min(+firstId, +lastId);
 
-      const totalLength = Math.abs(firstUserId-lastUserId);
+      const totalLength = Math.abs(firstUserId - lastUserId);
       if (totalLength > MAXIMUM_NUMBER_OF_USER_IDS) {
         logger.logException('Attempt to create users greater than the maximum', {
           requestedUsers: totalLength,
@@ -48,20 +48,21 @@ export default function (pool: oracledb.Pool) {
         res.status(500).send(`Attempt to create users greater than the maximum`);
         return;
       }
+      const userIds: number[] = [];
 
-      const dataSource: UserDataSource = await createUserDataSource(pool);
-      const userRequests = [];
       for (let userId = firstUserId; userId <= lastUserId; userId++) {
-        userRequests.push(dataSource.createLoggedInUser(userId));
+          userIds.push(userId);
       }
-      const users = await Promise.all(userRequests);
-      if (users.length > 0) {
+      const dataSource: UserDataSource = await createUserDataSource(pool);
+      const sessionIds = await dataSource.createLoggedInUsers(userIds);
+      
+      if (sessionIds.length > 0) {
         logger.logInfo('Created logins,people,establishments and addresses', {
-          number: users.length,
+          number: sessionIds.length,
         });
       }
 
-      res.status(200).json(users);
+      res.status(200).json(sessionIds);
     })
   );
   router.post(
@@ -69,15 +70,15 @@ export default function (pool: oracledb.Pool) {
     handleError(async (req: Request, res: Response) => {
       const { number } = req.params;
       const dataSource: UserDataSource = await createUserDataSource(pool);
-      const sessionIds = await Promise.all(
-        Array.from({ length: +number || 1 }, () => {
-          const userId = userIdGenerator.next().value;
-          if (userId) {
-            return dataSource.createLoggedInUser(userId);
-          }
-          return;
-        })
-      );
+      const userIds: number[] = [];
+
+      for (let index = 1; index <= +number; index++) {
+        const userId = userIdGenerator.next().value;
+        if (userId) {
+          userIds.push(userId);
+        }
+      }
+      const sessionIds = await dataSource.createLoggedInUsers(userIds);
 
       if (sessionIds.length > 0) {
         logger.logInfo('Created logins,people,establishments and addresses', {
@@ -94,7 +95,7 @@ export default function (pool: oracledb.Pool) {
     handleError(async (req: Request, res: Response) => {
       const { number } = req.params;
 
-      if (+number  > MAXIMUM_NUMBER_OF_USER_IDS) {
+      if (+number > MAXIMUM_NUMBER_OF_USER_IDS) {
         logger.logException('Attempt to get users greater than the maximum', {
           requestedUsers: MAXIMUM_NUMBER_OF_USER_IDS,
         });

@@ -22,29 +22,27 @@ export class UserDataSource {
     const bind = {
       min: Math.min(firstUserId, lastUserId),
       max: Math.max(firstUserId, lastUserId),
-      limit: Math.abs(Math.max(firstUserId, lastUserId)- Math.min(firstUserId, lastUserId))
+      limit: Math.abs(Math.max(firstUserId, lastUserId) - Math.min(firstUserId, lastUserId)),
     };
     try {
       connection = await this.pool.getConnection();
-      const result= await connection.execute(
+      const result = await connection.execute(
         `SELECT DISTINCT session_id, user_id, last_access_time FROM login
           WHERE user_id BETWEEN :min AND :max ORDER BY last_access_time FETCH FIRST :limit  ROWS ONLY`,
-                bind
+        bind
       );
-      const users = result.rows as unknown as {SESSION_ID:string,USER_ID:number}[];
-      console.log("return users",JSON.stringify(users))
-      if(!users){
+      const users = result.rows as unknown as { SESSION_ID: string; USER_ID: number }[];
+      if (!users) {
         return [];
       }
 
-      return users.map( user=>{
+      return users.map((user) => {
         return {
           userId: user.USER_ID,
           sessionId: user.SESSION_ID,
           email: `BISAPPSSINK${user.USER_ID}@stfc.ac.uk`,
         };
-      })
-
+      });
     } finally {
       if (connection) {
         await connection.close();
@@ -240,20 +238,34 @@ export class UserDataSource {
     }
   }
 
-  async createLoggedInUser(userId: number): Promise<UserResult> {
+  async createLoggedInUsers(userIds: number[]): Promise<UserResult[]> {
     let connection;
+    if(!userIds || !userIds.length){
+       return []
+    }
     try {
       connection = await this.pool.getConnection();
-      const bind = {
-        rid: userId,
+      const binds: { rid: number }[] = userIds.map((userId) => {
+        return {
+          rid: userId,
+        };
+      });
+
+      const uuidBinds = binds.map((bind) => {
+        const uuid = randomUUID();
+        return {
+          ...bind,
+          uuid,
+        };
+      });
+      const options = {
+        autoCommit: false,
+        bindDefs: {
+          rid: { type: oracledb.NUMBER },
+        },
       };
 
-      const uuid = randomUUID();
-      const uuidBind = {
-        uuid,
-      };
-
-      const { rowsAffected: addressCreated } = await connection.execute(
+      const { rowsAffected: addressCreated } = await connection.executeMany(
         `
         MERGE INTO address  AD
         USING (
@@ -265,9 +277,10 @@ export class UserDataSource {
         WHEN MATCHED THEN  
             UPDATE 
             SET AD.from_date = CURRENT_DATE`,
-        bind
+        binds,
+        options
       );
-      const { rowsAffected: establishmentCreated } = await connection.execute(
+      const { rowsAffected: establishmentCreated } = await connection.executeMany(
         `
         MERGE INTO establishment ES
         USING (
@@ -279,9 +292,10 @@ export class UserDataSource {
         WHEN MATCHED THEN  
             UPDATE 
             SET ES.from_date = CURRENT_DATE`,
-        bind
+        binds,
+        options
       );
-      const { rowsAffected: privacyCreated } = await connection.execute(
+      const { rowsAffected: privacyCreated } = await connection.executeMany(
         `
         MERGE INTO privacy PR
         USING (
@@ -293,10 +307,11 @@ export class UserDataSource {
         WHEN MATCHED THEN  
             UPDATE 
             SET PR.searchable = 'Yes'`,
-        bind
+        binds,
+        options
       );
 
-      const { rowsAffected: personCreated } = await connection.execute(
+      const { rowsAffected: personCreated } = await connection.executeMany(
         `
         MERGE INTO person PS
         USING (
@@ -318,10 +333,11 @@ export class UserDataSource {
         WHEN MATCHED THEN  
             UPDATE 
             SET PS.from_date = CURRENT_DATE`,
-        bind
+        binds,
+        options
       );
 
-      const { rowsAffected: loginCreated } = await connection.execute(
+      const { rowsAffected: loginCreated } = await connection.executeMany(
         `
         MERGE INTO login LG
         USING (
@@ -333,7 +349,14 @@ export class UserDataSource {
         WHEN MATCHED THEN  
             UPDATE 
             SET LG.last_access_time = CURRENT_DATE + INTERVAL '4' HOUR`,
-        Object.assign({}, bind, uuidBind)
+        uuidBinds,
+        {
+          autoCommit: false,
+          bindDefs: {
+            rid: { type: oracledb.NUMBER },
+            uuid: { type: oracledb.STRING, maxSize: 40 },
+          },
+        }
       );
       await connection.commit();
 
@@ -347,14 +370,16 @@ export class UserDataSource {
           establishmentCreated
         )
       ) {
-        throw new Error('Fail to create user login details');
+        throw new Error('Fail to create users login details');
       }
 
-      return {
-        userId,
-        sessionId: uuid,
-        email: `BISAPPSSINK${userId}@stfc.ac.uk`,
-      };
+      return uuidBinds.map((uuidBind) => {
+        return {
+          userId: uuidBind.rid,
+          sessionId: uuidBind.uuid,
+          email: `BISAPPSSINK${uuidBind.rid}@stfc.ac.uk`,
+        };
+      });
     } finally {
       if (connection) {
         await connection.close();
