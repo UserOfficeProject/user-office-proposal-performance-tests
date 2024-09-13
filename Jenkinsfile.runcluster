@@ -72,6 +72,10 @@ pipeline {
       trim: true
     )
   }
+  environment {
+    HOME = '.'
+  }
+  
   stages {
     stage('Build and run load tests') {
 
@@ -97,7 +101,6 @@ pipeline {
           rm -rf ./screenshots
           rm -rf ./tests
           # install and build
-          sudo chown -R 1004:1004 "/.npm"
           npm install
           npm run build
 
