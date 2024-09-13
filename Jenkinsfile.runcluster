@@ -72,9 +72,6 @@ pipeline {
       trim: true
     )
   }
-  environment {
-    KUBECONFIG = credentials('load-test-kubeconfig')
-  }
   stages {
     stage('Build and run load tests') {
 
