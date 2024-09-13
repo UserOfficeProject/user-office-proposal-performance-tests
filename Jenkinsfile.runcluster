@@ -1,6 +1,8 @@
 pipeline {
 
-  agent none
+  agent {
+    label 'k6'
+  }
 
   options {
     disableConcurrentBuilds()
