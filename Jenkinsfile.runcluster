@@ -1,6 +1,12 @@
 pipeline {
 
-  agent none
+  agent {
+    dockerfile {
+      filename 'Dockerfile.run'
+      label 'k6'
+      reuseNode true
+    }
+  }
 
   options {
     disableConcurrentBuilds()
@@ -79,19 +85,16 @@ pipeline {
   stages {
 
     stage('Build and run load tests') {
-      agent {
-        dockerfile {
-          filename 'Dockerfile.run'
-          label 'k6'
-          reuseNode true
-        }
-      }
+
       steps {
       sh """
           # clean up past data
+          rm -rf ./logs
           rm -rf ./node_modules
           rm -rf ./test
-          npm ci --loglevel verbose
+          mkdir -p ./logs
+          npm cache clean --force
+          npm ci --loglevel verbose --logdir ./logs
           npm run-script build:k6-test
       """  
       }
