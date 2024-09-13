@@ -1,7 +1,10 @@
-FROM alpine/k8s:1.28.7
+FROM alpine:3.19 as release
 
-RUN apk --no-cache add nodejs npm ca-certificates curl jq yq gettext
 
-WORKDIR /app
+RUN apk add --no-cache \
+  curl  \
+  ca-certificates \
+  nodejs \
+  npm 
 
 USER root
