@@ -55,26 +55,26 @@ pipeline {
     string(
       name: 'K6_PS_ITERATIONS',
       description: 'The number of k6 iterations',
-      trim: true
       defaultValue: '3',
+      trim: true
     )
     string(
       name: 'SETUP_TOTAL_USERS',
       description: 'The total number of users to use for the test',
-      trim: true
       defaultValue: '250',
+      trim: true
     )
     string(
       name: 'TEST_SETUP_CALL_ID',
       description: 'The call id in develop',
-      trim: true
       defaultValue: '54',
+      trim: true
     )
     string(
       name: 'K6_TEST_PARALLELISM',
       description: 'The number of parallel pods to use',
-      trim: true
       defaultValue: '2',
+      trim: true
     )
   }
   environment {
