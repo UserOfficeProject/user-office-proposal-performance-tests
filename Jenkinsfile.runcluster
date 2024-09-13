@@ -89,12 +89,14 @@ pipeline {
       steps {
       sh """
           # clean up past data
-          rm -rf ./logs
+  
           rm -rf ./node_modules
           rm -rf ./test
-          mkdir -p ./logs
+          mkdir -p /logs
           npm cache clean --force
-          npm ci --loglevel verbose --logdir ./logs
+
+          npm config set logs-max=0 --location=project
+          npm ci --loglevel verbose --logdir /logs
           npm run-script build:k6-test
       """  
       }
