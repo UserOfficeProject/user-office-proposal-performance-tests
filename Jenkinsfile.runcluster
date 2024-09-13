@@ -94,7 +94,7 @@ pipeline {
           rm -rf ./test
           npm cache clean --force
 
-          npm config set logs-max=0 --location=project
+          npm config set logs-max=0
           npm ci --loglevel verbose
           npm run-script build:k6-test
       """  
