@@ -75,36 +75,26 @@ pipeline {
   environment {
     HOME = '.'
   }
-  
   stages {
     stage('Build and run load tests') {
 
       agent {
         dockerfile {
           filename 'Dockerfile.run'
-          label 'k6'
+          label 'k6 && docker'
           reuseNode true
         }
       }
-
+      environment {
+       KUBECONFIG = credentials('load-test-kubeconfig')
+      }
       steps {
-        copyArtifacts(
-          projectName: 'Dev_Build_BisAppSettings',
-          filter: 'BISAppSettings/proposal-load-tester/k6/dev/.k6rc',
-          selector: lastSuccessful(),
-          fingerprintArtifacts: true,
-          flatten: true
-        )
-      sh """
-          # clean up past data
-          rm -rf ./node_modules
-          rm -rf ./screenshots
-          rm -rf ./tests
-          # install and build
-          npm install
-          npm run build
-
-      """  
+        sh """
+            # clean up past data
+            rm -rf ./node_modules
+            RUN npm ci
+            npm run-script build:k6-test
+        """  
       }
          
     }
