@@ -4,7 +4,7 @@ pipeline {
     dockerfile {
       filename 'Dockerfile.run'
       label 'linux && docker'
-      reuseNode true
+      reuseNode false
     }
   }
   options {
