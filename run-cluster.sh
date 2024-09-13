@@ -13,8 +13,8 @@ export K6_TEST_PARALLELISM=2
 export K6_TEST_NAME=$K6_TEST_FILE
 
 for arg in "$@"; do
-  KEY=$(echo "$1" | cut -d= -f1)
-  VALUE=$(echo "$1" | cut -d= -f2)
+  KEY=$(echo "$arg" | cut -d= -f1)
+  VALUE=$(echo "$arg" | cut -d= -f2)
     if [[ -z "${VALUE}" ]]; then
         echo "${KEY} has no value"
     else
