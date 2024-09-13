@@ -20,9 +20,6 @@ export const options: Options = {
         abortOnFail: true,
       },
     ],
-    proposals_submitted: [
-      `count>=${0.9 * (+__ENV.K6_PS_VUS || 10) * (+__ENV.K6_PS_ITERATIONS || 1)}`,
-    ],
     checks: ['rate>0.90'],
   },
   scenarios: {

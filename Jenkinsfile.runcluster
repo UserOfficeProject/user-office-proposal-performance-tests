@@ -95,9 +95,16 @@ pipeline {
             npm ci
             npm run-script build:k6-test
         """  
-        sh './run-cluster.sh'
+        sh './run-cluster.sh \
+             K6_TEST_FILE=$K6_TEST_FILE \
+             K6_VERSION_TAG=$K6_VERSION_TAG \
+             TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG \
+             K6_PS_VUS=$K6_PS_VUS \
+             K6_PS_ITERATIONS=$K6_PS_ITERATIONS \
+             SETUP_TOTAL_USERS=$SETUP_TOTAL_USERS \ 
+             K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM \ 
+             TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID'
       }
-         
     }
 
   }
