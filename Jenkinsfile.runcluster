@@ -3,8 +3,8 @@ pipeline {
   agent {
     dockerfile {
       filename 'Dockerfile.run'
-      label 'linux && docker'
-      reuseNode false
+      label 'k6'
+      reuseNode true
     }
   }
   options {
