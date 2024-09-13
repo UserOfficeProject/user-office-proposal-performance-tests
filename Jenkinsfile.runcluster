@@ -89,7 +89,7 @@ pipeline {
           # clean up past data
           rm -rf ./node_modules
           rm -rf ./test
-          npm install
+          npm ci --loglevel verbose
           npm run-script build:k6-test
       """  
       }
