@@ -92,11 +92,10 @@ pipeline {
   
           rm -rf ./node_modules
           rm -rf ./test
-          mkdir -p /logs
           npm cache clean --force
 
           npm config set logs-max=0 --location=project
-          npm ci --loglevel verbose --logdir /logs
+          npm ci --loglevel verbose
           npm run-script build:k6-test
       """  
       }
