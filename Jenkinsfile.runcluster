@@ -1,0 +1,120 @@
+pipeline {
+  
+  agent {
+    dockerfile {
+      filename 'Dockerfile.run'
+      label 'linux && docker'
+      reuseNode true
+    }
+  }
+  options {
+    disableConcurrentBuilds()
+
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10'
+      )
+    )
+
+    office365ConnectorWebhooks([[
+      url: "${env.TEAMS_WEBHOOK_URL}",
+      notifyUnstable: true,
+      notifyFailure: true,
+      notifyBackToNormal: true,
+      startNotification: false,
+      notifySuccess: false,
+      notifyAborted: false,
+      notifyNotBuilt: false,
+      notifyRepeatedFailure: false
+    ]])
+  }
+  parameters {
+    string(
+      name: 'K6_TEST_FILE',
+      description: 'The k6 test file',
+      trim: true
+    )
+    string(
+      name: 'K6_VERSION_TAG',
+      description: 'The k6 version image',
+      defaultValue: '0.0.1',
+      trim: true
+    )
+    string(
+      name: 'TEST_SETUP_VERSION_TAG',
+      description: 'The test setup image version',
+      defaultValue: '0.0.1',
+      trim: true
+    )
+    string(
+      name: 'K6_PS_VUS',
+      description: 'The number of k6 vus',
+      defaultValue: '50',
+      trim: true
+    )
+    string(
+      name: 'K6_PS_ITERATIONS',
+      description: 'The number of k6 iterations',
+      trim: true
+      defaultValue: '3',
+    )
+    string(
+      name: 'SETUP_TOTAL_USERS',
+      description: 'The total number of users to use for the test',
+      trim: true
+      defaultValue: '250',
+    )
+    string(
+      name: 'TEST_SETUP_CALL_ID',
+      description: 'The call id in develop',
+      trim: true
+      defaultValue: '54',
+    )
+    string(
+      name: 'K6_TEST_PARALLELISM',
+      description: 'The number of parallel pods to use',
+      trim: true
+      defaultValue: '2',
+    )
+  }
+  environment {
+    KUBECONFIG = credentials('load-test-kubeconfig')
+  }
+
+  stages {
+    stage('Build and run load tests') {
+
+      steps {
+      sh """
+          # clean up past data
+          rm -rf ./node_modules
+          rm -rf ./test
+          npm install
+          npm run-script build:k6-test
+      """  
+      }
+         
+    }
+
+  }
+
+  // post {
+  //   regression {
+  //     emailext (
+  //       subject: '$DEFAULT_SUBJECT',
+  //       body: '$DEFAULT_CONTENT',
+  //       to: '$DEFAULT_RECIPIENTS',
+  //       recipientProviders: [developers()]
+  //     )
+  //   }
+
+  //   fixed {
+  //     emailext (
+  //       subject: '$DEFAULT_SUBJECT',
+  //       body: '$DEFAULT_CONTENT',
+  //       to: '$DEFAULT_RECIPIENTS',
+  //       recipientProviders: [developers()]
+  //     )
+  //   }
+  // }
+}
