@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: test-setup
-        image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-setup:0.0.1"
+        image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-setup:${TEST_SETUP_VERSION_TAG}"
         imagePullPolicy: Always
         ports:
         - containerPort: 8100

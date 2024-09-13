@@ -17,7 +17,8 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
   const context = await browser.newContext();
   const page = await context.newPage();
   const startTime = Date.now();
-  const currentUser = sharedData.users[exec.vu.iterationInScenario];
+  const currentUser =
+    sharedData.users[randomIntBetween(0, sharedData.users.length - 1)];
   context.setDefaultTimeout(240000);
   const proposalTitle = randomString(5);
   try {
