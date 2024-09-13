@@ -101,23 +101,23 @@ pipeline {
 
   }
 
-  // post {
-  //   regression {
-  //       emailext(
-  //         subject: '$DEFAULT_SUBJECT',
-  //         body: '$DEFAULT_CONTENT',
-  //         to: '$DEFAULT_RECIPIENTS',
-  //         recipientProviders: [developers()]
-  //       )
-  //     }
+  post {
+    regression {
+        emailext(
+          subject: '$DEFAULT_SUBJECT',
+          body: '$DEFAULT_CONTENT',
+          to: '$DEFAULT_RECIPIENTS',
+          recipientProviders: [developers()]
+        )
+      }
 
-  //   fixed {
-  //     emailext(
-  //     subject: '$DEFAULT_SUBJECT',
-  //     body: '$DEFAULT_CONTENT',
-  //     to: '$DEFAULT_RECIPIENTS',
-  //     recipientProviders: [developers()]
-  //   )
-  //   }
-  // }
+    fixed {
+      emailext(
+      subject: '$DEFAULT_SUBJECT',
+      body: '$DEFAULT_CONTENT',
+      to: '$DEFAULT_RECIPIENTS',
+      recipientProviders: [developers()]
+    )
+    }
+  }
 }
