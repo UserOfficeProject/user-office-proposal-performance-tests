@@ -92,7 +92,7 @@ pipeline {
         sh """
             # clean up past data
             rm -rf ./node_modules
-            RUN npm ci
+            npm ci
             npm run-script build:k6-test
         """  
       }
