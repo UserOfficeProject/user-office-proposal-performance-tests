@@ -95,6 +95,7 @@ pipeline {
             npm ci
             npm run-script build:k6-test
         """  
+        sh './run-cluster.sh'
       }
          
     }
