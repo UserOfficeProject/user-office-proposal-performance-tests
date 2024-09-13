@@ -1,12 +1,7 @@
 pipeline {
-  
-  agent {
-    dockerfile {
-      filename 'Dockerfile.run'
-      label 'k6'
-      reuseNode true
-    }
-  }
+
+  agent none
+
   options {
     disableConcurrentBuilds()
 
@@ -82,8 +77,15 @@ pipeline {
   }
 
   stages {
-    stage('Build and run load tests') {
 
+    stage('Build and run load tests') {
+      agent {
+        dockerfile {
+          filename 'Dockerfile.run'
+          label 'k6'
+          reuseNode true
+        }
+      }
       steps {
       sh """
           # clean up past data
