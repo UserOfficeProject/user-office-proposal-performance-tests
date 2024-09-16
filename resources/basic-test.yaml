@@ -40,7 +40,7 @@ spec:
       - name: K6_PS_ITERATIONS 
         value: '${K6_PS_ITERATIONS}'
       - name: SETUP_TOTAL_USERS 
-        value: '${SETUP_TOTAL_USERS}' 
+        value: '${K6_SETUP_TOTAL_USERS}' 
       - name: TEST_SETUP_CALL_ID 
         value: '${TEST_SETUP_CALL_ID}'
       - name: K6_TEST_PARALLELISM

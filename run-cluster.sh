@@ -7,7 +7,7 @@ export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
 export TEST_SETUP_URL=http://test-setup:8100
 export K6_PS_VUS=50
 export K6_PS_ITERATIONS=3
-export SETUP_TOTAL_USERS=250
+export K6_SETUP_TOTAL_USERS=250
 export TEST_SETUP_CALL_ID=54
 export K6_TEST_PARALLELISM=2
 export K6_TEST_NAME=$K6_TEST_FILE
@@ -76,6 +76,9 @@ fi
 k6_pod_runners_failed=0 
 k6_pod_runners_succeeded=0
 k6_pod_runners_finished_tests=0
+#Tests will terminate after 2 hours
+k6_test_timeout=7200
+test_start_time=$(date +%s)
 while [[ $k6_pod_runners -gt $k6_pod_runners_finished_tests ]]; do
   results=$(kubectl get pods -o json -n apps | jq '.items[] | select(.metadata.labels["app"] == "k6" and .metadata.labels["runner"] == "true") | .status.phase')
   k6_pod_runners_failed=$(echo "$results" | grep -c 'Failed')
@@ -84,6 +87,11 @@ while [[ $k6_pod_runners -gt $k6_pod_runners_finished_tests ]]; do
   echo "k6 pod runners which have completed tests $k6_pod_runners_finished_tests"
   if [[ $k6_pod_runners -eq $k6_pod_runners_finished_tests ]]; then
     break
+  fi
+  elapsed_time=$(($(date +%s) - $test_start_time))
+  if [[ $elapsed_time -ge $k6_test_timeout ]]; then
+      echo "Timeout reached. Terminating k6 test."
+      break
   fi
   echo "Waiting for k6 test to finish..."
   sleep 10
