@@ -11,8 +11,8 @@ export K6_SETUP_TOTAL_USERS=250
 export TEST_SETUP_CALL_ID=54
 export K6_TEST_PARALLELISM=2
 export K6_TEST_NAME=$K6_TEST_FILE
-export SETUP_TEST_USERS="false"
-export SETUP_TEST_CALL="false"
+export SETUP_TEST_USERS="true"
+export SETUP_TEST_CALL="true"
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
