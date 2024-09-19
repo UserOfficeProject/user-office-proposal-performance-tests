@@ -71,6 +71,18 @@ pipeline {
       defaultValue: '2',
       trim: true
     )
+    string(
+      name: 'SETUP_TEST_USERS',
+      description: 'Flag to set up test users',
+      defaultValue: 'true',
+      trim: true
+    )
+    string(
+      name: 'SETUP_TEST_CALL',
+      description: 'Flag to set up test call',
+      defaultValue: 'true',
+      trim: true
+    )
   }
   environment {
     HOME = '.'
@@ -94,8 +106,8 @@ pipeline {
             rm -rf ./node_modules
             npm ci
             npm run-script build:k6-test
-        """  
-        sh './run-cluster.sh K6_TEST_FILE=$K6_TEST_FILE K6_VERSION_TAG=$K6_VERSION_TAG TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_PS_VUS=$K6_PS_VUS K6_PS_ITERATIONS=$K6_PS_ITERATIONS K6_SETUP_TOTAL_USERS=$K6_SETUP_TOTAL_USERS K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID'
+        """ 
+        sh './run-cluster.sh K6_TEST_FILE=$K6_TEST_FILE SETUP_TEST_CALL=$SETUP_TEST_CALL SETUP_TEST_USERS=$SETUP_TEST_USERS K6_VERSION_TAG=$K6_VERSION_TAG TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_PS_VUS=$K6_PS_VUS K6_PS_ITERATIONS=$K6_PS_ITERATIONS K6_SETUP_TOTAL_USERS=$K6_SETUP_TOTAL_USERS K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID'
       }
     }
 

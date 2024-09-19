@@ -1,4 +1,4 @@
-import { check } from 'k6';
+import { check, fail } from 'k6';
 import { browser } from 'k6/browser';
 import exec from 'k6/execution';
 import { Trend } from 'k6/metrics';
@@ -7,6 +7,12 @@ import { logFailedTest } from './support/logger';
 import { SharedData } from '../utils/sharedType';
 const userHomeResponseTime = new Trend('user_home_response_time', true);
 export default async function userHomeTest(sharedData: SharedData) {
+  if (!sharedData.users) {
+    fail(`User not set`);
+  }
+  if (!sharedData.testCall) {
+    fail(`Test call not set`);
+  }
   const context = await browser.newContext();
   const page = await context.newPage();
   const startTime = Date.now();

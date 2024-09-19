@@ -1,4 +1,4 @@
-import { check, sleep } from 'k6';
+import { check, fail, sleep } from 'k6';
 import { browser } from 'k6/browser';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
@@ -13,6 +13,12 @@ const proposalSubmissionDuration = new Trend(
 
 const proposalsSubmitted = new Counter('proposals_submitted', false);
 export default async function proposalSubmissionTest(sharedData: SharedData) {
+  if (!sharedData.users) {
+    fail(`User not set`);
+  }
+  if (!sharedData.testCall) {
+    fail(`Test call not set`);
+  }
   sleep(randomIntBetween(10, 100));
   const context = await browser.newContext();
   const page = await context.newPage();

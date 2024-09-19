@@ -16,6 +16,10 @@ export async function sc1TearDown(
     sharedData.graphqlUrl,
     environmentConfig.GRAPHQL_TOKEN
   );
+
+  if (!sharedData.testCall) {
+    return;
+  }
   const proposal = new Proposal(apiClient);
   const template = new Template(apiClient);
   const instrument = new Instrument(apiClient);
@@ -32,9 +36,11 @@ export async function sc1TearDown(
 
   if (sharedData.testCall.instruments.length > 0) {
     sharedData.testCall.instruments.forEach((inst) => {
-      call.removeAssignedInstrumentFromCall(sharedData.testCall.id, inst.id);
-      sleep(5);
-      instrument.deleteInstrument(inst.id);
+      if (sharedData.testCall) {
+        call.removeAssignedInstrumentFromCall(sharedData.testCall.id, inst.id);
+        sleep(5);
+        instrument.deleteInstrument(inst.id);
+      }
     });
   }
   console.log('Cleaning up test call');
@@ -44,6 +50,4 @@ export async function sc1TearDown(
   console.log('Cleaning up call template');
 
   template.deleteTemplate(sharedData.testCall.templateId);
-
-  console.log('Cleaning up user set up');
 }

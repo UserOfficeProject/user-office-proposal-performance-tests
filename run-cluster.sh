@@ -11,6 +11,8 @@ export K6_SETUP_TOTAL_USERS=250
 export TEST_SETUP_CALL_ID=54
 export K6_TEST_PARALLELISM=2
 export K6_TEST_NAME=$K6_TEST_FILE
+export SETUP_TEST_USERS="false"
+export SETUP_TEST_CALL="false"
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -35,10 +37,12 @@ kubectl delete configmap test-scripts -n apps --ignore-not-found
 
 sleep 5
 
-echo "Starting new load test setup ..."
-envsubst < $k8s_config_dir/kubernetes/test-setup/deployment.yaml | kubectl apply -f - -n apps 1> /dev/null
-kubectl apply -f $k8s_config_dir/kubernetes/test-setup/service.yaml 1> /dev/null
-kubectl wait deployment/test-setup-deployment  -n apps  --timeout=120s --for condition=Available=True 1> /dev/null
+if [ "$SETUP_TEST_USERS" == "true" ]; then
+  echo "Starting new load test setup ..."
+  envsubst < $k8s_config_dir/kubernetes/test-setup/deployment.yaml | kubectl apply -f - -n apps 1> /dev/null
+  kubectl apply -f $k8s_config_dir/kubernetes/test-setup/service.yaml 1> /dev/null
+  kubectl wait deployment/test-setup-deployment  -n apps  --timeout=120s --for condition=Available=True 1> /dev/null
+fi
 
 sleep 5
 
@@ -98,9 +102,12 @@ while [[ $k6_pod_runners -gt $k6_pod_runners_finished_tests ]]; do
 done
 
 sleep 5
-echo "Removing test setup"
-kubectl delete deployment/test-setup-deployment -n apps  &> /dev/null
-kubectl wait pods -l app=test-setup -n apps --timeout=-1s --for=delete &> /dev/null
+
+if [ "$SETUP_TEST_USERS" == "true" ]; then
+  echo "Removing test setup"
+  kubectl delete deployment/test-setup-deployment -n apps  &> /dev/null
+  kubectl wait pods -l app=test-setup -n apps --timeout=-1s --for=delete &> /dev/null
+fi
 
 if [[ $k6_pod_runners_failed -gt 1 ]]; then
   echo "k6 test failed."

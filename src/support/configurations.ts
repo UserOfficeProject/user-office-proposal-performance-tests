@@ -7,6 +7,8 @@ export type EnvironmentConfigurations = {
   SETUP_RETRY_INTERVAL: number;
   SETUP_TOTAL_USERS: number;
   USER_STARTING_ID: number;
+  SETUP_TEST_USERS: string;
+  SETUP_TEST_CALL: string;
 };
 
 export function getEnvironmentConfigurations(): EnvironmentConfigurations {
@@ -20,6 +22,8 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     USER_DB_PASSWORD: __ENV.USER_DB_PASSWORD || '',
     USER_DB_CONNECTION_STRING: __ENV.USER_DB_CONNECTION_STRING || '',
     USER_STARTING_ID: +__ENV.USER_STARTING_ID || -260800000,
+    SETUP_TEST_USERS: __ENV.SETUP_TEST_USERS || 'false',
+    SETUP_TEST_CALL: __ENV.SETUP_TEST_CALL || 'false',
   };
 
   try {

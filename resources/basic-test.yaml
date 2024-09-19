@@ -45,6 +45,10 @@ spec:
         value: '${TEST_SETUP_CALL_ID}'
       - name: K6_TEST_PARALLELISM
         value: '${K6_TEST_PARALLELISM}'
+      - name: SETUP_TEST_USERS
+        value: '${SETUP_TEST_USERS}'
+      - name: SETUP_TEST_CALL
+        value: '${SETUP_TEST_CALL}'
     envFrom:
      - secretRef:
          name: connection-secrets

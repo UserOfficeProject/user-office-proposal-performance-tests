@@ -53,27 +53,35 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       }
     }
   }
-  const response = http.get(
-    `${testSetupBaseUrl}/users/${environmentConfig.SETUP_TOTAL_USERS}`
-  );
-  check(response, {
-    'User auth setup successful': (r) => {
-      const status = r.status === 200;
-      if (status) {
-        users = response.json();
-      }
+  if (environmentConfig.SETUP_TEST_USERS === 'true') {
+    const response = http.get(
+      `${testSetupBaseUrl}/users/${environmentConfig.SETUP_TOTAL_USERS}`
+    );
+    check(response, {
+      'User auth setup successful': (r) => {
+        const status = r.status === 200;
+        if (status) {
+          users = response.json();
+        }
 
-      return status;
-    },
-  });
-  // Check for final setup outcome and abort if necessary
-  if (!proposalHealthCheck || !users) {
+        return status;
+      },
+    });
+
     console.error(
       `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
     );
     if (!users) {
       console.error('Failed to create users');
     }
+    exec.test.abort();
+  }
+
+  // Check for final setup outcome and abort if necessary
+  if (!proposalHealthCheck) {
+    console.error(
+      `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
+    );
     exec.test.abort();
 
     return;
@@ -87,29 +95,31 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     );
   }
 
-  if (__ENV.TEST_SETUP_CALL_ID) {
-    testCall = call.getCall(+__ENV.TEST_SETUP_CALL_ID);
-  } else {
-    testCall = call.createTestCall(template.createTemplate().templateId);
-    if (testCall) {
-      const instrument = new Instrument(apiClient);
-      const callInstrument = instrument.createInstrument(1);
-      if (callInstrument) {
-        const callWithInstruments = call.assignInstrumentsToCall(
-          testCall.id,
-          callInstrument.id
-        );
-        testCall.instruments = [...callWithInstruments.instruments];
-      } else {
-        console.error('Failed to create instrument aborting test');
-        exec.test.abort();
+  if (environmentConfig.SETUP_TEST_CALL === 'true') {
+    if (__ENV.TEST_SETUP_CALL_ID) {
+      testCall = call.getCall(+__ENV.TEST_SETUP_CALL_ID);
+    } else {
+      testCall = call.createTestCall(template.createTemplate().templateId);
+      if (testCall) {
+        const instrument = new Instrument(apiClient);
+        const callInstrument = instrument.createInstrument(1);
+        if (callInstrument) {
+          const callWithInstruments = call.assignInstrumentsToCall(
+            testCall.id,
+            callInstrument.id
+          );
+          testCall.instruments = [...callWithInstruments.instruments];
+        } else {
+          console.error('Failed to create instrument aborting test');
+          exec.test.abort();
+        }
       }
     }
-  }
 
-  if (!testCall) {
-    console.error('Failed to create test call aborting test');
-    exec.test.abort();
+    if (!testCall) {
+      console.error('Failed to create test call aborting test');
+      exec.test.abort();
+    }
   }
 
   return {
