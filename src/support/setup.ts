@@ -68,13 +68,12 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       },
     });
 
-    console.error(
-      `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
-    );
     if (!users) {
-      console.error('Failed to create users');
+      console.error(
+        `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
+      );
+      exec.test.abort();
     }
-    exec.test.abort();
   }
 
   // Check for final setup outcome and abort if necessary
