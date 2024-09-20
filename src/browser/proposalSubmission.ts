@@ -81,7 +81,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     await page
       .locator('//button[contains(text(), "Save and continue")]')
       .click();
-    sleep(randomIntBetween(5, 20));
+    sleep(randomIntBetween(10, 40));
     const saveMessageVisible = await page
       .locator('//div[contains(text(), "Saved")]')
       .isVisible();

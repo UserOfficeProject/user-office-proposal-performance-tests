@@ -10,6 +10,7 @@ spec:
     configMap:
       name: test-scripts
       file: ${K6_TEST_FILE}.js
+  separate: true
   arguments: --out logger --no-usage-report -e ENVIRONMENT=develop
   runner:
     image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
