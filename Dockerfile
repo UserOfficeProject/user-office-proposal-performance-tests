@@ -4,8 +4,7 @@ WORKDIR $GOPATH/src/go.k6.io/k6
 ADD . .
 RUN apk --no-cache add build-base git
 RUN go install go.k6.io/xk6/cmd/xk6@v0.12.2
-RUN CGO_ENABLED=1 xk6 build \
-    --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-sql-connector="$PWD/extensions/xk6-sql-connector" \
+RUN xk6 build \
     --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-logger="$PWD/extensions/xk6-output-logger" \
     --with github.com/grafana/xk6-browser@v1.7.0\
     --output /tmp/k6
