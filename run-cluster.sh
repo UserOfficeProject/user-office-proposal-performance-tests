@@ -1,7 +1,7 @@
 #!/bin/bash
 export K6_TEST_FILE=sc1-proposal-submission-test
-export K6_VERSION_TAG=0.0.1
-export TEST_SETUP_VERSION_TAG=0.0.1
+export K6_VERSION_TAG=0.0.2
+export TEST_SETUP_VERSION_TAG=0.0.2
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
 export TEST_SETUP_URL=http://test-setup:8100
@@ -72,9 +72,12 @@ done
 if [[ $k6_pod_runners -gt 1 ]]; then
   echo "k6 pod runners greater than one proceeding ..."
 else
+  echo "Could not initilise k6 pod runners after 10 attempts. Aborting."
   envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
   kubectl delete configmap test-scripts -n apps --ignore-not-found
-  echo "Could not initilise k6 pod runners after 10 attempts. Aborting."
+  echo "Removing test setup"
+  kubectl delete deployment/test-setup-deployment -n apps  &> /dev/null
+  kubectl wait pods -l app=test-setup -n apps --timeout=-1s --for=delete &> /dev/null
   exit 1
 fi
 k6_pod_runners_failed=0 

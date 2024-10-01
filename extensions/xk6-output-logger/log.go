@@ -40,7 +40,7 @@ func (o *Logger) Start() error {
 func (l *Logger) AddMetricSamples(samples []metrics.SampleContainer) {
 	for _, sample := range samples {
 		all := sample.GetSamples()
-		fmt.Fprintf(l.out, "timestamp=%s %s %s\n", all[0].GetTime().Format(time.RFC3339Nano), metricKeyValues(all),metricTagsValues(all[0].GetTags().Map()))
+		fmt.Fprintf(l.out, "timestamp=%s %s %s\n", metricKeyValues(all),metricTagsValues(all[0].GetTags().Map()),all[0].GetTime().Format(time.RFC3339Nano))
 	}
 }
 
@@ -60,12 +60,13 @@ func metricTagsValues(tags map[string]string) string {
 		if value != "" {
             switch key {
             case "scenario", "method", "status", "group":
-                sb.WriteString(fmt.Sprintf(" %s=%s ", key, value))  
+                sb.WriteString(fmt.Sprintf("%s=%s ", key, value))  
             }
 		}
 
 	}
-	return sb.String()
+
+	return strings.Trim(sb.String(), " ") 
 }
 
 // Stop finalizes any tasks in progress, closes network connections, etc.

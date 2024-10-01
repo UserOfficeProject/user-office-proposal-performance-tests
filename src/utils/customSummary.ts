@@ -44,7 +44,7 @@ export function generateTextSummary(summaryData: SummaryData) {
               );
             } else {
               metricValues.push(
-                ` ${cleanKeyText(innerDeepKey)}=${innerMetric[innerDeepKey]}`
+                `${cleanKeyText(innerDeepKey)}=${innerMetric[innerDeepKey]}`
               );
             }
           }
