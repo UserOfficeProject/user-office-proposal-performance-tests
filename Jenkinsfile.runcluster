@@ -50,7 +50,7 @@ pipeline {
     string(
       name: 'K6_PS_ITERATIONS',
       description: 'The number of k6 iterations',
-      defaultValue: '3',
+      defaultValue: '2',
       trim: true
     )
     string(

@@ -1,7 +1,7 @@
 apiVersion: k6.io/v1alpha1
 kind: TestRun
 metadata:
-  name: ${K6_TEST_NAME}-deployment
+  name: ${K6_TEST_FILE}-deployment
   labels:
     app: ${K6_TEST_NAME}
 spec:
@@ -14,6 +14,7 @@ spec:
   arguments: --out logger --no-usage-report -e ENVIRONMENT=develop
   runner:
     image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
+    imagePullPolicy: Always
     imagePullSecrets:
       - name: registry-creds
     metadata:
@@ -22,6 +23,7 @@ spec:
         co.elastic.logs/processors.add_fields.target: ""
         co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
         co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
+        co.elastic.logs/processors.add_fields.fields.application.label: "${K6_TEST_NAME}"
         co.elastic.logs/processors.add_fields.fields.application.tier: "service"
         co.elastic.logs/processors.1.kv.field: "message"
         co.elastic.logs/processors.1.kv.field_split: " "
@@ -42,8 +44,8 @@ spec:
         co.elastic.logs/processors.4.drop_fields.ignore_missing: "true"
     resources:
       requests:
-        cpu: "1000m"
-        memory: "2Gi"
+        cpu: "3000m"
+        memory: "4Gi"
     env:
       - name: BROWSER_BASE_URL
         value: ${BROWSER_BASE_URL}

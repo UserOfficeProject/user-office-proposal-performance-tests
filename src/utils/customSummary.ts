@@ -3,8 +3,8 @@ type Metric = Record<string, Record<string, object | string> | string>;
 export type SummaryData = Record<string, Record<string, Metric>>;
 function cleanKeyText(text: string): string {
   return text
-    .replace(/(?<=\S)\s(?=\S)|(?<=\S)[{}:](?=\S)/g, '_')
-    .replace(/[ {}:]/g, '')
+    .replace(/(?<=\S)\s(?=\S)|(?<=\S)[{}: ():](?=\S)/g, '_')
+    .replace(/[ {}: ():]/g, '')
     .trim();
 }
 function getKeyValue(prefix: string, values: Record<string, object>): string {
