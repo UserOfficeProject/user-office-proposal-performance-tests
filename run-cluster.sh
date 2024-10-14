@@ -114,15 +114,15 @@ fi
 
 echo "k6 test failed $k6_pod_runners_failed "
 echo "k6 test successful $k6_pod_runners_succeeded"
-if [[ $k6_pod_runners_failed -gt 0 ]]; then
-  echo "k6 test failed."
-  envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
-  kubectl delete configmap test-scripts -n apps --ignore-not-found
-  exit 1
-else
+if [[ $k6_pod_runners_succeeded -eq $k6_pod_runners ]]; then
   echo "K6 tests where successful"
   envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
   kubectl delete configmap test-scripts -n apps --ignore-not-found
   exit 0
+else
+  echo "k6 test failed."
+  envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
+  kubectl delete configmap test-scripts -n apps --ignore-not-found
+  exit 1
 fi
 
