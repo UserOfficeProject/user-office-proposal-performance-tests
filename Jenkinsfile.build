@@ -1,0 +1,77 @@
+pipeline {
+  agent {
+    label 'linux && docker'
+  }
+
+  options {
+    disableConcurrentBuilds()
+
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10'
+      )
+    )
+
+    office365ConnectorWebhooks([[
+      url: "${env.TEAMS_WEBHOOK_URL}",
+      notifyUnstable: true,
+      notifyFailure: true,
+      notifyBackToNormal: true,
+      startNotification: false,
+      notifySuccess: false,
+      notifyAborted: false,
+      notifyNotBuilt: false,
+      notifyRepeatedFailure: false
+    ]])
+  }
+
+  parameters {
+    string(name: 'K6_VERSION_TAG', defaultValue: '', description: 'The version to tag the docker image for k6. E.g. 1.0.0')
+    string(name: 'SETUP_VERSION_TAG', defaultValue: '', description: 'The version to tag the docker image for setup. E.g. 1.0.0')
+  }
+
+  stages {
+    stage('Build and deploy') {
+       stages {
+          stage('k6-test') {
+            steps {
+              withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
+                sh """
+                ./build-push-image.sh uop-performance-tests-k6 ${params.K6_VERSION_TAG} .
+                """
+              }
+            }
+          }
+      
+          stage('test-setup') {
+                steps {
+                  withDockerRegistry(credentialsId: 'harbor-scd-cloud-image-pusher', url: 'https://harbor.stfc.ac.uk/isisbusapps') {
+                    sh """
+                    ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} test-setup
+                    """
+                  }
+                }
+          }
+       }
+    }
+  }
+  post {
+    regression {
+      emailext (
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+        to: '$DEFAULT_RECIPIENTS',
+        recipientProviders: [developers()]
+      )
+    }
+
+    fixed {
+      emailext (
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+        to: '$DEFAULT_RECIPIENTS',
+        recipientProviders: [developers()]
+      )
+    }
+  }
+}

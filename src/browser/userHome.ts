@@ -1,31 +1,42 @@
-import { check, sleep } from 'k6';
+import { check, fail } from 'k6';
+import { browser } from 'k6/browser';
 import exec from 'k6/execution';
-import { browser } from 'k6/experimental/browser';
 import { Trend } from 'k6/metrics';
 
-import { Dashboard } from './support/dashboard';
 import { logFailedTest } from './support/logger';
-import { User } from './support/user';
-import { randomIntBetween } from '../utils/helperFunctions';
 import { SharedData } from '../utils/sharedType';
 const userHomeResponseTime = new Trend('user_home_response_time', true);
 export default async function userHomeTest(sharedData: SharedData) {
+  if (!sharedData.users) {
+    fail(`User not set`);
+  }
+  if (!sharedData.testCall) {
+    fail(`Test call not set`);
+  }
+  const context = await browser.newContext();
+  const page = await context.newPage();
   const startTime = Date.now();
   const currentUser = sharedData.users[exec.vu.iterationInScenario];
-  const context = browser.newContext();
   context.setDefaultTimeout(240000);
-  const page = context.newPage();
   try {
-    const user = new User(sharedData.browserBaseUrl, currentUser.sessionId);
-    await page.goto(user.getLoginURL());
+    await page.goto(
+      `${sharedData.browserBaseUrl}/external-auth?token=${currentUser.sessionId}`
+    );
     await Promise.all([page.waitForNavigation()]);
-    const dashboard = new Dashboard();
-    await page.goto(sharedData.browserBaseUrl);
-    sleep(randomIntBetween(60, 300));
+
+    const userDashboardIsVisible = await page
+      .waitForSelector('//h1[contains(text(), "User Office / Dashboard")]')
+      .then((e) => e.isVisible());
+
+    const userProposalsIsVisible = await page
+      .waitForSelector('//h2[contains(text(), "My proposals")]')
+      .then((e) => e.isVisible());
+
     check(page, {
-      'User can see my proposals table': () =>
-        page.waitForSelector(dashboard.myProposal()).isVisible(),
+      'User can see home page': () => userDashboardIsVisible,
+      'User can see my proposals table': () => userProposalsIsVisible,
     });
+
     userHomeResponseTime.add((Date.now() - startTime) / 1000);
   } catch (error) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: userHomeTest VU_ID: ${exec.vu.idInTest}`;

@@ -7,6 +7,12 @@ import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
 
 export function userTest(sharedData: SharedData) {
+  if (!sharedData.users) {
+    fail(`User not set`);
+  }
+  if (!sharedData.testCall) {
+    fail(`Test call not set`);
+  }
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));

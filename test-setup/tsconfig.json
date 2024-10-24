@@ -1,0 +1,25 @@
+{
+    
+    "compilerOptions": {
+      "moduleResolution": "Bundler",
+      "target": "es5",
+      "module": "ES2022",
+      "lib": [
+        "es2022",
+      ] ,
+      "allowJs": true ,
+      "skipLibCheck": true,
+      "outDir": "./build",
+      "downlevelIteration": true,
+      "strict": true ,
+      "strictPropertyInitialization": false ,
+      "types": [
+        "node",
+      ] ,
+      "esModuleInterop": true ,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true
+    },
+    "exclude": ["node_modules", "build"],
+}
+  

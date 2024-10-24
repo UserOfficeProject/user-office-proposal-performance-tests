@@ -1,0 +1,57 @@
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: ${K6_TEST_FILE}-deployment
+  labels:
+    app: ${K6_TEST_NAME}
+spec:
+  parallelism: ${K6_TEST_PARALLELISM}
+  script:
+    configMap:
+      name: test-scripts
+      file: ${K6_TEST_FILE}.js
+  separate: true
+  arguments: --out logger --no-usage-report -e ENVIRONMENT=develop
+  runner:
+    image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
+    imagePullPolicy: Always
+    imagePullSecrets:
+      - name: registry-creds
+    metadata:
+      annotations:
+        co.elastic.logs/enabled: 'true'
+        co.elastic.logs/processors.add_fields.target: ""
+        co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
+        co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
+        co.elastic.logs/processors.add_fields.fields.application.tier: "service"
+        co.elastic.logs/processors.dissect.tokenizer: "%{@timestamp}%{?separator}%{?log_metric}"
+        co.elastic.logs/processors.dissect.ignore_failure: "true"
+        co.elastic.logs/processors.dissect.target_prefix: ""
+    resources:
+      requests:
+        cpu: "3000m"
+        memory: "4Gi"
+    env:
+      - name: BROWSER_BASE_URL
+        value: ${BROWSER_BASE_URL}
+      - name: GRAPHQL_URL
+        value: ${GRAPHQL_URL}
+      - name: TEST_SETUP_URL
+        value: ${TEST_SETUP_URL}   
+      - name: K6_PS_VUS 
+        value: '${K6_PS_VUS}'
+      - name: K6_PS_ITERATIONS 
+        value: '${K6_PS_ITERATIONS}'
+      - name: SETUP_TOTAL_USERS 
+        value: '${K6_SETUP_TOTAL_USERS}' 
+      - name: TEST_SETUP_CALL_ID 
+        value: '${TEST_SETUP_CALL_ID}'
+      - name: K6_TEST_PARALLELISM
+        value: '${K6_TEST_PARALLELISM}'
+      - name: SETUP_TEST_USERS
+        value: '${SETUP_TEST_USERS}'
+      - name: SETUP_TEST_CALL
+        value: '${SETUP_TEST_CALL}'
+    envFrom:
+     - secretRef:
+         name: connection-secrets

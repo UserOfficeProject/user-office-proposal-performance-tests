@@ -1,15 +1,32 @@
-FROM golang:1.22-alpine as k6-builder
+FROM golang:1.23-alpine as k6-builder
 
-WORKDIR /app
-
-ENV CGO_ENABLED 0
-
-RUN go install go.k6.io/xk6/cmd/xk6@latest
-
+WORKDIR $GOPATH/src/go.k6.io/k6
+ADD . .
+RUN apk --no-cache add build-base git
+RUN go install go.k6.io/xk6/cmd/xk6@v0.12.2
 RUN xk6 build \
-    --with github.com/grafana/xk6-browser
-    
-FROM alpine:3.18 as release
+    --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-logger="$PWD/extensions/xk6-output-logger" \
+    --with github.com/grafana/xk6-browser@v1.7.0\
+    --output /tmp/k6
+
+FROM alpine:3.20 as release
+
+# Download and install Oracle Instant Client
+RUN apk --no-cache add libaio libnsl libc6-compat curl && \
+    cd /tmp && \
+    curl -o instantclient-basiclite.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip -SL && \
+    unzip instantclient-basiclite.zip && \
+    mv instantclient*/ /usr/lib/instantclient && \
+    rm instantclient-basiclite.zip && \
+    ln -s /usr/lib/instantclient/libclntsh.so.21.1 /usr/lib/libclntsh.so && \
+    ln -s /usr/lib/instantclient/libocci.so.21.1 /usr/lib/libocci.so && \
+    ln -s /usr/lib/instantclient/libociicus.so /usr/lib/libociicus.so && \
+    ln -s /usr/lib/instantclient/libnnz21.so /usr/lib/libnnz21.so && \
+    ln -s /usr/lib/libnsl.so.2 /usr/lib/libnsl.so.1 && \
+    ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2 && \
+    ln -s /lib64/ld-linux-x86-64.so.2 /usr/lib/ld-linux-x86-64.so.2
+
+ENV LD_LIBRARY_PATH /usr/lib/instantclient
 
 RUN apk add --no-cache \
   chromium-swiftshader \
@@ -18,17 +35,9 @@ RUN apk add --no-cache \
   npm 
 
 # Install build dependencies for k6
-COPY --from=k6-builder /app/k6 /bin/
-
-WORKDIR /app
-
-COPY ./ ./
-
-# Install Node.js dependencies
-RUN npm ci --loglevel verbose
+COPY --from=k6-builder /tmp/k6 /bin/
 
 USER root
-
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
 
