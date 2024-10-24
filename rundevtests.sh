@@ -11,6 +11,13 @@ export USER_STARTING_ID=-240800000
 export TEST_SETUP_CALL_ID=1
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
+export K6_OPENSEARCH_INSECURE_SKIP_VERIFY="false"
+export K6_OPENSEARCH_PASSWORD="password"
+export K6_OPENSEARCH_USERNAME="admin"
+export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
+export K6_TEST_ID="$(date +%s)"
+
+echo "K6_TEST_ID: $K6_TEST_ID" 
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -33,6 +40,7 @@ if [ "$SETUP_TEST_USERS" == "true" ]; then
     npm run build:test-setup&
     sleep 10&
     npm run start:test-setup&
+    sleep 10
     while ! nc -z localhost 8100; do
         sleep 5
         echo "Local test setup server is not ready "
@@ -44,6 +52,7 @@ sleep 10
 
 # Dashboard url:http://localhost:5665
 # Test can also out put to std using --out logger
+# Test can also be out put to opensearch --out xk6-output-opensearch 
 k6 run --no-usage-report --out dashboard - < <(cat ./test/sc1-proposal-submission-test.js)
 
 if [ "$SETUP_TEST_USERS" == "true" ]; then
