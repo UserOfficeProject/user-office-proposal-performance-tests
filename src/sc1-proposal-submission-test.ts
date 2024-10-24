@@ -4,7 +4,6 @@ import proposalSubmissionTest from './browser/proposalSubmission';
 import { getEnvironmentConfigurations } from './support/configurations';
 import { sc1Setup } from './support/setup';
 import { sc1TearDown } from './support/teardown';
-import { generateTextSummary, SummaryData } from './utils/customSummary';
 import { SharedData } from './utils/sharedType';
 
 export const options: Options = {
@@ -39,11 +38,7 @@ export const options: Options = {
 };
 
 const environmentConfig = getEnvironmentConfigurations();
-export function handleSummary(data: SummaryData) {
-  return {
-    stdout: generateTextSummary(data),
-  };
-}
+
 export async function setup() {
   return await sc1Setup(environmentConfig);
 }
