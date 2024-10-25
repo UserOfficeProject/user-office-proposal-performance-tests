@@ -4,7 +4,6 @@ import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
 import { getClientApi } from './graphql';
-import { UserDataSource } from './userDataSource';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
@@ -18,33 +17,17 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     ************/
   let retryCount = 0;
   let proposalHealthCheck = false;
+  let users = null;
+  let testCall = null;
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
-
+  const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
   const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
   const call = new Call(apiClient);
   const template = new Template(apiClient);
 
-  const usersDataSource = new UserDataSource(
-    environmentConfig.USER_DB_USERNAME,
-    environmentConfig.USER_DB_PASSWORD,
-    environmentConfig.USER_DB_CONNECTION_STRING
-  );
-  await usersDataSource.deleteUsersBetween(
-    environmentConfig.USER_STARTING_ID,
-    environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
-  );
-  const users = await usersDataSource.getUsersBetween(
-    environmentConfig.USER_STARTING_ID,
-    environmentConfig.USER_STARTING_ID + environmentConfig.SETUP_TOTAL_USERS
-  );
-
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
-  while (
-    !proposalHealthCheck &&
-    retryCount < environmentConfig.SETUP_RETRIES &&
-    users.length > 0
-  ) {
+  while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
     if (!proposalHealthCheck) {
       // Check for successful proposal health check flags
       const response = http.get(`${browserBaseUrl}/health`);
@@ -70,16 +53,37 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       }
     }
   }
+  if (environmentConfig.SETUP_TEST_USERS === 'true') {
+    const response = http.get(
+      `${testSetupBaseUrl}/users/${environmentConfig.SETUP_TOTAL_USERS}`
+    );
+    check(response, {
+      'User auth setup successful': (r) => {
+        const status = r.status === 200;
+        if (status) {
+          users = response.json();
+        }
+
+        return status;
+      },
+    });
+
+    if (!users) {
+      console.error(
+        `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
+      );
+      exec.test.abort();
+    }
+  }
 
   // Check for final setup outcome and abort if necessary
-  if (!proposalHealthCheck || users.length < 0) {
+  if (!proposalHealthCheck) {
     console.error(
       `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
     );
-    if (users.length < 0) {
-      console.error('Failed to create users');
-    }
     exec.test.abort();
+
+    return;
   } else {
     console.info(
       `Setup successful ${
@@ -89,24 +93,32 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       } `
     );
   }
-  const testCall = call.createTestCall(template.createTemplate().templateId);
 
-  if (testCall) {
-    const instrument = new Instrument(apiClient);
-    const callInstrument = instrument.createInstrument(1);
-    if (callInstrument) {
-      const callWithInstruments = call.assignInstrumentsToCall(
-        testCall.id,
-        callInstrument.id
-      );
-      testCall.instruments = [...callWithInstruments.instruments];
+  if (environmentConfig.SETUP_TEST_CALL === 'true') {
+    if (__ENV.TEST_SETUP_CALL_ID) {
+      testCall = call.getCall(+__ENV.TEST_SETUP_CALL_ID);
     } else {
-      console.error('Failed to create instrument aborting test');
+      testCall = call.createTestCall(template.createTemplate().templateId);
+      if (testCall) {
+        const instrument = new Instrument(apiClient);
+        const callInstrument = instrument.createInstrument(1);
+        if (callInstrument) {
+          const callWithInstruments = call.assignInstrumentsToCall(
+            testCall.id,
+            callInstrument.id
+          );
+          testCall.instruments = [...callWithInstruments.instruments];
+        } else {
+          console.error('Failed to create instrument aborting test');
+          exec.test.abort();
+        }
+      }
+    }
+
+    if (!testCall) {
+      console.error('Failed to create test call aborting test');
       exec.test.abort();
     }
-  } else {
-    console.error('Failed to create test call aborting test');
-    exec.test.abort();
   }
 
   return {
@@ -114,5 +126,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     browserBaseUrl,
     graphqlUrl,
     testCall,
+    testSetupBaseUrl,
   } as SharedData;
 }

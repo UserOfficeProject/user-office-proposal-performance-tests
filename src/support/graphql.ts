@@ -2,12 +2,12 @@ import http from 'k6/http';
 
 import { ClientApi } from '../utils/sharedType';
 
-function generateBearerToken(text: string): string {
-  if (!text.startsWith('Bearer')) {
-    return `Bearer ${text}`;
+export function generateBearerToken(token: string): string {
+  if (!token.startsWith('Bearer')) {
+    return `Bearer ${token}`;
   }
 
-  return text;
+  return token;
 }
 export function getClientApi(graphqlUrl: string): ClientApi;
 export function getClientApi(

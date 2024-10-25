@@ -11,9 +11,13 @@
     "lint": "tsc --noEmit && eslint . --ext .js,.ts --quiet",
     "lint:fix": "tsc --noEmit && eslint . --ext .js,.ts --fix --quiet",
     "bundle": "webpack",
-    "build": "npm run bundle",
+    "build:k6-test": "npm run bundle",
+    "build:test-setup": "cd test-setup && npm run build",
+    "start:test-setup": "cd test-setup && npm run start",
+    "build": "concurrently \"npm run build:test-setup\" \"npm run build:k6-test\"",
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "cd test-setup && npm install"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -21,7 +25,7 @@
     "@babel/plugin-transform-object-rest-spread": "^7.24.1",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-typescript": "^7.23.3",
-    "@types/k6": "^0.49.0",
+    "@types/k6": "v0.53.0",
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "babel-loader": "^9.1.3",
@@ -42,5 +46,8 @@
   "engines": {
     "npm": ">=10.2.5",
     "node": ">=19.0.0"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
   }
 }

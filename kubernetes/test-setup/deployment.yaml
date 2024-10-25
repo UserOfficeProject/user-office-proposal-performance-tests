@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-setup-deployment
+  labels:
+    app: test-setup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-setup
+  template:
+    metadata:
+      labels:
+        app: test-setup
+    spec:
+      containers:
+      - name: test-setup
+        image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-setup:${TEST_SETUP_VERSION_TAG}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8100
+        env:
+        - name: PORT
+          value: "8100"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: connection-secrets
+              key: USER_DB_PASSWORD
+              optional: false
+        - name: DB_USERNAME 
+          valueFrom:
+            secretKeyRef:
+              name: connection-secrets
+              key: USER_DB_USERNAME
+              optional: false
+        - name: DB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: connection-secrets
+              key: USER_DB_CONNECTION_STRING
+              optional: false
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "0.5Gi"
+          requests:
+            cpu: "250m"
+            memory: "0.5Gi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8100
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "curl -s -X DELETE http://test-setup:8100/users/-220800000/-220900000"]
+      priorityClassName: high-priority
+      imagePullSecrets:
+      - name: registry-creds
+  progressDeadlineSeconds: 600

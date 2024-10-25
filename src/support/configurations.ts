@@ -1,11 +1,3 @@
-import { Options } from 'k6/options';
-
-import {
-  getLocalOption,
-  getDevelopOption,
-  getProductionOption,
-} from './options';
-
 export type EnvironmentConfigurations = {
   GRAPHQL_TOKEN: string;
   USER_DB_USERNAME: string;
@@ -15,55 +7,9 @@ export type EnvironmentConfigurations = {
   SETUP_RETRY_INTERVAL: number;
   SETUP_TOTAL_USERS: number;
   USER_STARTING_ID: number;
+  SETUP_TEST_USERS: string;
+  SETUP_TEST_CALL: string;
 };
-
-export function getExecutionOptions(
-  browserVus?: number,
-  browserIterations?: number,
-  graphqlVus?: number,
-  graphqlIterations?: number,
-  browserReqFailThreshold?: string,
-  httpReqFailThreshold?: string,
-  proposalSubmittedFailThreshold?: string,
-  checksFailThreshold?: string
-): Options {
-  if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'develop') {
-    return getDevelopOption(
-      browserVus,
-      browserIterations,
-      graphqlVus,
-      graphqlIterations,
-      browserReqFailThreshold,
-      httpReqFailThreshold,
-      proposalSubmittedFailThreshold,
-      checksFailThreshold
-    );
-  }
-
-  if (`${__ENV.ENVIRONMENT}`.toLowerCase() === 'production') {
-    return getProductionOption(
-      browserVus,
-      browserIterations,
-      graphqlVus,
-      graphqlIterations,
-      browserReqFailThreshold,
-      httpReqFailThreshold,
-      proposalSubmittedFailThreshold,
-      checksFailThreshold
-    );
-  }
-
-  return getLocalOption(
-    browserVus,
-    browserIterations,
-    graphqlVus,
-    graphqlIterations,
-    browserReqFailThreshold,
-    httpReqFailThreshold,
-    proposalSubmittedFailThreshold,
-    checksFailThreshold
-  );
-}
 
 export function getEnvironmentConfigurations(): EnvironmentConfigurations {
   const configDir = __ENV.PWD;
@@ -76,6 +22,8 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     USER_DB_PASSWORD: __ENV.USER_DB_PASSWORD || '',
     USER_DB_CONNECTION_STRING: __ENV.USER_DB_CONNECTION_STRING || '',
     USER_STARTING_ID: +__ENV.USER_STARTING_ID || -260800000,
+    SETUP_TEST_USERS: __ENV.SETUP_TEST_USERS || 'false',
+    SETUP_TEST_CALL: __ENV.SETUP_TEST_CALL || 'false',
   };
 
   try {

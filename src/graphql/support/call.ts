@@ -22,6 +22,13 @@ export class Call {
         shortCode
         title
         templateId
+        instruments {
+          id
+          description
+          managerUserId
+          name
+          shortCode
+        }
       }
     }`;
 
