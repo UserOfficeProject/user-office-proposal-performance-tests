@@ -9,7 +9,7 @@ import (
 	"gopkg.in/guregu/null.v3"
 )
 
-const defaultFlushPeriod = 1 * time.Second
+const defaultFlushPeriod = 30 * time.Second
 const defaultIndexName   = "k6-performance-metrics"
 
 // Config is the config for the template collector
