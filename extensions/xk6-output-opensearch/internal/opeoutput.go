@@ -111,7 +111,7 @@ func (*Output) Description() string {
 
 func (o *Output) Start() error {
 	indexName := o.config.IndexName.String
-    
+
 	if o.config.CreateIndex {
 		res, err := o.client.Indices.Create(
 			context.Background(),
@@ -120,7 +120,7 @@ func (o *Output) Start() error {
 				Body:  bytes.NewReader(mapping),
 			},
 		)
-	
+
 		if err != nil {
 			if strings.Contains(err.Error(), "resource_already_exists_exception") {
 				fmt.Printf("index already exists: %s", indexName)
@@ -191,6 +191,11 @@ func (o *Output) flush() {
 						} else {
 							o.logger.Errorf("%s: %s", res.Error.Type, res.Error.Reason)
 						}
+					},
+					OnSuccess: func(ctx context.Context,
+						item osapiutil.BulkIndexerItem,
+						res osapi.BulkRespItem) {
+						o.logger.Infof("wrote metric name %s to id %s",mappedSampleEntry.MetricName,res.ID)
 					},
 				},
 			)
