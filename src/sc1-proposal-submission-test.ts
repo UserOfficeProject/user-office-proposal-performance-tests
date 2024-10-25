@@ -26,7 +26,7 @@ export const options: Options = {
     proposalSubmission: {
       exec: 'proposalSubmission',
       executor: 'per-vu-iterations',
-      vus: +__ENV.K6_PS_VUS || 10,
+      vus: +__ENV.K6_PS_VUS || 1,
       iterations: +__ENV.K6_PS_ITERATIONS || 1,
       options: {
         browser: {

@@ -111,30 +111,33 @@ func (*Output) Description() string {
 
 func (o *Output) Start() error {
 	indexName := o.config.IndexName.String
-
-	res, err := o.client.Indices.Create(
-		context.Background(),
-		osapi.IndicesCreateReq{
-			Index: o.config.IndexName.String,
-			Body:  bytes.NewReader(mapping),
-		},
-	)
-
-	if err != nil {
-		if strings.Contains(err.Error(), "resource_already_exists_exception") {
-			fmt.Printf("index already exists: %s", indexName)
-		} else {
-			return fmt.Errorf("could not create index %s: %s", indexName, err.Error())
-		}
-	}
-	if res.Inspect().Response.StatusCode > 400 {
-		body, err := io.ReadAll(res.Inspect().Response.Body)
+    
+	if o.config.CreateIndex {
+		res, err := o.client.Indices.Create(
+			context.Background(),
+			osapi.IndicesCreateReq{
+				Index: o.config.IndexName.String,
+				Body:  bytes.NewReader(mapping),
+			},
+		)
+	
 		if err != nil {
-			return fmt.Errorf("could not read response after failure to create index %s: %v", indexName, err)
+			if strings.Contains(err.Error(), "resource_already_exists_exception") {
+				fmt.Printf("index already exists: %s", indexName)
+			} else {
+				return fmt.Errorf("could not create index %s: %s", indexName, err.Error())
+			}
 		}
-		return fmt.Errorf("could not create index %s: %s", indexName, body)
+		if res.Inspect().Response.StatusCode > 400 {
+			body, err := io.ReadAll(res.Inspect().Response.Body)
+			if err != nil {
+				return fmt.Errorf("could not read response after failure to create index %s: %v", indexName, err)
+			}
+			return fmt.Errorf("could not create index %s: %s", indexName, body)
+		}
+		res.Inspect().Response.Body.Close()
+
 	}
-	res.Inspect().Response.Body.Close()
 
 	if periodicFlusher, err := output.NewPeriodicFlusher(time.Duration(o.config.FlushPeriod), o.flush); err != nil {
 		return err

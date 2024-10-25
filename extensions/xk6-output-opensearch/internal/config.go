@@ -20,6 +20,7 @@ type Config struct {
 	IndexName      null.String
 	TestId         string
 	InsecureSkipVerify bool
+	CreateIndex   bool
 	MaxBulkSize    int
 	FlushPeriod    time.Duration 
 }
@@ -32,6 +33,7 @@ func NewConfig(p output.Params) (Config, error) {
 		Password:       null.NewString("password", false),
 		IndexName:      null.StringFrom(defaultIndexName),
 		InsecureSkipVerify: false,
+		CreateIndex: false,
 		FlushPeriod:    defaultFlushPeriod,
 		TestId:         strconv.FormatInt(time.Now().UTC().UnixNano(), 10),
 		MaxBulkSize:    2048,
@@ -65,14 +67,20 @@ func NewConfig(p output.Params) (Config, error) {
 			var err error
 			cfg.InsecureSkipVerify, err = strconv.ParseBool(v)
 			if err != nil {
-				return cfg, fmt.Errorf("error parsing environment variable 'K6_ES_ENABLE_SNIFFER': %w", err)
+				return cfg, fmt.Errorf("error parsing environment variable 'K6_OPENSEARCH_INSECURE_SKIP_VERIFY': %w", err)
+			}
+		case "K6_OPENSEARCH_CREATE_INDEX":
+			var err error
+			cfg.CreateIndex, err = strconv.ParseBool(v)
+			if err != nil {
+				return cfg, fmt.Errorf("error parsing environment variable 'K6_OPENSEARCH_CREATE_INDEX': %w", err)
 			}
 
 		case "K6_OPENSEARCH_MAX_BULKSIZE":
 			var err error
 			cfg.MaxBulkSize, err = strconv.Atoi(v)
 			if err != nil {
-				return cfg, fmt.Errorf("error parsing environment variable 'K6_ES_MAX_BULKSIZE': %w", err)
+				return cfg, fmt.Errorf("error parsing environment variable 'K6_OPENSEARCH_MAX_BULKSIZE': %w", err)
 			}
 		 }
 	}
