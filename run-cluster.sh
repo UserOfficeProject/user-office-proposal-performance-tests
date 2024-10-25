@@ -1,7 +1,7 @@
 #!/bin/bash
 export K6_TEST_FILE=sc1-proposal-submission-test
-export K6_VERSION_TAG=0.0.2
-export TEST_SETUP_VERSION_TAG=0.0.2
+export K6_VERSION_TAG=0.0.3
+export TEST_SETUP_VERSION_TAG=0.0.3
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
 export TEST_SETUP_URL=http://test-setup:8100
@@ -13,6 +13,10 @@ export K6_TEST_PARALLELISM=2
 export K6_TEST_NAME="$K6_TEST_FILE-$(date +%s)"
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
+export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk:443/opensearch"
+export K6_TEST_ID="$(date +%s)"
+
+echo "K6_TEST_ID: $K6_TEST_ID" 
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -56,11 +60,11 @@ envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl apply -f - -n app
 
 k6_pod_runners=0
 attempts=1
-while [[ $k6_pod_runners -le 1 && $attempts -le 10 ]]; do
+while [[ $k6_pod_runners -le 0 && $attempts -le 10 ]]; do
   k6_pod_runners=$(kubectl get pods -o json -n apps | jq '.items[] | select(.metadata.labels["app"] == "k6" and .metadata.labels["runner"] == "true") | .status.phase' | grep -c "Running")
   echo "Number of k6 pod runners: $k6_pod_runners  attempt: $attempts"
 
-  if [[ $k6_pod_runners -gt 1 ]]; then
+  if [[ $k6_pod_runners -ge 1 ]]; then
     break
   fi
 
@@ -69,8 +73,8 @@ while [[ $k6_pod_runners -le 1 && $attempts -le 10 ]]; do
   sleep 10
 done
 
-if [[ $k6_pod_runners -gt 1 ]]; then
-  echo "k6 pod runners greater than one proceeding ..."
+if [[ $k6_pod_runners -gt 0 ]]; then
+  echo "k6 pod runners greater than zero proceeding ..."
 else
   echo "Could not initilise k6 pod runners after 10 attempts. Aborting."
   envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null

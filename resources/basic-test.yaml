@@ -11,7 +11,7 @@ spec:
       name: test-scripts
       file: ${K6_TEST_FILE}.js
   separate: true
-  arguments: --out logger --no-usage-report -e ENVIRONMENT=develop
+  arguments: --out xk6-output-opensearch --no-usage-report -e ENVIRONMENT=develop
   runner:
     image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
     imagePullPolicy: Always
@@ -24,7 +24,7 @@ spec:
         co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
         co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
         co.elastic.logs/processors.add_fields.fields.application.tier: "service"
-        co.elastic.logs/processors.dissect.tokenizer: "%{@timestamp}%{?separator}%{?log_metric}"
+        co.elastic.logs/processors.dissect.tokenizer: "%{?log_message}"
         co.elastic.logs/processors.dissect.ignore_failure: "true"
         co.elastic.logs/processors.dissect.target_prefix: ""
     resources:
@@ -52,6 +52,10 @@ spec:
         value: '${SETUP_TEST_USERS}'
       - name: SETUP_TEST_CALL
         value: '${SETUP_TEST_CALL}'
+      - name: K6_OPENSEARCH_ADDRESS
+        value: '${K6_OPENSEARCH_ADDRESS}'
+      - name: K6_TEST_ID
+        value: '${K6_TEST_ID}'
     envFrom:
      - secretRef:
          name: connection-secrets
