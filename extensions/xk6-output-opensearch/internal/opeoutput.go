@@ -17,6 +17,7 @@ import (
 	osapiutil "github.com/opensearch-project/opensearch-go/v4/opensearchutil"
 	"github.com/sirupsen/logrus"
 	"go.k6.io/k6/output"
+	"golang.org/x/exp/rand"
 )
 
 type openSearchMetricEntry struct {
@@ -70,6 +71,8 @@ func New(params output.Params) (output.Output, error) {
 	osConfig.Client.Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+	randomDuration := time.Duration(rand.Intn(60)) * time.Second
+	time.Sleep(randomDuration)
 	client, err := osapi.NewClient(osConfig)
 	if err != nil {
 		return nil, err

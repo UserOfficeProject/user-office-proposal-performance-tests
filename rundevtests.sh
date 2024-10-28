@@ -1,6 +1,7 @@
 #!/bin/sh
 # runtests.sh
 # set some env we require
+export K6_TEST_FILE=sc1-proposal-submission-test
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
@@ -52,7 +53,7 @@ sleep 10
 # Dashboard url:http://localhost:5665
 # Test can also out put to std using --out logger
 # Test can also be out put to opensearch --out xk6-output-opensearch 
-k6 run --no-usage-report --out dashboard - < <(cat ./test/sc1-proposal-submission-test.js)
+k6 run --no-usage-report --out dashboard - < <(cat ./test/${K6_TEST_FILE}.js)
 
 if [ "$SETUP_TEST_USERS" == "true" ]; then
   echo "Clean up  created user data"
