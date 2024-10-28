@@ -57,6 +57,7 @@ export type SharedData = {
   graphqlUrl: string;
   testCall: Call | null;
   testSetupBaseUrl?: string | null;
+  isClusterTestRun: boolean;
 };
 
 export type ClientResponse = RefinedResponse<any>;

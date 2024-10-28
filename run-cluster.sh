@@ -14,7 +14,9 @@ export K6_TEST_NAME="$K6_TEST_FILE-$(date +%s)"
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk:443/opensearch"
-export K6_TEST_ID="$(date +%s)"
+export K6_OPENSEARCH_FLUSH_PERIOD="2m"
+export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
+export IS_CLUSTER_TEST_RUN="true"
 
 echo "K6_TEST_ID: $K6_TEST_ID" 
 

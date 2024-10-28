@@ -19,12 +19,13 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     fail(`Test call not set`);
   }
   sleep(randomIntBetween(10, 100));
-  const context = await browser.newContext();
-  const page = await context.newPage();
+
+  const page = await browser.newPage();
+  const context = page.context();
   const startTime = Date.now();
   const currentUser =
     sharedData.users[randomIntBetween(0, sharedData.users.length - 1)];
-  context.setDefaultTimeout(240000);
+  context.setDefaultTimeout(360000);
   const proposalTitle = randomString(5);
   try {
     await page.goto(
@@ -89,7 +90,9 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
       'Proposal saved': () => saveMessageVisible,
     });
 
-    await page.locator('//button[contains(text(), "Submit")]').click();
+    await page
+      .waitForSelector('//button[contains(text(), "Submit")]')
+      .then((e) => e.click());
     sleep(randomIntBetween(5, 20));
     const submitConfirmBoxIsVisible = await page
       .waitForSelector('//h2[contains(text(), "Please confirm")]')
@@ -99,10 +102,12 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
       'Proposal submit confirmation box visible': () =>
         submitConfirmBoxIsVisible,
     });
-
-    await page.locator('//button[contains(text(), "OK")]').click();
-
-    sleep(randomIntBetween(5, 20));
+    if (submitConfirmBoxIsVisible) {
+      await page.locator('//button[@data-cy="confirm-ok"]').click();
+      proposalsSubmitted.add(1);
+      proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+    }
+    sleep(randomIntBetween(5, 10));
     const submissionMessageIsVisible = await page
       .waitForSelector(
         '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon.")]'
@@ -118,17 +123,20 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
         'Failed to take screenshot:',
         'Proposal was not submitted successfully'
       );
-      await page.screenshot({
-        path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
-      });
+      if (!sharedData?.isClusterTestRun) {
+        await page.screenshot({
+          path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
+        });
+      }
     }
-    proposalsSubmitted.add(1);
-    proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
   } catch (error) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: proposal test VU_ID: ${exec.vu.idInTest}`;
     const message = `User could not create and submit proposal to  call`;
     console.error(scenario, message, error);
   } finally {
     await page.close();
+    if (page.isClosed()) {
+      context.close();
+    }
   }
 }

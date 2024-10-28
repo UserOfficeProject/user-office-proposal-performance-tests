@@ -11,11 +11,10 @@ export USER_STARTING_ID=-240800000
 export TEST_SETUP_CALL_ID=1
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
-export K6_OPENSEARCH_INSECURE_SKIP_VERIFY="false"
 export K6_OPENSEARCH_PASSWORD="password"
 export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
-export K6_TEST_ID="$(date +%s)"
+export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
 
 echo "K6_TEST_ID: $K6_TEST_ID" 
 

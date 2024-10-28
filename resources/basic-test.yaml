@@ -56,6 +56,10 @@ spec:
         value: '${K6_OPENSEARCH_ADDRESS}'
       - name: K6_TEST_ID
         value: '${K6_TEST_ID}'
+      - name: K6_OPENSEARCH_FLUSH_PERIOD
+        value: '${K6_OPENSEARCH_FLUSH_PERIOD}'
+      - name: IS_CLUSTER_TEST_RUN
+        value: '${IS_CLUSTER_TEST_RUN}'
     envFrom:
      - secretRef:
          name: connection-secrets

@@ -3,7 +3,6 @@ import { browser } from 'k6/browser';
 import exec from 'k6/execution';
 import { Trend } from 'k6/metrics';
 
-import { logFailedTest } from './support/logger';
 import { SharedData } from '../utils/sharedType';
 
 const userCallsResponseTime = new Trend('user_calls_response_time', true);
@@ -55,7 +54,6 @@ export default async function userCallsTest(sharedData: SharedData) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: userCalls VU_ID: ${exec.vu.idInTest}`;
     const message = `User could not view ${sharedData.testCall.title} test call`;
     console.error(scenario, message, error);
-    logFailedTest(scenario, message, page, 'userCalls');
   } finally {
     page.close();
   }

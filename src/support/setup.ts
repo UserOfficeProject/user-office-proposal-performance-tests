@@ -127,5 +127,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     graphqlUrl,
     testCall,
     testSetupBaseUrl,
+    isClusterTestRun: environmentConfig.IS_CLUSTER_TEST_RUN === 'true' || false,
   } as SharedData;
 }

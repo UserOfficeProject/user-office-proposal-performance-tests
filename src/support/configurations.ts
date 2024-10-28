@@ -9,6 +9,7 @@ export type EnvironmentConfigurations = {
   USER_STARTING_ID: number;
   SETUP_TEST_USERS: string;
   SETUP_TEST_CALL: string;
+  IS_CLUSTER_TEST_RUN: string;
 };
 
 export function getEnvironmentConfigurations(): EnvironmentConfigurations {
@@ -24,6 +25,7 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     USER_STARTING_ID: +__ENV.USER_STARTING_ID || -260800000,
     SETUP_TEST_USERS: __ENV.SETUP_TEST_USERS || 'false',
     SETUP_TEST_CALL: __ENV.SETUP_TEST_CALL || 'false',
+    IS_CLUSTER_TEST_RUN: __ENV.IS_CLUSTER_TEST_RUN || 'false',
   };
 
   try {
