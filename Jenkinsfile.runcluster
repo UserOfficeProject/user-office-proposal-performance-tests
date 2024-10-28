@@ -22,6 +22,8 @@ pipeline {
       notifyNotBuilt: false,
       notifyRepeatedFailure: false
     ]])
+
+    timeout(time: 3, unit: 'HOURS')
   }
   parameters {
     string(

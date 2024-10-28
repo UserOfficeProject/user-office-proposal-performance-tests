@@ -83,7 +83,7 @@ else
   kubectl delete configmap test-scripts -n apps --ignore-not-found
   echo "Removing test setup"
   kubectl delete deployment/test-setup-deployment -n apps  &> /dev/null
-  kubectl wait pods -l app=test-setup -n apps --timeout=-1s --for=delete &> /dev/null
+  kubectl wait pods -l app=test-setup -n apps --timeout=-60s --for=delete &> /dev/null
   exit 1
 fi
 k6_pod_runners_failed=0 
@@ -115,7 +115,7 @@ sleep 5
 if [ "$SETUP_TEST_USERS" == "true" ]; then
   echo "Removing test setup"
   kubectl delete deployment/test-setup-deployment -n apps  &> /dev/null
-  kubectl wait pods -l app=test-setup -n apps --timeout=-1s --for=delete &> /dev/null
+  kubectl wait pods -l app=test-setup -n apps --timeout=-60s --for=delete &> /dev/null
 fi
 
 echo "k6 test failed $k6_pod_runners_failed "
