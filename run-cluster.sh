@@ -20,15 +20,15 @@ export IS_CLUSTER_TEST_RUN="true"
 
 echo "K6_TEST_ID: $K6_TEST_ID" 
 
-# for arg in "$@"; do
-#   KEY=$(echo "$arg" | cut -d= -f1)
-#   VALUE=$(echo "$arg" | cut -d= -f2)
-#     if [[ -z "${VALUE}" ]]; then
-#         echo "${KEY} has no value"
-#     else
-#         export "$KEY"="$VALUE"
-#     fi
-# done
+for arg in "$@"; do
+  KEY=$(echo "$arg" | cut -d= -f1)
+  VALUE=$(echo "$arg" | cut -d= -f2)
+    if [[ -z "${VALUE}" ]]; then
+        echo "${KEY} has no value"
+    else
+        export "$KEY"="$VALUE"
+    fi
+done
 k8s_config_dir="$(dirname $(realpath $0))"
 
 echo "Removing previous test setup ..."

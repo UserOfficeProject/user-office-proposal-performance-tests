@@ -56,6 +56,12 @@ pipeline {
       trim: true
     )
     string(
+      name: 'K6_SETUP_TOTAL_USERS',
+      description: 'The total number of users to use for the test',
+      defaultValue: '250',
+      trim: true
+    )
+    string(
       name: 'TEST_SETUP_CALL_ID',
       description: 'The call id in develop',
       defaultValue: '54',
@@ -103,7 +109,7 @@ pipeline {
             npm ci
             npm run-script build:k6-test
         """ 
-        sh './run-cluster.sh K6_TEST_FILE=$K6_TEST_FILE SETUP_TEST_CALL=$SETUP_TEST_CALL SETUP_TEST_USERS=$SETUP_TEST_USERS K6_VERSION_TAG=$K6_VERSION_TAG TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_PS_VUS=$K6_PS_VUS K6_PS_ITERATIONS=$K6_PS_ITERATIONS  K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID'
+        sh './run-cluster.sh K6_TEST_FILE=$K6_TEST_FILE SETUP_TEST_CALL=$SETUP_TEST_CALL SETUP_TEST_USERS=$SETUP_TEST_USERS K6_VERSION_TAG=$K6_VERSION_TAG TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_PS_VUS=$K6_PS_VUS K6_PS_ITERATIONS=$K6_PS_ITERATIONS K6_SETUP_TOTAL_USERS=$K6_SETUP_TOTAL_USERS K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID'
       }
     }
 
