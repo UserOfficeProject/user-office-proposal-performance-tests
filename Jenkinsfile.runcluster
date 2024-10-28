@@ -32,13 +32,13 @@ pipeline {
     string(
       name: 'K6_VERSION_TAG',
       description: 'The k6 version image',
-      defaultValue: '0.0.1',
+      defaultValue: '0.0.3',
       trim: true
     )
     string(
       name: 'TEST_SETUP_VERSION_TAG',
       description: 'The test setup image version',
-      defaultValue: '0.0.1',
+      defaultValue: '0.0.3',
       trim: true
     )
     string(
