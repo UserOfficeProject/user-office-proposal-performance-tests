@@ -118,9 +118,9 @@ if [ "$SETUP_TEST_USERS" == "true" ]; then
   kubectl wait pods -l app=test-setup -n apps --timeout=-60s --for=delete &> /dev/null
 fi
 
-echo "k6 test failed $k6_pod_runners_failed "
+echo "k6 test failed $k6_pod_runners_failed"
 echo "k6 test successful $k6_pod_runners_succeeded"
-if [[ $k6_pod_runners_succeeded -eq $k6_pod_runners ]]; then
+if [[ $k6_pod_runners_succeeded -ge $k6_pod_runners_finished_tests ]]; then
   echo "K6 tests where successful"
   envsubst < $k8s_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
   kubectl delete configmap test-scripts -n apps --ignore-not-found
