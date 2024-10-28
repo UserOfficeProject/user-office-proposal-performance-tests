@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"strings"
 	"time"
@@ -72,7 +73,15 @@ func New(params output.Params) (output.Output, error) {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	osConfig.Client.EnableRetryOnTimeout=true;
-	osConfig.Client.MaxRetries=5;
+	osConfig.Client.MaxRetries=10;
+	osConfig.Client.RetryOnStatus=[]int{502,503, 504,403};
+	osConfig.Client.RetryBackoff = func(attempt int) time.Duration {
+		if attempt == 0 {
+			return 0
+		}
+		
+		return time.Duration(math.Pow(2, float64(attempt))) * time.Second
+	}
 	randomDuration := time.Duration(rand.Intn(10)) * time.Second
 	time.Sleep(randomDuration)
 	client, err := osapi.NewClient(osConfig)
