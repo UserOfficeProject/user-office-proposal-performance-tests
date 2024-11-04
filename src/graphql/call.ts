@@ -6,6 +6,13 @@ import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
 export function callTest(sharedData: SharedData) {
+  if (!sharedData.users) {
+    fail(`User not set`);
+  }
+  if (!sharedData.testCall) {
+    fail(`Test call not set`);
+  }
+  const testCall = sharedData.testCall;
   const apiClient = getClientApi(sharedData.graphqlUrl);
   const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
@@ -60,7 +67,7 @@ export function callTest(sharedData: SharedData) {
             }
           }`,
           variables: {
-            callId: sharedData.testCall.id,
+            callId: testCall.id,
           },
         }),
         userToken
@@ -93,7 +100,7 @@ export function callTest(sharedData: SharedData) {
             }
           }`,
           variables: {
-            templateId: sharedData.testCall.templateId,
+            templateId: testCall.templateId,
           },
         }),
         userToken

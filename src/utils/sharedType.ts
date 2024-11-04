@@ -52,10 +52,12 @@ export type Proposals = {
   proposals: [Proposal];
 };
 export type SharedData = {
-  users: UserLogin[];
+  users: UserLogin[] | null;
   browserBaseUrl: string;
   graphqlUrl: string;
-  testCall: Call;
+  testCall: Call | null;
+  testSetupBaseUrl?: string | null;
+  isClusterTestRun: boolean;
 };
 
 export type ClientResponse = RefinedResponse<any>;
