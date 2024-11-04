@@ -21,7 +21,7 @@
     "build": "concurrently \"npm run build:test-setup\" \"npm run build:k6-test\"",
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
     "prepare": "husky",
-    "postinstall": "cd test-setup && npm install"
+    "postinstall": "cd test-setup && npm install && husky install"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -38,8 +38,8 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "5.1.3",
     "eslint-plugin-unused-imports": "^3.1.0",
-    "husky": "^9.0.10",
-    "lint-staged": "^15.2.2",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "prettier": "3.2.5",
     "typescript": "^5.3.3",
     "webpack": "^5.94.0",
