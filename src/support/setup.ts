@@ -3,11 +3,13 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
+import { PermissionUserGroupDTO } from '../generated';
 import { getClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
-import { SharedData } from '../utils/sharedType';
+import UOWSClient from '../UOWSClient';
+import { SharedData, UserLogin } from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
@@ -75,7 +77,35 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       exec.test.abort();
     }
   }
-
+  if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
+    console.log('we landed here!!');
+    const requestedGroup: PermissionUserGroupDTO[] = [
+      {
+        id: 52,
+        groupName: 'FAP Member',
+      },
+    ];
+    if (Array.isArray(users)) {
+      const userLogin = users as UserLogin[];
+      const reviewerUsers = userLogin.slice(0, 5);
+      Promise.all(
+        reviewerUsers.map(async (user) => {
+          console.log(`user number : ${user.userId}`);
+          console.log(`user email : ${user.email}`);
+          
+          return await UOWSClient.groupMemberships.addPersonToFapGroup({
+            userNumber: user.userId,
+            groups: requestedGroup,
+          });
+        })
+      ).then((results) => {
+        console.log(
+          `result details are as follow : ${results[0].groups} and ${results[0].userNumber}`
+        );
+      });
+    }
+  }
+  //
   // Check for final setup outcome and abort if necessary
   if (!proposalHealthCheck) {
     console.error(
