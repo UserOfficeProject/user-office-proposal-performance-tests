@@ -42,6 +42,8 @@ WORKDIR /app
 
 COPY ./ ./
 
+RUN npm run generate:uows
+
 # Install Node.js dependencies
 RUN npm ci --loglevel verbose
 
