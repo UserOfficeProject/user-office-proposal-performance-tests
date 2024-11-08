@@ -1,7 +1,7 @@
 #!/bin/sh
 # runtests.sh
 # set some env we require
-export K6_TEST_FILE=sc1-proposal-submission-test
+export K6_TEST_FILE=sc1-fap-review-test
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
@@ -13,6 +13,8 @@ export TEST_SETUP_CALL_ID=54
 export INSTRUMENT_ID=6
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
+export SETUP_TEST_REVIEWERS="true"
+export SETUP_TEST_REVIEWER_ROLE="fapMember"
 export K6_OPENSEARCH_PASSWORD="password"
 export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"

@@ -29,6 +29,7 @@ async function startServer() {
     const port = process.env.PORT || 8000;
     const app = express();
     const connectionPool: oracledb.Pool = db.getConnectionPool();
+    app.use(express.json());
     app.use(users(db.getConnectionPool()));
     app.use(heathCheck());
     process.on('exit', async () => {
@@ -59,7 +60,6 @@ async function startServer() {
     }
     const sessionIds = await userDataSource.createLoggedInUsers(userIds);
     if (sessionIds.length > 0) {
-      
       logger.logInfo('Created pre start up users', {
         number: sessionIds.length,
       });

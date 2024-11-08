@@ -3,12 +3,10 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { PermissionUserGroupDTO } from '../generated';
 import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
-import UOWSClient from '../UOWSClient';
 import { SharedData, UserLogin, Call as CallType } from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
@@ -82,30 +80,25 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   }
   if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
     console.log('we landed here!!');
-    const requestedGroup: PermissionUserGroupDTO[] = [
-      {
-        id: 52,
-        groupName: 'FAP Member',
-      },
-    ];
     if (Array.isArray(users)) {
       const userLogin = users as UserLogin[];
-      const reviewerUsers = userLogin.slice(0, 5);
-      Promise.all(
-        reviewerUsers.map(async (user) => {
-          console.log(`user number : ${user.userId}`);
-          console.log(`user email : ${user.email}`);
-
-          return await UOWSClient.groupMemberships.addPersonToFapGroup({
-            userNumber: user.userId,
-            groups: requestedGroup,
-          });
-        })
-      ).then((results) => {
-        console.log(
-          `result details are as follow : ${results[0].groups} and ${results[0].userNumber}`
-        );
+      const reviewerUsers = userLogin.slice(0, 6);
+      const reviewerIds = reviewerUsers.map((users) => String(users.userId));
+      let payLoad = JSON.stringify({
+        ids: reviewerIds,
+        roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
       });
+      const response = http.post(
+        `${testSetupBaseUrl}/users/assignRole`,
+        payLoad,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        }
+      );
+      console.log(`response status ${response.status}`);
     }
   }
   //
