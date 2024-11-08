@@ -2,6 +2,9 @@ import { logger } from '@user-office-software/duo-logger';
 import express, { Request, Response } from 'express';
 import oracledb from 'oracledb';
 import { createUserDataSource, UserDataSource } from '../datasources/userDataSource';
+import UOWSClient from '../../../src/UOWSClient';
+import { PermissionUserGroupDTO } from '../../../src/generated/models/PermissionUserGroupDTO';
+import { roles } from '../utils/roleMembership';
 
 export const FIRST_USER_ID = -220800000;
 export const MAXIMUM_NUMBER_OF_USER_IDS = 1000;
@@ -33,6 +36,28 @@ const userIdGenerator = generateUserId();
 const router = express.Router();
 
 export default function (pool: oracledb.Pool) {
+  router.post('/users/assignRole', (req: Request, res: Response) => {
+    logger.logInfo('Inside a new post end point', {});
+    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
+    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
+    const reviewerIds = req.body.ids;
+    const requestedRoleName = req.body.roleName;
+    const requestedGroup: PermissionUserGroupDTO[] = [
+      {
+        id: roles[requestedRoleName].roleId,
+        groupName: roles[requestedRoleName].roleName,
+      },
+    ];
+    if (Array.isArray(reviewerIds)) {
+      reviewerIds.map(async (id) => {
+        return await UOWSClient.groupMemberships.addPersonToFapGroup({
+          userNumber: Number(id),
+          groups: requestedGroup,
+        });
+      });
+    }
+    res.send(req.body);
+  });
   router.post(
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
@@ -51,11 +76,11 @@ export default function (pool: oracledb.Pool) {
       const userIds: number[] = [];
 
       for (let userId = firstUserId; userId <= lastUserId; userId++) {
-          userIds.push(userId);
+        userIds.push(userId);
       }
       const dataSource: UserDataSource = await createUserDataSource(pool);
       const sessionIds = await dataSource.createLoggedInUsers(userIds);
-      
+
       if (sessionIds.length > 0) {
         logger.logInfo('Created logins,people,establishments and addresses', {
           number: sessionIds.length,
