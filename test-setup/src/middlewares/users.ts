@@ -147,6 +147,41 @@ export default function (pool: oracledb.Pool) {
     })
   );
 
+  router.delete('/users/removeRole', async (req: Request, res: Response) => {
+    logger.logInfo('Inside delete endpoint for removing role from users', {});
+    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
+    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
+
+    const reviewerIds = req.body.ids;
+    const requestedRoleName = req.body.roleName;
+
+    // Validate input to ensure role exists and reviewerIds is an array
+    if (!roles[requestedRoleName] || !Array.isArray(reviewerIds)) {
+      return res.status(400).send({ message: 'Invalid role name or ids' });
+    }
+
+    try {
+      await Promise.all(
+        reviewerIds.map(async (id) => {
+          // Log the removal action for tracking
+          logger.logInfo(`Attempting to remove user ${id} from group ${requestedRoleName}`, {});
+
+          // Call removePersonFromFapGroup with userNumber and groupName
+          await UOWSClient.groupMemberships.removePersonFromFapGroup(
+            Number(id),
+            roles[requestedRoleName].roleName
+          );
+
+          logger.logInfo(`Successfully removed user ${id} from group ${requestedRoleName}`, {});
+        })
+      );
+      return res.status(200).send({ message: 'Users removed from role successfully.' });
+    } catch (error) {
+      logger.logError('Error removing users from role', { error });
+      return res.status(500).send({ message: 'Error removing users from role', error });
+    }
+  });
+
   router.delete(
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
