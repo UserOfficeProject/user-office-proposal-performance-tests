@@ -84,7 +84,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       const userLogin = users as UserLogin[];
       const reviewerUsers = userLogin.slice(0, 6);
       const reviewerIds = reviewerUsers.map((users) => String(users.userId));
-      let payLoad = JSON.stringify({
+      const payLoad = JSON.stringify({
         ids: reviewerIds,
         roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
       });

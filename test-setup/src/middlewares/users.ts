@@ -136,17 +136,6 @@ export default function (pool: oracledb.Pool) {
       res.status(200).json(sessionIds);
     })
   );
-  router.delete(
-    '/users/:sessionId',
-    handleError(async (req: Request, res: Response) => {
-      const { sessionId } = req.params;
-      const dataSource: UserDataSource = await createUserDataSource(pool);
-      await dataSource.deleteUser(sessionId);
-
-      res.status(204).send();
-    })
-  );
-
   router.delete('/users/removeRole', async (req: Request, res: Response) => {
     logger.logInfo('Inside delete endpoint for removing role from users', {});
     logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
@@ -181,7 +170,16 @@ export default function (pool: oracledb.Pool) {
       return res.status(500).send({ message: 'Error removing users from role', error });
     }
   });
+  router.delete(
+    '/users/:sessionId',
+    handleError(async (req: Request, res: Response) => {
+      const { sessionId } = req.params;
+      const dataSource: UserDataSource = await createUserDataSource(pool);
+      await dataSource.deleteUser(sessionId);
 
+      res.status(204).send();
+    })
+  );
   router.delete(
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
