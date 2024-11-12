@@ -144,7 +144,6 @@ export default function (pool: oracledb.Pool) {
     const reviewerIds = req.body.ids;
     const requestedRoleName = req.body.roleName;
 
-    // Validate input to ensure role exists and reviewerIds is an array
     if (!roles[requestedRoleName] || !Array.isArray(reviewerIds)) {
       return res.status(400).send({ message: 'Invalid role name or ids' });
     }
@@ -152,10 +151,8 @@ export default function (pool: oracledb.Pool) {
     try {
       await Promise.all(
         reviewerIds.map(async (id) => {
-          // Log the removal action for tracking
           logger.logInfo(`Attempting to remove user ${id} from group ${requestedRoleName}`, {});
 
-          // Call removePersonFromFapGroup with userNumber and groupName
           await UOWSClient.groupMemberships.removePersonFromFapGroup(
             Number(id),
             roles[requestedRoleName].roleName
