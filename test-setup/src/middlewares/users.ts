@@ -36,28 +36,45 @@ const userIdGenerator = generateUserId();
 const router = express.Router();
 
 export default function (pool: oracledb.Pool) {
-  router.post('/users/assignRole', (req: Request, res: Response) => {
-    logger.logInfo('Inside a new post end point', {});
-    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
-    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
-    const reviewerIds = req.body.ids;
-    const requestedRoleName = req.body.roleName;
-    const requestedGroup: PermissionUserGroupDTO[] = [
-      {
-        id: roles[requestedRoleName].roleId,
-        groupName: roles[requestedRoleName].roleName,
-      },
-    ];
-    if (Array.isArray(reviewerIds)) {
-      reviewerIds.map(async (id) => {
-        return await UOWSClient.groupMemberships.addPersonToFapGroup({
-          userNumber: Number(id),
-          groups: requestedGroup,
-        });
-      });
+  router.post('/users/assignRole', async (req: Request, res: Response) => {
+    logger.logInfo('Inside assignRole endpoint', {});
+    logger.logInfo(`request query ids >> :::: ${req.query.ids}`, {});
+    logger.logInfo(`request query rolename >> :::: ${req.query.roleName}`, {});
+
+    const reviewerIds = (req.query.ids as string)?.split(',').map(Number); // Convert ids to an array of numbers
+    const requestedRoleName = req.query.roleName as string;
+
+    if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName) {
+      return res
+        .status(400)
+        .send({ message: 'Invalid query parameters, expected ids and roleName.' });
     }
-    res.send(req.body);
+
+    try {
+      const requestedGroup: PermissionUserGroupDTO[] = [
+        {
+          id: roles[requestedRoleName].roleId,
+          groupName: roles[requestedRoleName].roleName,
+        },
+      ];
+
+      await Promise.all(
+        reviewerIds.map(async (id) => {
+          logger.logInfo(`Assigning user ${id} to group ${requestedGroup[0].groupName}`, {});
+          return await UOWSClient.groupMemberships.addPersonToFapGroup({
+            userNumber: Number(id),
+            groups: requestedGroup,
+          });
+        })
+      );
+
+      return res.status(200).send({ message: 'Users assigned to role successfully.' });
+    } catch (error) {
+      logger.logError('Error assigning users to role', { error });
+      return res.status(500).send({ message: 'Error assigning users to role', error });
+    }
   });
+
   router.post(
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
@@ -138,29 +155,37 @@ export default function (pool: oracledb.Pool) {
   );
   router.delete('/users/removeRole', async (req: Request, res: Response) => {
     logger.logInfo('Inside delete endpoint for removing role from users', {});
-    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
-    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
+    logger.logInfo(`request query ids >> :::: ${req.query.ids}`, {});
+    logger.logInfo(`request query rolename >> :::: ${req.query.roleName}`, {});
 
-    const reviewerIds = req.body.ids;
-    const requestedRoleName = req.body.roleName;
+    const reviewerIds = (req.query.ids as string)?.split(',').map(Number);
+    const requestedRoleName = req.query.roleName as string;
 
-    if (!roles[requestedRoleName] || !Array.isArray(reviewerIds)) {
-      return res.status(400).send({ message: 'Invalid role name or ids' });
+    const requestedGroup: PermissionUserGroupDTO = {
+      id: roles[requestedRoleName]?.roleId,
+      groupName: roles[requestedRoleName]?.roleName,
+    };
+
+    if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName || !requestedGroup.id) {
+      return res
+        .status(400)
+        .send({ message: 'Invalid query parameters, expected ids and valid roleName.' });
     }
 
     try {
       await Promise.all(
         reviewerIds.map(async (id) => {
-          logger.logInfo(`Attempting to remove user ${id} from group ${requestedRoleName}`, {});
-
-          await UOWSClient.groupMemberships.removePersonFromFapGroup(
-            Number(id),
-            roles[requestedRoleName].roleName
+          logger.logInfo(
+            `Attempting to remove user ${id} from group ${requestedGroup.groupName}`,
+            {}
           );
-
-          logger.logInfo(`Successfully removed user ${id} from group ${requestedRoleName}`, {});
+          return await UOWSClient.groupMemberships.removePersonFromFapGroup(
+            Number(id),
+            requestedGroup.groupName
+          );
         })
       );
+
       return res.status(200).send({ message: 'Users removed from role successfully.' });
     } catch (error) {
       logger.logError('Error removing users from role', { error });
