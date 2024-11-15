@@ -59,7 +59,11 @@ export type SharedData = {
   testSetupBaseUrl?: string | null;
   isClusterTestRun: boolean;
 };
-
+export type Fap = {
+  id: number;
+  code: string;
+  proposalCurrentCount: number;
+};
 export type ClientResponse = RefinedResponse<any>;
 
 export type ClientApi = (body: string, userToken?: string) => ClientResponse;
@@ -85,7 +89,9 @@ export type ProposalQueryResponse = {
 export type GenericQueryResponse = {
   data: { [name: string]: any };
 };
-
+export type FapQueryResponse = {
+  data: { [name: string]: Fap };
+};
 export type InitData = {
   call: {
     allocationTimeUnit: AllocationTimeUnits;
