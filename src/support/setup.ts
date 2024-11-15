@@ -5,6 +5,7 @@ import http from 'k6/http';
 import { EnvironmentConfigurations } from './configurations';
 import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
+import { FAP } from '../graphql/support/fap';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
 import { SharedData, UserLogin, Call as CallType } from '../utils/sharedType';
@@ -27,6 +28,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     environmentConfig.GRAPHQL_TOKEN
   );
   const call = new Call(apiAsyncClient);
+  const fap = new FAP(apiClient);
   const template = new Template(apiAsyncClient);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
@@ -99,6 +101,11 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         }
       );
       console.log(`response status ${response.status}`);
+      if (__ENV.TEST_SETUP_FAP_ID) {
+        const reviewerIds = reviewerUsers.map((users) => users.userId);
+        fap.assignReviewersToFap(reviewerIds, Number(__ENV.TEST_SETUP_FAP_ID));
+        console.log(`assigned users to fap id ${__ENV.TEST_SETUP_FAP_ID}`);
+      }
     }
   }
   //

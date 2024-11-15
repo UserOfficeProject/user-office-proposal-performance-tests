@@ -64,7 +64,11 @@ export type SharedData = {
   isClusterTestRun: boolean;
   instrumentId: number;
 };
-
+export type Fap = {
+  id: number;
+  code: string;
+  proposalCurrentCount: number;
+};
 export type ClientResponse = RefinedResponse<any>;
 export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 
@@ -95,7 +99,9 @@ export type ProposalQueryResponse = {
 export type GenericQueryResponse = {
   data: { [name: string]: any };
 };
-
+export type FapQueryResponse = {
+  data: { [name: string]: Fap };
+};
 export type InitData = {
   call: {
     allocationTimeUnit: AllocationTimeUnits;
