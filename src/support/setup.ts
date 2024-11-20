@@ -90,17 +90,17 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         ids: reviewerIds,
         roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
       });
-      const response = http.post(
+      const res = await http.asyncRequest(
+        'POST',
         `${testSetupBaseUrl}/users/assignRole`,
         payLoad,
         {
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json',
           },
         }
       );
-      console.log(`response status ${response.status}`);
+      console.log(`response status ${res.status}`);
       if (__ENV.TEST_SETUP_FAP_ID) {
         const reviewerIds = reviewerUsers.map((users) => users.userId);
         fap.assignReviewersToFap(reviewerIds, Number(__ENV.TEST_SETUP_FAP_ID));

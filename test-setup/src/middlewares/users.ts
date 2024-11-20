@@ -5,6 +5,7 @@ import { createUserDataSource, UserDataSource } from '../datasources/userDataSou
 import UOWSClient from '../../../src/UOWSClient';
 import { PermissionUserGroupDTO } from '../../../src/generated/models/PermissionUserGroupDTO';
 import { roles } from '../utils/roleMembership';
+import { error } from 'console';
 
 export const FIRST_USER_ID = -220800000;
 export const MAXIMUM_NUMBER_OF_USER_IDS = 1000;
@@ -38,11 +39,11 @@ const router = express.Router();
 export default function (pool: oracledb.Pool) {
   router.post('/users/assignRole', async (req: Request, res: Response) => {
     logger.logInfo('Inside assignRole endpoint', {});
-    logger.logInfo(`request query ids >> :::: ${req.query.ids}`, {});
-    logger.logInfo(`request query rolename >> :::: ${req.query.roleName}`, {});
+    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
+    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
 
-    const reviewerIds = (req.query.ids as string)?.split(',').map(Number); // Convert ids to an array of numbers
-    const requestedRoleName = req.query.roleName as string;
+    const reviewerIds = req.body.ids;
+    const requestedRoleName = req.body.roleName;
 
     if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName) {
       return res
@@ -50,29 +51,31 @@ export default function (pool: oracledb.Pool) {
         .send({ message: 'Invalid query parameters, expected ids and roleName.' });
     }
 
-    try {
-      const requestedGroup: PermissionUserGroupDTO[] = [
-        {
-          id: roles[requestedRoleName].roleId,
-          groupName: roles[requestedRoleName].roleName,
-        },
-      ];
+    const requestedGroup: PermissionUserGroupDTO[] = [
+      {
+        id: roles[requestedRoleName].roleId,
+        groupName: roles[requestedRoleName].roleName,
+      },
+    ];
 
-      await Promise.all(
-        reviewerIds.map(async (id) => {
-          logger.logInfo(`Assigning user ${id} to group ${requestedGroup[0].groupName}`, {});
-          return await UOWSClient.groupMemberships.addPersonToFapGroup({
-            userNumber: Number(id),
-            groups: requestedGroup,
-          });
-        })
-      );
-
-      return res.status(200).send({ message: 'Users assigned to role successfully.' });
-    } catch (error) {
-      logger.logError('Error assigning users to role', { error });
-      return res.status(500).send({ message: 'Error assigning users to role', error });
-    }
+    const promisesArray = reviewerIds.map(async (id) => {
+      logger.logInfo(`***** Assigning user ${id} to group ${requestedRoleName}`, {});
+      return await UOWSClient.groupMemberships.addPersonToFapGroup({
+        userNumber: id,
+        groups: requestedGroup,
+      });
+    });
+    return Promise.all(promisesArray)
+      .then((results) => {
+        results?.forEach((r) => {
+          logger.logInfo(`assignment result : ${r?.groups} and ${r?.userNumber}`, {});
+        });
+        return res.send(200);
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).send({ message: 'Error assigning role for users', error });
+      });
   });
 
   router.post(
