@@ -61,8 +61,13 @@ export type SharedData = {
 };
 
 export type ClientResponse = RefinedResponse<any>;
+export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 
 export type ClientApi = (body: string, userToken?: string) => ClientResponse;
+export type AsyncClientApi = (
+  body: string,
+  userToken?: string
+) => AsyncClientResponse;
 export type CallQueryResponse = {
   data: { [name: string]: Call };
 };

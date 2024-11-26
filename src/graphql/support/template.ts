@@ -3,15 +3,15 @@ import { check, fail } from 'k6';
 import { getInitData } from '../../support/initData';
 import {
   Template as TemplateType,
-  ClientApi,
   TemplateQueryResponse,
+  AsyncClientApi,
 } from '../../utils/sharedType';
 
 export class Template {
   private initData = getInitData();
-  constructor(private apiClient: ClientApi) {}
+  constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  createTemplate(): TemplateType {
+  async createTemplate(): Promise<TemplateType> {
     const mutation = `
     mutation CreateTemplate($groupId: TemplateGroupId!, $name: String!, $description: String) {
         createTemplate(groupId: $groupId, name: $name, description: $description) {
@@ -25,7 +25,7 @@ export class Template {
       ...this.initData?.template,
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as TemplateQueryResponse;
@@ -43,7 +43,7 @@ export class Template {
     return responseData.data?.createTemplate as TemplateType;
   }
 
-  deleteTemplate(deleteTemplateId: number): number {
+  async deleteTemplate(deleteTemplateId: number): Promise<number> {
     const mutation = `
             mutation DeleteTemplate($templateId: Int!) {
                 deleteTemplate(templateId: $templateId) {
@@ -56,7 +56,7 @@ export class Template {
     const variables = {
       templateId: deleteTemplateId,
     };
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as TemplateQueryResponse;

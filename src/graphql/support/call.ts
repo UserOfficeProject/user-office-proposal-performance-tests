@@ -6,15 +6,15 @@ import {
   CallQueryResponse,
   Call as CallType,
   CallsFilter,
-  ClientApi,
   CallsQueryResponse,
+  AsyncClientApi,
 } from '../../utils/sharedType';
 
 export class Call {
   private initData = getInitData();
-  constructor(private apiClient: ClientApi) {}
+  constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  createTestCall(templateId: number): CallType {
+  async createTestCall(templateId: number): Promise<CallType> {
     const mutation = `
     mutation CreateCall($createCallInput: CreateCallInput!) {
       createCall(createCallInput: $createCallInput) {
@@ -36,7 +36,7 @@ export class Call {
       createCallInput: { ...this.initData?.call, templateId },
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as CallQueryResponse;
@@ -54,7 +54,7 @@ export class Call {
     return responseData?.data?.createCall as CallType;
   }
 
-  deleteCall(deleteCallId: number): number {
+  async deleteCall(deleteCallId: number): Promise<number> {
     const mutation = `
           mutation DeleteCall($deleteCallId: Int!) {
             deleteCall(id: $deleteCallId) {
@@ -69,7 +69,7 @@ export class Call {
       deleteCallId: deleteCallId,
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
 
@@ -87,7 +87,7 @@ export class Call {
     return deleteCallId;
   }
 
-  getCall(callId: number): CallType {
+  async getCall(callId: number): Promise<CallType> {
     const query = `
           query getCall($callId: Int!) {
             call(callId: $callId) {
@@ -102,9 +102,10 @@ export class Call {
       callId: callId,
     };
 
-    const response = this.apiClient(JSON.stringify({ query, variables }));
+    const response = await this.apiAsyncClient(
+      JSON.stringify({ query, variables })
+    );
     const responseData = response.json() as CallQueryResponse;
-
     if (
       !check(response, {
         'Get call': (r) =>
@@ -117,7 +118,10 @@ export class Call {
     return responseData.data?.call;
   }
 
-  getUserCalls(userToken: string, callsFilter: CallsFilter): [CallType] {
+  async getUserCalls(
+    userToken: string,
+    callsFilter: CallsFilter
+  ): Promise<[CallType]> {
     const query = `
             query Calls($filter: CallsFilter) {
               calls(filter: $filter) {
@@ -142,7 +146,7 @@ export class Call {
       filter: callsFilter,
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query, variables }),
       userToken
     );
@@ -164,7 +168,10 @@ export class Call {
     }
   }
 
-  assignInstrumentsToCall(callId: number, instrumentId: number): CallType {
+  async assignInstrumentsToCall(
+    callId: number,
+    instrumentId: number
+  ): Promise<CallType> {
     const mutation = `
     mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {
       assignInstrumentsToCall(assignInstrumentsToCallInput: $assignInstrumentsToCallInput) {
@@ -187,7 +194,7 @@ export class Call {
       },
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as CallQueryResponse;
@@ -206,10 +213,10 @@ export class Call {
     return responseData.data?.assignInstrumentsToCall as CallType;
   }
 
-  removeAssignedInstrumentFromCall(
+  async removeAssignedInstrumentFromCall(
     callId: number,
     instrumentId: number
-  ): CallType {
+  ): Promise<CallType> {
     const mutation = `
     mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {
       removeAssignedInstrumentFromCall(removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput) {
@@ -232,7 +239,7 @@ export class Call {
       },
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as CallQueryResponse;

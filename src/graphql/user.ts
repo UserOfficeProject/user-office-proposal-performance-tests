@@ -2,25 +2,25 @@ import { check, sleep, group, fail } from 'k6';
 import exec from 'k6/execution';
 
 import { User } from './support/user';
-import { getClientApi } from '../support/graphql';
+import { getAsyncClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
 
-export function userTest(sharedData: SharedData) {
+export async function userTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
   if (!sharedData.testCall) {
     fail(`Test call not set`);
   }
-  const apiClient = getClientApi(sharedData.graphqlUrl);
-  const user = new User(apiClient);
+  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
+  const user = new User(apiAsyncClient);
   sleep(randomIntBetween(5, 20));
   const currentUser = sharedData.users[exec.vu.idInTest];
-  const userToken = user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
   group('User Test', () => {
-    group('Me query should return current user details', () => {
-      const response = apiClient(
+    group('Me query should return current user details', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
           query Me {
@@ -67,8 +67,8 @@ export function userTest(sharedData: SharedData) {
     });
     group(
       'BasicUserDetailsByEmail query should return current user details',
-      () => {
-        const response = apiClient(
+      async () => {
+        const response = await apiAsyncClient(
           JSON.stringify({
             query: `
           query BasicUserDetailsByEmail($email: String!) {
