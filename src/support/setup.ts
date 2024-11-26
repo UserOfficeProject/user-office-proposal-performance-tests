@@ -105,7 +105,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       }
     }
   }
-  //
+
   // Check for final setup outcome and abort if necessary
   if (!proposalHealthCheck) {
     console.error(

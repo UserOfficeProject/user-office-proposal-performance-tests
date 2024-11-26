@@ -5,7 +5,6 @@ import { createUserDataSource, UserDataSource } from '../datasources/userDataSou
 import UOWSClient from '../../../src/UOWSClient';
 import { PermissionUserGroupDTO } from '../../../src/generated/models/PermissionUserGroupDTO';
 import { roles } from '../utils/roleMembership';
-import { error } from 'console';
 
 export const FIRST_USER_ID = -220800000;
 export const MAXIMUM_NUMBER_OF_USER_IDS = 1000;
@@ -157,43 +156,34 @@ export default function (pool: oracledb.Pool) {
     })
   );
   router.delete('/users/removeRole', async (req: Request, res: Response) => {
-    logger.logInfo('Inside delete endpoint for removing role from users', {});
-    logger.logInfo(`request query ids >> :::: ${req.query.ids}`, {});
-    logger.logInfo(`request query rolename >> :::: ${req.query.roleName}`, {});
+    logger.logInfo('Inside removeRole endpoint', {});
+    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
+    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
 
-    const reviewerIds = (req.query.ids as string)?.split(',').map(Number);
-    const requestedRoleName = req.query.roleName as string;
+    const reviewerIds = req.body.ids;
+    const requestedRoleName = req.body.roleName;
 
-    const requestedGroup: PermissionUserGroupDTO = {
-      id: roles[requestedRoleName]?.roleId,
-      groupName: roles[requestedRoleName]?.roleName,
-    };
-
-    if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName || !requestedGroup.id) {
+    if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName) {
       return res
         .status(400)
-        .send({ message: 'Invalid query parameters, expected ids and valid roleName.' });
+        .send({ message: 'Invalid query parameters, expected ids and roleName.' });
     }
 
-    try {
-      await Promise.all(
-        reviewerIds.map(async (id) => {
-          logger.logInfo(
-            `Attempting to remove user ${id} from group ${requestedGroup.groupName}`,
-            {}
-          );
-          return await UOWSClient.groupMemberships.removePersonFromFapGroup(
-            Number(id),
-            requestedGroup.groupName
-          );
-        })
+    const promisesArray = reviewerIds.map(async (id) => {
+      logger.logInfo(`***** Removing user ${id} from group ${requestedRoleName}`, {});
+      return await UOWSClient.groupMemberships.removePersonFromFapGroup(
+        id,
+        roles[requestedRoleName].roleName
       );
-
-      return res.status(200).send({ message: 'Users removed from role successfully.' });
-    } catch (error) {
-      logger.logError('Error removing users from role', { error });
-      return res.status(500).send({ message: 'Error removing users from role', error });
-    }
+    });
+    return Promise.all(promisesArray)
+      .then(() => {
+        return res.send(200);
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).send({ message: 'Error removing role for users', error });
+      });
   });
   router.delete(
     '/users/:sessionId',
