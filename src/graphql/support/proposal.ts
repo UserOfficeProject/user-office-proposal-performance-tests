@@ -101,22 +101,6 @@ export class Proposal {
           proposals {
             primaryKey
             proposalId
-            callId
-            status {
-              id
-              name
-              shortCode
-            }
-            questionary {
-              steps {
-                topic {
-                  id
-                  templateId
-                }
-              }
-              questionaryId
-              templateId
-            }
           }
         }
       }`;
@@ -146,7 +130,6 @@ export class Proposal {
     const mutation = `
     mutation DeleteProposal($proposalPk: Int!) {
           deleteProposal(proposalPk: $proposalPk) {
-              callId
               proposalId
               primaryKey
           }

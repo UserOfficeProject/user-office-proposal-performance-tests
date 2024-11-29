@@ -1,3 +1,5 @@
+import { FsFile } from './sharedType';
+
 export function randomUUIDv4(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0; // Convert to integer
@@ -37,6 +39,21 @@ export function randomString(length: number): string {
   let res = '';
   while (length--) {
     res += charset[Math.floor(Math.random() * charset.length)];
+  }
+
+  return res;
+}
+
+export function randomWords(words: number, length: number): string {
+  if (words <= 0) {
+    throw new Error('Words must be positive');
+  }
+  if (length <= 0) {
+    throw new Error('Length must be positive');
+  }
+  let res = '';
+  for (let i = 0; i < words; i++) {
+    res += randomString(length);
   }
 
   return res;
@@ -84,4 +101,12 @@ export function findPeakNumbers(min: number, max: number) {
   }
 
   return peaks;
+}
+
+export async function readAllFile(file: FsFile): Promise<Uint8Array> {
+  const fileInfo = await file.stat();
+  const buffer = new Uint8Array(fileInfo.size);
+  await file.read(buffer);
+
+  return buffer;
 }

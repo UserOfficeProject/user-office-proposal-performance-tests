@@ -1,3 +1,5 @@
+import { open as fsOpen } from 'k6/experimental/fs';
+
 export type EnvironmentConfigurations = {
   GRAPHQL_TOKEN: string;
   USER_DB_USERNAME: string;
@@ -51,5 +53,19 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     return {
       ...defaultEnv,
     };
+  }
+}
+
+export async function getFeatureFile(fileName: string) {
+  const configDir = __ENV.PWD;
+
+  try {
+    const configDir = __ENV.PWD;
+
+    return await fsOpen(`${configDir}/fixtures/${fileName}`);
+  } catch (err) {
+    throw new Error(
+      `File ${fileName} not found.Create the file in ${configDir}/fixtures/ if you want to use it`
+    );
   }
 }
