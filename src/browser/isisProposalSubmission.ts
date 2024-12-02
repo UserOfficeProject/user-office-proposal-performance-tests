@@ -92,6 +92,7 @@ export default async function isisProposalSubmissionTest(
     await page.locator('button[data-cy="findUser"]').click();
 
     sleep(5);
+
     await page.locator('button[data-cy="assign-selected-users"]').click();
 
     sleep(5);
@@ -124,6 +125,7 @@ export default async function isisProposalSubmissionTest(
     /**
      * Populating proposal research support,
      */
+
     await page.locator('button[data-cy="add-button"]').click();
 
     const grantTitleTextarea = page.locator(
@@ -456,9 +458,7 @@ export default async function isisProposalSubmissionTest(
     /**
      * Populating proposal samples,
      */
-    await page.screenshot({
-      path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
-    });
+
     await page.locator('button[data-cy="add-button"]').click();
 
     const sampleTitleInput = page.locator(
@@ -586,9 +586,7 @@ export default async function isisProposalSubmissionTest(
     /**
      * Populating proposal hazards,
      */
-    await page.screenshot({
-      path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
-    });
+
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1652792742127"]'
@@ -657,8 +655,6 @@ export default async function isisProposalSubmissionTest(
 
     sleep(5);
 
-    sleep(5);
-
     const hazardsSaveButton = page.locator(
       'button[data-cy="save-and-continue-button"]'
     );
@@ -706,7 +702,9 @@ export default async function isisProposalSubmissionTest(
         'input[value="No"][type="radio"][name="selection_from_options_1651238284594"]'
       )
       .click();
+
     sleep(5);
+
     await page
       .locator('textarea[name="text_input_1653564213830"]')
       .type(randomString(8));
