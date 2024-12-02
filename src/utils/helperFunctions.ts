@@ -1,4 +1,4 @@
-import { FsFile } from './sharedType';
+import { FsFile, UserLogin } from './sharedType';
 
 export function randomUUIDv4(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -109,4 +109,15 @@ export async function readAllFile(file: FsFile): Promise<Uint8Array> {
   await file.read(buffer);
 
   return buffer;
+}
+
+export function getRandomUser(
+  users: UserLogin[],
+  excludeCurrentUser: UserLogin
+): UserLogin {
+  const userList = users.filter(
+    (user) => user.userId !== excludeCurrentUser.userId
+  );
+
+  return userList[randomIntBetween(0, userList.length - 1)];
 }

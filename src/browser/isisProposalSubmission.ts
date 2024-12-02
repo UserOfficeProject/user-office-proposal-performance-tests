@@ -5,6 +5,7 @@ import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
 
 import {
+  getRandomUser,
   randomIntBetween,
   randomString,
   randomWords,
@@ -28,106 +29,140 @@ export default async function isisProposalSubmissionTest(
   if (!sharedData.testCall) {
     fail(`Test call not set`);
   }
-  sleep(randomIntBetween(10, 100));
   const page = await browser.newPage();
-  const context = page.context();
   const startTime = Date.now();
   const currentUser =
     sharedData.users[randomIntBetween(0, sharedData.users.length - 1)];
-  context.setDefaultTimeout(106000000);
+  const today = new Date();
+  const futureDate = `${today.getMonth().toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}${today.getFullYear() + 1}`;
+  page.setDefaultTimeout(106000000);
   const proposalTitle = randomString(5);
   try {
+    /**
+     * Login
+     */
     await page.goto(
       `${sharedData.browserBaseUrl}/external-auth?token=${currentUser.sessionId}`
     );
-    sleep(randomIntBetween(5, 20));
-
-    const userDashboardIsVisible = await page
-      .waitForSelector('//h1[contains(text(), "Dashboard")]')
-      .then((e) => e.isVisible());
-    check(userDashboardIsVisible, {
-      'User is logged in': () => userDashboardIsVisible,
+    const homePage = page.locator('//h1[contains(text(), "Dashboard")]');
+    await homePage.waitFor({
+      state: 'visible',
     });
-
-    await page.goto(sharedData.browserBaseUrl);
-    sleep(randomIntBetween(5, 20));
     const proposalMenuItem = page.locator('//a[@aria-label="New Proposal"]');
-    await Promise.all([
-      page.waitForNavigation(),
-      proposalMenuItem.isVisible(),
-      proposalMenuItem.tap(),
-    ]);
-    sleep(5);
-    const testCall = await page.waitForSelector(
+    await proposalMenuItem.waitFor({
+      state: 'visible',
+    });
+    await proposalMenuItem.tap();
+
+    const testCall = page.locator(
       `//h3[contains(text(), "${sharedData.testCall.shortCode}")]`
     );
-    const testCallIsVisible = await testCall.isVisible();
-    const testCallIsEnabled = await testCall.isEnabled();
-    check(page, {
-      'New proposal menu is enabled': () => testCallIsEnabled,
-      'User can see test call': () => testCallIsVisible,
+    await testCall.waitFor({
+      state: 'visible',
     });
+    await testCall.tap();
 
-    await testCall.click();
-    sleep(randomIntBetween(5, 10));
+    /**
+     * Populating proposal basic details
+     */
     await page
       .locator('input[name="proposal_basis.title"]')
       .type(proposalTitle);
+
+    sleep(5);
+
     await page
       .locator('textarea[name="proposal_basis.abstract"]')
       .type(randomWords(3, 5));
-    sleep(randomIntBetween(5, 10));
-    await page.locator('input[value="No"][type="radio"]').click();
 
-    const saveButtonVisible = await page
-      .locator('//button[contains(text(), "Save and continue")]')
-      .isVisible();
+    sleep(5);
 
-    check(page, {
-      'Save and continue button visible ': () => saveButtonVisible,
+    await page.locator('button[data-cy="add-participant-button"]').click();
+    const emailInput = page.locator('#Email-input');
+    await emailInput.waitFor({
+      state: 'visible',
+    });
+    const piEmail = getRandomUser(sharedData.users, currentUser).email;
+    emailInput.type(piEmail);
+    const emailFilledInput = page.locator(`input[value="${piEmail}"]`);
+    await emailFilledInput.waitFor({
+      state: 'visible',
     });
 
-    await page
-      .locator('//button[contains(text(), "Save and continue")]')
-      .click();
-    sleep(randomIntBetween(5, 20));
+    await page.locator('button[data-cy="findUser"]').click();
+
+    sleep(5);
+    await page.locator('button[data-cy="assign-selected-users"]').click();
+
+    sleep(5);
+
+    const isStudentCheckBox = page.locator('input[value="No"][type="radio"]');
+    await isStudentCheckBox.waitFor({
+      state: 'visible',
+    });
+    await isStudentCheckBox.click();
+
+    sleep(5);
+
+    const proposalSaveButton = page.locator(
+      '//button[contains(text(), "Save and continue")]'
+    );
+    await proposalSaveButton.waitFor({
+      state: 'visible',
+    });
+    await proposalSaveButton.click();
+    const savedMessage = page.locator('//div[contains(text(), "Saved")]');
+    await savedMessage.waitFor({
+      state: 'visible',
+    });
+    const savedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal basics details saved': () => savedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal research support,
+     */
     await page.locator('button[data-cy="add-button"]').click();
 
-    sleep(randomIntBetween(5, 20));
-
-    await page
-      .locator('textarea[name="generic_template_basis"]')
-      .type(randomString(8));
+    const grantTitleTextarea = page.locator(
+      'textarea[name="generic_template_basis"]'
+    );
+    await grantTitleTextarea.waitFor({
+      state: 'visible',
+    });
+    await grantTitleTextarea.type(randomString(8));
 
     await page.locator('#selection_from_options_1634225562606').click();
 
-    sleep(randomIntBetween(5, 20));
+    const fundingBody = page.locator('li[data-value="STFC"]');
+    await fundingBody.waitFor({
+      state: 'visible',
+    });
+    await fundingBody.click();
 
-    await page.locator('li[data-value="STFC"]').click();
-
-    sleep(randomIntBetween(5, 20));
+    sleep(5);
 
     await page
       .locator('input[name="text_input_1634572306120"]')
       .type(randomString(8));
 
-    sleep(randomIntBetween(5, 10));
+    sleep(5);
 
     await page
       .locator('textarea[name="text_input_1634225877426"]')
       .type(randomString(8));
 
-    sleep(randomIntBetween(5, 10));
-    const today = new Date();
-    const futureDate = `${today.getDate().toString().padStart(2, '0')}-${String(today.getMonth() + 3).padStart(2, '0')}-${today.getFullYear()}`;
+    sleep(5);
 
     await page.locator('input[name="date_1634225935445"]').type(futureDate);
 
-    sleep(randomIntBetween(5, 10));
+    sleep(5);
 
     await page.locator('input[name="date_1634225971632"]').type(futureDate);
 
-    sleep(randomIntBetween(5, 10));
+    sleep(5);
 
     await page
       .locator(
@@ -135,17 +170,24 @@ export default async function isisProposalSubmissionTest(
       )
       .click();
 
-    sleep(randomIntBetween(5, 20));
+    const sponsorshipCheckBox = page.locator(
+      'input[value="Yes"][type="radio"][name="selection_from_options_1634226627885"]'
+    );
+    await sponsorshipCheckBox.waitFor({
+      state: 'visible',
+    });
+    await sponsorshipCheckBox.click();
 
-    await page
-      .locator(
-        'input[value="Yes"][type="radio"][name="selection_from_options_1634226627885"]'
-      )
-      .click();
+    const industrialPartnersInput = page.locator(
+      'input[name="text_input_1675848614834"]'
+    );
+    await industrialPartnersInput.waitFor({
+      state: 'visible',
+    });
+    await industrialPartnersInput.type(randomString(8));
 
-    await page
-      .locator('input[name="text_input_1675848614834"]')
-      .type(randomString(8));
+    sleep(5);
+
     await page
       .locator('input[name="text_input_1653571067870"]')
       .type(randomWords(2, 5));
@@ -155,112 +197,217 @@ export default async function isisProposalSubmissionTest(
         'input[value="No"][type="radio"][name="selection_from_options_1655199183364"]'
       )
       .click();
+
     sleep(5);
+
     await page
       .locator('textarea[name="text_input_1653573145595"]')
       .type(randomString(8));
+
     await page.locator('#selection_from_options_1709730648227').click();
+
+    const piBasedInput = page.locator('li[data-value="No"]');
+    await piBasedInput.waitFor({
+      state: 'visible',
+    });
+    await piBasedInput.click();
+
     sleep(5);
-    await page.locator('li[data-value="No"]').click();
-    sleep(5);
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(5);
+
+    const researchSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await researchSaveButton.waitFor({
+      state: 'visible',
+    });
+    await researchSaveButton.click();
+
+    const researchSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await researchSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const researchSavedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal research support details saved': () =>
+        researchSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal publications,
+     */
+
     await page.locator('button[data-cy="add-button"]').click();
-    sleep(5);
-    await page
-      .locator('textarea[name="generic_template_basis"]')
-      .type(randomString(8));
+
+    const articleRefTextarea = page.locator(
+      'textarea[name="generic_template_basis"]'
+    );
+    await articleRefTextarea.waitFor({
+      state: 'visible',
+    });
+    await articleRefTextarea.type(randomString(8));
+
     await page
       .locator(
         'div[data-cy="genericTemplate-declaration-modal"] button[data-cy="save-and-continue-button"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(randomIntBetween(5, 20));
-    await page.locator('#selection_from_options_1659957684328').click();
+
     sleep(5);
-    await page.locator('li[data-value="Direct Access - New"]').click();
+
+    const publicationSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await publicationSaveButton.waitFor({
+      state: 'visible',
+    });
+    await publicationSaveButton.click();
+
+    const publicationSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await publicationSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const publicationSavedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal publication saved': () => publicationSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal experiment,
+     */
+
+    await page.locator('#selection_from_options_1659957684328').click();
+    const proposalRoute = page.locator('li[data-value="Direct Access - New"]');
+    await proposalRoute.waitFor({
+      state: 'visible',
+    });
+    await proposalRoute.click();
+
+    sleep(5);
+
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1651237585079"]'
       )
       .click();
+
     sleep(5);
-    await page
-      .locator('input[name="text_input_1653561955182"]')
-      .type(randomString(8));
+
+    const similarProposalInput = page.locator(
+      'input[name="text_input_1653561955182"]'
+    );
+    await similarProposalInput.waitFor({
+      state: 'visible',
+    });
+    await similarProposalInput.type(randomString(8));
+
     sleep(5);
+
     await page
       .locator('input[name="number_input_1651238022554.value"]')
       .type(randomIntBetween(5, 10).toString());
 
     sleep(5);
+
     await page.locator('#instrument_picker_1707913851503').click();
-    sleep(randomIntBetween(5, 10));
-    await page
-      .locator(
-        'ul[aria-labelledby="questionary-instrument_picker_1707913851503"] li[data-value="37"]'
-      )
-      .click();
-    sleep(randomIntBetween(5, 10));
+
+    const instrumentSelector = page.locator(
+      'ul[aria-labelledby="questionary-instrument_picker_1707913851503"] li[data-value="37"]'
+    );
+    await instrumentSelector.waitFor({
+      state: 'visible',
+    });
+    await instrumentSelector.click();
+
+    sleep(5);
+
     await page
       .locator(
         'div[data-natural-key="scientific_technique"] div[id="selection_from_options_1654781491194"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
+
     await page
       .locator(
         'ul[aria-labelledby="questionary-selection_from_options_1654781491194"] li[data-value="Engineering "]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
+
     await page
       .locator(
         'div[data-natural-key="Proposal_Programmes"] div[id="selection_from_options_1634225191405"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
 
     await page
       .locator(
         'ul[aria-labelledby="questionary-selection_from_options_1634225191405"] li[data-value="Materials"]'
       )
       .click();
+
+    sleep(5);
+
     await page
       .locator(
         'ul[aria-labelledby="questionary-selection_from_options_1634225191405"] li[data-value="Chemistry"]'
       )
       .click();
+
+    sleep(5);
+
     await page
       .locator(
         'ul[aria-labelledby="questionary-selection_from_options_1634225191405"] li[data-value="Medicine"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
-    await page.keyboard.press('Escape');
-    sleep(randomIntBetween(5, 10));
-    await page
-      .locator(
-        'input[value="Yes"][type="radio"][name="selection_from_options_1651238885707"]'
-      )
-      .click();
+
     sleep(5);
+
+    await page.keyboard.press('Escape');
+
+    sleep(5);
+
+    const beamlineScientistCheckBox = page.locator(
+      'input[value="Yes"][type="radio"][name="selection_from_options_1651238885707"]'
+    );
+    await beamlineScientistCheckBox.waitFor({
+      state: 'visible',
+    });
+    await beamlineScientistCheckBox.click();
+
+    sleep(5);
+
     await page
       .locator('input[name="text_input_1653563538685"]')
       .type(randomWords(2, 8));
+
     sleep(5);
+
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1689059075524"]'
       )
       .click();
+
     sleep(5);
+
     await page
       .locator('input[name="text_input_1689059450389"]')
       .type(randomWords(2, 8));
+
     sleep(5);
+
     await page
       .locator('input[name="interval_1655389791428.min"]')
       .type(randomIntBetween(1, 2).toString());
@@ -274,59 +421,118 @@ export default async function isisProposalSubmissionTest(
     await page
       .locator('input[name="interval_1655390144074.max"]')
       .type(randomIntBetween(4, 5).toString());
+
     sleep(5);
+
     await page
       .locator('input[name="interval_1655390202570.min"]')
       .type(randomIntBetween(1, 2).toString());
     await page
       .locator('input[name="interval_1655390202570.max"]')
       .type(randomIntBetween(4, 5).toString());
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(randomIntBetween(5, 20));
 
+    sleep(5);
+
+    const experimentSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await experimentSaveButton.waitFor({
+      state: 'visible',
+    });
+    await experimentSaveButton.click();
+
+    const experimentSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await experimentSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const experimentSavedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal experiment saved': () => experimentSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal samples,
+     */
+    await page.screenshot({
+      path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
+    });
     await page.locator('button[data-cy="add-button"]').click();
 
-    sleep(randomIntBetween(5, 10));
-    await page
-      .locator('textarea[name="generic_template_basis"]')
-      .type(randomString(8));
+    const sampleTitleInput = page.locator(
+      'textarea[name="generic_template_basis"]'
+    );
+    await sampleTitleInput.waitFor({
+      state: 'visible',
+    });
+    await sampleTitleInput.type(randomString(8));
+
+    sleep(5);
 
     await page
       .locator('iframe[id="rich_text_input_1653559412892_ifr"]')
       .click();
-    sleep(randomIntBetween(5, 10));
-    await page.keyboard.type(randomWords(8, 5));
+
     sleep(5);
+
+    await page.keyboard.type(randomWords(8, 5));
+
+    sleep(5);
+
     await page
       .locator('iframe[id="rich_text_input_1653569346112_ifr"]')
       .click();
+
     sleep(5);
+
     await page.keyboard.type(randomWords(8, 5));
+
     await page.locator('#selection_from_options_1651585889455').click();
-    sleep(randomIntBetween(5, 10));
-    await page.locator('li[data-value="Solid"]').click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
+
+    const sampleTypeSelector = page.locator('li[data-value="Solid"]');
+    await sampleTypeSelector.waitFor({
+      state: 'visible',
+    });
+    await sampleTypeSelector.click();
+
+    sleep(5);
+
     await page.keyboard.press('Tab');
-    sleep(randomIntBetween(5, 10));
-    await page
-      .locator('input[name="number_input_1653559180359.value"]')
-      .type(randomIntBetween(4, 5).toString());
+
+    const sampleVariantsInput = page.locator(
+      'input[name="number_input_1653559180359.value"]'
+    );
+    await sampleVariantsInput.waitFor({
+      state: 'visible',
+    });
+    await sampleVariantsInput.type(randomIntBetween(4, 5).toString());
+
     sleep(5);
 
     await page
       .locator('input[name="text_input_1651586094074"]')
       .type(randomString(8));
+
     sleep(5);
+
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1675849959660"]'
       )
       .click();
+
     sleep(5);
+
     await page
       .locator('textarea[name="text_input_1651586173226"]')
       .type(randomString(8));
+
     sleep(5);
+
     await page
       .locator('textarea[name="text_input_1651586215535"]')
       .type(randomString(8));
@@ -334,6 +540,8 @@ export default async function isisProposalSubmissionTest(
     await page
       .locator('input[name="number_input_1653559308476.value"]')
       .type(randomIntBetween(4, 5).toString());
+
+    sleep(5);
 
     await page
       .locator(
@@ -344,52 +552,93 @@ export default async function isisProposalSubmissionTest(
     await page
       .locator('textarea[name="text_input_1651586303909"]')
       .type(randomString(8));
+
+    sleep(5);
+
     await page
       .locator(
         'div[data-cy="genericTemplate-declaration-modal"] button[data-cy="save-and-continue-button"]'
       )
       .click();
-    sleep(randomIntBetween(5, 20));
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(randomIntBetween(5, 20));
+
+    sleep(5);
+
+    const samplesSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await samplesSaveButton.waitFor({
+      state: 'visible',
+    });
+    await samplesSaveButton.click();
+
+    const samplesSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await samplesSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const samplesSavedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal samples saved': () => samplesSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal hazards,
+     */
+    await page.screenshot({
+      path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
+    });
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1652792742127"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
 
     await page
       .locator('textarea[name="text_input_1652793297278"]')
       .type(randomString(8));
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
+
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1652792870660"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
 
     await page
       .locator('textarea[name="text_input_1652793327573"]')
       .type(randomString(8));
+
+    sleep(5);
 
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1652792934715"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
 
     await page
       .locator('textarea[name="text_input_1652793357636"]')
       .type(randomString(8));
+
+    sleep(5);
+
     await page
       .locator(
         'input[value="Yes"][type="radio"][name="selection_from_options_1652792977755"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
+
     await page
       .locator('textarea[name="text_input_1652793401206"]')
       .type(randomString(8));
@@ -399,14 +648,40 @@ export default async function isisProposalSubmissionTest(
         'input[value="Yes"][type="radio"][name="selection_from_options_1652793028992"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+
+    sleep(5);
+
     await page
       .locator('textarea[name="text_input_1652793450992"]')
       .type(randomString(8));
-    sleep(randomIntBetween(5, 10));
 
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(randomIntBetween(5, 20));
+    sleep(5);
+
+    sleep(5);
+
+    const hazardsSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await hazardsSaveButton.waitFor({
+      state: 'visible',
+    });
+    await hazardsSaveButton.click();
+
+    const hazardsSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await hazardsSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const hazardsSavedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal hazards saved': () => hazardsSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal hazards,
+     */
 
     await page
       .locator(
@@ -431,17 +706,37 @@ export default async function isisProposalSubmissionTest(
         'input[value="No"][type="radio"][name="selection_from_options_1651238284594"]'
       )
       .click();
-    sleep(randomIntBetween(5, 10));
+    sleep(5);
     await page
       .locator('textarea[name="text_input_1653564213830"]')
       .type(randomString(8));
 
-    await page.screenshot({
-      path: `screenshots/${proposalTitle + Date.now() + '_1screenshot.png'}`,
-    });
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
+    sleep(5);
 
-    sleep(randomIntBetween(5, 20));
+    const otherFacilitiesSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await otherFacilitiesSaveButton.waitFor({
+      state: 'visible',
+    });
+    await otherFacilitiesSaveButton.click();
+
+    const otherFacilitiesSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await otherFacilitiesSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const otherFacilitiesSavedMessageIsVisible = await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal other facilities saved': () =>
+        otherFacilitiesSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal science case upload.
+     */
 
     //hack for file upload
     await page.setInputFiles('input[type="file"]', {
@@ -451,71 +746,101 @@ export default async function isisProposalSubmissionTest(
       buffer: encoding.b64encode(fileData) as unknown as ArrayBuffer,
     } as InputFileType);
 
-    sleep(randomIntBetween(5, 20));
+    sleep(5);
 
     await page
       .locator('input[type="checkbox"][name="boolean_1653561253613"]')
       .click();
 
     sleep(5);
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(randomIntBetween(5, 20));
+
+    const scienceCaseUploadSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await scienceCaseUploadSaveButton.waitFor({
+      state: 'visible',
+    });
+    await scienceCaseUploadSaveButton.click();
+
+    const scienceCaseUploadSavedMessage = page.locator(
+      '//div[contains(text(), "Saved")]'
+    );
+    await scienceCaseUploadSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const scienceCaseUploadSavedMessageIsVisible =
+      await savedMessage.isVisible();
+
+    check(page, {
+      'Proposal science case upload saved': () =>
+        scienceCaseUploadSavedMessageIsVisible,
+    });
+
+    /**
+     * Populating proposal final.
+     */
 
     await page
-      .locator('input[type="checkbox"][name="boolean_1634229423070]')
+      .locator('input[type="checkbox"][name="boolean_1634229423070"]')
       .click();
-    sleep(5);
-    await page.locator('button[data-cy="save-and-continue-button"]').click();
-    sleep(randomIntBetween(5, 20));
-    await page
-      .waitForSelector('//button[contains(text(), "Submit")]')
-      .then((e) => e.click());
-    sleep(5);
-    const submitConfirmBoxIsVisible = await page
-      .waitForSelector('//h2[contains(text(), "Please confirm")]')
-      .then((e) => e.isVisible());
+
+    const finalSaveButton = page.locator(
+      'button[data-cy="save-and-continue-button"]'
+    );
+    await finalSaveButton.waitFor({
+      state: 'visible',
+    });
+    await finalSaveButton.click();
+
+    const finalSavedMessage = page.locator('//div[contains(text(), "Saved")]');
+    await finalSavedMessage.waitFor({
+      state: 'visible',
+    });
+    const finalSavedMessageIsVisible = await savedMessage.isVisible();
 
     check(page, {
-      'Proposal submit confirmation box visible': () =>
-        submitConfirmBoxIsVisible,
-    });
-    if (submitConfirmBoxIsVisible) {
-      await page.locator('//button[@data-cy="confirm-ok"]').click();
-      proposalsSubmitted.add(1);
-      proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
-    }
-    sleep(randomIntBetween(5, 10));
-    const submissionMessageIsVisible = await page
-      .waitForSelector(
-        '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon.")]'
-      )
-      .then((e) => e.isVisible());
-
-    check(page, {
-      'User was able to submit proposal': () => submissionMessageIsVisible,
+      'Proposal final saved': () => finalSavedMessageIsVisible,
     });
 
-    if (!submissionMessageIsVisible) {
-      console.error(
-        'Failed to take screenshot:',
-        'Proposal was not submitted successfully'
-      );
-      if (!sharedData?.isClusterTestRun) {
-        await page.screenshot({
-          path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
-        });
-      }
-    }
+    /**
+     * Populating proposal review.
+     */
+
+    const proposalSubmitButton = page.locator(
+      '//button[contains(text(), "Submit")]'
+    );
+    await proposalSubmitButton.waitFor({
+      state: 'visible',
+    });
+    await proposalSubmitButton.click();
+
+    const submitConfirmBoxIsVisible = page.locator(
+      '//h2[contains(text(), "Please confirm")]'
+    );
+    await submitConfirmBoxIsVisible.waitFor({
+      state: 'visible',
+    });
+
+    await page.locator('//button[@data-cy="confirm-ok"]').click();
+
+    const submissionMessageIsVisible = page.locator(
+      '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon.")]'
+    );
+    await submissionMessageIsVisible.waitFor({
+      state: 'visible',
+    });
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+    if (!sharedData?.isClusterTestRun) {
+      await page.screenshot({
+        path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
+      });
+    }
   } catch (error) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: proposal test VU_ID: ${exec.vu.idInTest}`;
     const message = `User could not create and submit proposal to  call`;
     console.error(scenario, message, error);
   } finally {
     await page.close();
-    if (page.isClosed()) {
-      context.close();
-    }
   }
 }
