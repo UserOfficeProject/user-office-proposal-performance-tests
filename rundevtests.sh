@@ -10,6 +10,7 @@ export GRAPHQL_URL=http://duo-reverse-proxy:80/graphql
 export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-240800000
 export TEST_SETUP_CALL_ID=1
+export INSTRUMENT_ID=6
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_PASSWORD="password"

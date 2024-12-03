@@ -2,6 +2,7 @@
 import { File as BrowserFile } from 'k6/browser';
 import { File as ExperimentalFsFile } from 'k6/experimental/fs';
 import { RefinedResponse } from 'k6/http';
+
 export class FsFile extends ExperimentalFsFile {}
 export enum AllocationTimeUnits {
   DAY = 'Day',
@@ -61,6 +62,7 @@ export type SharedData = {
   testCall: Call | null;
   testSetupBaseUrl?: string | null;
   isClusterTestRun: boolean;
+  instrumentId: number;
 };
 
 export type ClientResponse = RefinedResponse<any>;
