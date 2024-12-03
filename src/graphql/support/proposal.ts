@@ -120,9 +120,9 @@ export class Proposal {
 
     if (
       response.status === 200 &&
-      responseData.data.proposals.proposals.length > 0
+      responseData.data.proposals.proposals.length < 1
     ) {
-      console.warn('No proposals where not found', response.error);
+      console.warn('No proposals where found', response.error);
     }
 
     return responseData.data.proposals.proposals;
