@@ -30,8 +30,8 @@ export const options: Options = {
     isisProposalSubmission: {
       exec: 'isisProposalSubmission',
       executor: 'per-vu-iterations',
-      vus: +__ENV.K6_PS_VUS || 1,
-      iterations: +__ENV.K6_PS_ITERATIONS || 2,
+      vus: +__ENV.K6_PS_VUS || 2,
+      iterations: +__ENV.K6_PS_ITERATIONS || 1,
       options: {
         browser: {
           type: 'chromium',

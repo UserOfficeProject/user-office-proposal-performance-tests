@@ -829,6 +829,10 @@ export default async function isisProposalSubmissionTest(
     });
     proposalsSubmitted.add(1);
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+
+    //This is to wait for status actions to execute
+    sleep(200);
+
     if (!sharedData?.isClusterTestRun) {
       await page.screenshot({
         path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
