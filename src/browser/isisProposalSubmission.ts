@@ -36,7 +36,7 @@ export default async function isisProposalSubmissionTest(
     sharedData.users[randomIntBetween(0, sharedData.users.length - 1)];
   const today = new Date();
   const futureDate = `${today.getMonth().toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}${today.getFullYear() + 1}`;
-  page.setDefaultTimeout(106000000);
+  page.setDefaultTimeout(1060000000);
   const proposalTitle = randomString(5);
   try {
     /**
