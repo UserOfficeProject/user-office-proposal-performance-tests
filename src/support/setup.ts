@@ -3,11 +3,11 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getClientApi } from './graphql';
+import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
-import { SharedData } from '../utils/sharedType';
+import { SharedData, Call as CallType } from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
@@ -18,13 +18,16 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let retryCount = 0;
   let proposalHealthCheck = false;
   let users = null;
-  let testCall = null;
+  let testCall: CallType | null = null;
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
-  const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
-  const call = new Call(apiClient);
-  const template = new Template(apiClient);
+  const apiAsyncClient = getAsyncClientApi(
+    graphqlUrl,
+    environmentConfig.GRAPHQL_TOKEN
+  );
+  const call = new Call(apiAsyncClient);
+  const template = new Template(apiAsyncClient);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
@@ -96,14 +99,16 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
 
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
-      testCall = call.getCall(+__ENV.TEST_SETUP_CALL_ID);
+      testCall = await call.getCall(+__ENV.TEST_SETUP_CALL_ID);
     } else {
-      testCall = call.createTestCall(template.createTemplate().templateId);
+      testCall = await call.createTestCall(
+        (await template.createTemplate()).templateId
+      );
       if (testCall) {
-        const instrument = new Instrument(apiClient);
-        const callInstrument = instrument.createInstrument(1);
+        const instrument = new Instrument(apiAsyncClient);
+        const callInstrument = await instrument.createInstrument(1);
         if (callInstrument) {
-          const callWithInstruments = call.assignInstrumentsToCall(
+          const callWithInstruments = await call.assignInstrumentsToCall(
             testCall.id,
             callInstrument.id
           );

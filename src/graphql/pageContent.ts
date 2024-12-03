@@ -2,24 +2,24 @@ import { check, fail, group, sleep } from 'k6';
 import exec from 'k6/execution';
 
 import { User } from './support/user';
-import { getClientApi } from '../support/graphql';
+import { getAsyncClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function pageContentTest(sharedData: SharedData) {
+export async function pageContentTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
   if (!sharedData.testCall) {
     fail(`Test call not set`);
   }
-  const apiClient = getClientApi(sharedData.graphqlUrl);
-  const user = new User(apiClient);
+  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
+  const user = new User(apiAsyncClient);
   sleep(randomIntBetween(5, 20));
   const currentUser = sharedData.users[exec.vu.idInTest];
-  const userToken = user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
   group('PageContent Test', () => {
-    group('PageContent query should return HOMEPAGE content', () => {
-      const response = apiClient(
+    group('PageContent query should return HOMEPAGE content', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
           query PageContent($pageId: PageName!) {
@@ -48,8 +48,8 @@ export function pageContentTest(sharedData: SharedData) {
         },
       });
     });
-    group('PageContent query should return PRIVACYPAGE content', () => {
-      const response = apiClient(
+    group('PageContent query should return PRIVACYPAGE content', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
             query PageContent($pageId: PageName!) {
@@ -80,8 +80,8 @@ export function pageContentTest(sharedData: SharedData) {
       });
     });
 
-    group('PageContent query should return PRIVACYPAGE content', () => {
-      const response = apiClient(
+    group('PageContent query should return PRIVACYPAGE content', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
             query PageContent($pageId: PageName!) {
@@ -112,8 +112,8 @@ export function pageContentTest(sharedData: SharedData) {
       });
     });
 
-    group('PageContent query should return HELPPAGE content', () => {
-      const response = apiClient(
+    group('PageContent query should return HELPPAGE content', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
               query PageContent($pageId: PageName!) {

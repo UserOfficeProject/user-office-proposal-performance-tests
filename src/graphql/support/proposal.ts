@@ -1,7 +1,7 @@
 import { check } from 'k6';
 
 import {
-  ClientResponse,
+  AsyncClientApi,
   GenericQueryResponse,
   ProposalQueryResponse,
   Proposal as ProposalType,
@@ -9,9 +9,9 @@ import {
 } from '../../utils/sharedType';
 
 export class Proposal {
-  constructor(private apiClient: (body: string) => ClientResponse) {}
+  constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  createProposal(callId: number): ProposalType {
+  async createProposal(callId: number): Promise<ProposalType> {
     const mutation = `
     mutation CreateProposal($callId: Int!) {
       createProposal(callId: $callId) {
@@ -40,7 +40,7 @@ export class Proposal {
       callId,
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
 
@@ -48,7 +48,7 @@ export class Proposal {
       ?.createProposal as ProposalType;
   }
 
-  deleteProposal(proposalPk: number): number {
+  async deleteProposal(proposalPk: number): Promise<number> {
     const query = `
           mutation DeleteProposal($proposalPk: Int!) {
                 deleteProposal(proposalPk: $proposalPk) {
@@ -78,7 +78,9 @@ export class Proposal {
       proposalPk: proposalPk,
     };
 
-    const response = this.apiClient(JSON.stringify({ query, variables }));
+    const response = await this.apiAsyncClient(
+      JSON.stringify({ query, variables })
+    );
     const responseData = response.json() as ProposalQueryResponse;
 
     if (
@@ -94,7 +96,7 @@ export class Proposal {
     return proposalPk;
   }
 
-  private getProposals(callId: number): [ProposalType] {
+  private async getProposals(callId: number): Promise<[ProposalType]> {
     const query = `
       query Proposals($filter: ProposalsFilter) {
         proposals(filter: $filter) {
@@ -111,7 +113,9 @@ export class Proposal {
       },
     };
 
-    const response = this.apiClient(JSON.stringify({ query, variables }));
+    const response = await this.apiAsyncClient(
+      JSON.stringify({ query, variables })
+    );
     const responseData = response.json() as ProposalsQueryResponse;
 
     if (
@@ -124,8 +128,8 @@ export class Proposal {
     return responseData.data.proposals.proposals;
   }
 
-  deleteCallProposals(callId: number): [ProposalType] {
-    const proposals = this.getProposals(callId);
+  async deleteCallProposals(callId: number): Promise<[ProposalType]> {
+    const proposals = await this.getProposals(callId);
 
     const mutation = `
     mutation DeleteProposal($proposalPk: Int!) {
@@ -135,26 +139,26 @@ export class Proposal {
           }
     }`;
 
-    const responses = proposals.map((proposal: ProposalType) =>
-      this.apiClient(
+    const proposalPromises = proposals.map((proposal: ProposalType) =>
+      this.apiAsyncClient(
         JSON.stringify({
           query: mutation,
           variables: { proposalPk: proposal.primaryKey },
         })
-      )
+      ).then((res) => {
+        if (res.status !== 200) {
+          console.error(
+            `Error deleting proposal ${proposal.primaryKey}: ${res.status} - ${res.body}`
+          );
+        }
+      })
     );
-
-    responses.forEach((response, index) => {
-      const proposalPK = proposals[index];
-      if (response.status !== 200) {
-        console.error(
-          `Error deleting proposal ${proposalPK}: ${response.status} - ${response.body}`
-        );
+    Promise.allSettled(proposalPromises).then((results) => {
+      if (results.filter((result) => result.status === 'rejected').length > 0) {
+        check(proposalPromises, {
+          'Delete test proposals': (r) => proposals.length === r.length,
+        });
       }
-    });
-
-    check(responses, {
-      'Delete test proposals': (r) => proposals.length === r.length,
     });
 
     return proposals;

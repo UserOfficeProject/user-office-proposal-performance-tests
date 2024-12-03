@@ -1,7 +1,7 @@
 import { sleep } from 'k6';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getClientApi } from './graphql';
+import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Proposal } from '../graphql/support/proposal';
@@ -12,7 +12,7 @@ export async function sc1TearDown(
   sharedData: SharedData,
   environmentConfig: EnvironmentConfigurations
 ) {
-  const apiClient = getClientApi(
+  const apiAsyncClient = getAsyncClientApi(
     sharedData.graphqlUrl,
     environmentConfig.GRAPHQL_TOKEN
   );
@@ -20,9 +20,9 @@ export async function sc1TearDown(
   if (!sharedData.testCall) {
     return;
   }
-  const proposal = new Proposal(apiClient);
-  const template = new Template(apiClient);
-  const instrument = new Instrument(apiClient);
+  const proposal = new Proposal(apiAsyncClient);
+  const template = new Template(apiAsyncClient);
+  const instrument = new Instrument(apiAsyncClient);
 
   console.log('Cleaning proposals');
   proposal.deleteCallProposals(sharedData.testCall.id);
@@ -30,7 +30,7 @@ export async function sc1TearDown(
   if (__ENV.TEST_SETUP_CALL_ID) {
     return;
   }
-  const call = new Call(apiClient);
+  const call = new Call(apiAsyncClient);
 
   console.log('Cleaning up call instruments');
 
