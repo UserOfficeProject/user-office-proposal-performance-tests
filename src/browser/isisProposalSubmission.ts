@@ -32,6 +32,7 @@ export default async function isisProposalSubmissionTest(
   }
   sleep(randomIntBetween(10, 50));
   const page = await browser.newPage();
+  const context = page.context();
   const startTime = Date.now();
   const currentUser =
     sharedData.users[randomIntBetween(0, sharedData.users.length - 1)];
@@ -867,15 +868,19 @@ export default async function isisProposalSubmissionTest(
     sleep(50);
 
     if (!sharedData?.isClusterTestRun) {
-      await page.screenshot({
+      return await page.screenshot({
         path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
       });
     }
+
+    return;
   } catch (error) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: proposal test VU_ID: ${exec.vu.idInTest}`;
     const message = `User could not create and submit proposal to  call`;
     console.error(scenario, message, error);
-  } finally {
-    await page.close();
+
+    return await page.close().then(async () => {
+      await context.close();
+    });
   }
 }

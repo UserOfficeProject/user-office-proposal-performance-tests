@@ -17,6 +17,7 @@ export K6_OPENSEARCH_PASSWORD="password"
 export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
 export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
+export K6_OPENSEARCH_CREATE_INDEX="true"
 
 echo "K6_TEST_ID: $K6_TEST_ID" 
 
