@@ -1,27 +1,29 @@
 import { check, fail } from 'k6';
 
-import { ClientApi, Fap, FapQueryResponse } from '../../utils/sharedType';
+import { AsyncClientApi, Fap, FapQueryResponse } from '../../utils/sharedType';
 
 export class FAP {
-  constructor(private apiClient: ClientApi) {}
+  constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  assignReviewersToFap(memberIds: number[], fapId: number): Fap {
+  async assignReviewersToFap(memberIds: number[], fapId: number): Promise<Fap> {
     const mutation = `
-        mutation assignReviewersToFap(memberIds: $memberIds, fapId: $fapId) {
-          id
-          code
-          proposalCount
-          proposalCurrentCount
+        mutation AssignReviewersToFap($memberIds: [Int!]!, $fapId: Int!) {
+          assignReviewersToFap(memberIds: $memberIds, fapId: $fapId) {
+            id
+            code
+            proposalCurrentCount
         }
-      }`;
+    }`;
     const variables = {
-      input: { memberIds, fapId },
+      memberIds: memberIds,
+      fapId: fapId,
     };
 
-    const response = this.apiClient(
+    const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as FapQueryResponse;
+    console.log(`what is the graphql response???  ${responseData.data}`);
     const checkValue = check(response, {
       'Reviewers assigned to fap': (r) => r.status === 200,
     }).valueOf();
