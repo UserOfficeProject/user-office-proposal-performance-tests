@@ -15,11 +15,9 @@ export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk:443/opensearch"
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
-export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
 export IS_CLUSTER_TEST_RUN="true"
 export INSTRUMENT_ID=6
 
-echo "K6_TEST_ID: $K6_TEST_ID" 
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -31,6 +29,8 @@ for arg in "$@"; do
     fi
 done
 root_config_dir="$(dirname $(realpath $0))"
+export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
+echo "K6_TEST_ID: $K6_TEST_ID"
 
 echo "Removing previous test setup ..."
 kubectl delete deployment/test-setup-deployment  -n apps  --ignore-not-found &> /dev/null
