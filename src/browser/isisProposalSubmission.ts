@@ -18,6 +18,7 @@ const proposalSubmissionDuration = new Trend(
 );
 
 const proposalsSubmitted = new Counter('proposals_submitted', false);
+const proposalsCreated = new Counter('proposals_created', false);
 
 export default async function isisProposalSubmissionTest(
   sharedData: SharedData,
@@ -122,6 +123,7 @@ export default async function isisProposalSubmissionTest(
     await proposalBasicDetailsSavedMessage.waitFor({
       state: 'visible',
     });
+    proposalsCreated.add(1);
     const proposalBasicDetailsSavedMessageIsVisible =
       await proposalBasicDetailsSavedMessage.isVisible();
 
@@ -862,7 +864,7 @@ export default async function isisProposalSubmissionTest(
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
 
     //This is to wait for status actions to execute
-    sleep(100);
+    sleep(50);
 
     if (!sharedData?.isClusterTestRun) {
       await page.screenshot({

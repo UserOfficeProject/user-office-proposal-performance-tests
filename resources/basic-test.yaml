@@ -60,6 +60,16 @@ spec:
         value: '${K6_OPENSEARCH_FLUSH_PERIOD}'
       - name: IS_CLUSTER_TEST_RUN
         value: '${IS_CLUSTER_TEST_RUN}'
+      - name: INSTRUMENT_ID
+        value: '${INSTRUMENT_ID}'
     envFrom:
      - secretRef:
          name: connection-secrets
+    volumeMounts:
+      - name: features
+        mountPath: "/features"
+        readOnly: true
+    volumes:
+        - name: features
+          configMap:
+            name: test-features
