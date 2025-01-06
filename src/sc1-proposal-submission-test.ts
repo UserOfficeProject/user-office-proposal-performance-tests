@@ -42,8 +42,8 @@ const environmentConfig = getEnvironmentConfigurations();
 export async function setup() {
   return await sc1Setup(environmentConfig);
 }
-export function proposalSubmission(sharedData: SharedData) {
-  proposalSubmissionTest(sharedData);
+export async function proposalSubmission(sharedData: SharedData) {
+  await proposalSubmissionTest(sharedData);
 }
 export async function teardown(sharedData: SharedData) {
   return await sc1TearDown(sharedData, environmentConfig);
