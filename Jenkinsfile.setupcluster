@@ -1,6 +1,8 @@
 pipeline {
   
-    agent none
+    agent {
+        label 'kubectl-1.28 && helm && ansible'
+    }
 
     options {
         disableConcurrentBuilds()
@@ -26,9 +28,6 @@ pipeline {
 
     stages {
         stage ('Install Helm dependencies') {
-            agent {
-                label 'kubectl-1.28 && helm && ansible'
-            }
             environment {
                 KUBECONFIG = credentials('load-test-kubeconfig')
                 ANSIBLE_FORCE_COLOR = '1' 
@@ -41,32 +40,25 @@ pipeline {
                 )
             }
         }
-        // stage('Setup cluster configs') {
-            //   agent {
-            //         dockerfile {
-            //         filename 'Dockerfile.run'
-            //         label 'k6 && docker'
-            //         reuseNode true
-            //         }
-            //     }
-        //     environment {
-        //         KUBECONFIG = credentials('load-test-kubeconfig')
-        //     }
-        //     steps {
-        //         copyArtifacts(
-        //             projectName: 'Dev_Build_BisAppSettings',
-        //             filter: 'BISAppSettings/proposal-load-tester/cluster/*',
-        //             selector: lastSuccessful(),
-        //             fingerprintArtifacts: true
-        //         )
+        stage('Setup cluster configs') {
+            environment {
+                KUBECONFIG = credentials('load-test-kubeconfig')
+            }
+            steps {
+                copyArtifacts(
+                    projectName: 'Dev_Build_BisAppSettings',
+                    filter: 'BISAppSettings/proposal-load-tester/cluster/*',
+                    selector: lastSuccessful(),
+                    fingerprintArtifacts: true
+                )
 
-        //         sh(
-        //             '''
-        //             kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
-        //             '''
-        //         )
-        //     }
-        // }
+                sh(
+                    '''
+                    kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
+                    '''
+                )
+            }
+        }
     }
 
     // post {
