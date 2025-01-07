@@ -37,7 +37,7 @@ pipeline {
             steps {
                 sh (
                 '''   
-                 ansible-playbook -v kubernetes/logstash/helm/dev/install-logstash-helm.yml
+                 ansible-playbook -v helm/install-helm-dependencies.yml
                 
                 '''
                 )
