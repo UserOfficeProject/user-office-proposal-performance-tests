@@ -49,7 +49,7 @@ export async function callTest(sharedData: SharedData) {
             return data.data?.calls.length > 0 && !!data.data?.calls[0].id;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing callTest calls query VU_ID: ${exec.vu.idInTest}
-          Error response callTest calls query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+          Error response callTest calls query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -82,7 +82,7 @@ export async function callTest(sharedData: SharedData) {
             return !!data.data?.call.id;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing callTest call query VU_ID: ${exec.vu.idInTest}
-          Error response callTest call query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+          Error response callTest call query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -115,7 +115,7 @@ export async function callTest(sharedData: SharedData) {
             return !!data.data?.template.templateId;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing callTest template query VU_ID: ${exec.vu.idInTest}
-          Error response callTest template query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+          Error response callTest template query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });

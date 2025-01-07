@@ -36,13 +36,13 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
     return {
       ...localEnvs,
     };
-  } catch (err) {
+  } catch (error) {
     if (
       __ENV.ENVIRONMENT.toLowerCase() !== 'develop' &&
       __ENV.ENVIRONMENT.toLowerCase() !== 'production'
     ) {
       console.error(
-        `File .k6rc not found.Create the file in ${configDir} if you want to use it`
+        `File .k6rc not found.Create the file in ${configDir} if you want to use it ${error}`
       );
     }
 

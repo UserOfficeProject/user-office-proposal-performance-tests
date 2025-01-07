@@ -46,7 +46,7 @@ export async function settingsTest(sharedData: SharedData) {
             );
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing settingsTest settings query VU_ID: ${exec.vu.idInTest}
-          Error response settingsTest settings query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+          Error response settingsTest settings query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });

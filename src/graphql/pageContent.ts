@@ -43,7 +43,7 @@ export async function pageContentTest(sharedData: SharedData) {
             fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTest pageContent 
             HOMEPAGE query VU_ID: ${exec.vu.idInTest}
             Error response pageContentTest pageContent 
-            HOMEPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            HOMEPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -74,7 +74,7 @@ export async function pageContentTest(sharedData: SharedData) {
             fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTest pageContent 
             PRIVACYPAGE query VU_ID: ${exec.vu.idInTest}
             Error response pageContentTest pageContent 
-            PRIVACYPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            PRIVACYPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -106,7 +106,7 @@ export async function pageContentTest(sharedData: SharedData) {
             fail(`SCENARIO: ${exec.scenario.name} Executing pageContent pageContent 
             PRIVACYPAGE query VU_ID: ${exec.vu.idInTest}
             Error response pageContentTest pageContent 
-            PRIVACYPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            PRIVACYPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -137,7 +137,7 @@ export async function pageContentTest(sharedData: SharedData) {
             fail(`SCENARIO: ${exec.scenario.name} Executing pageContentTest pageContent 
               HELPPAGE query VU_ID: ${exec.vu.idInTest}
               Error response pageContentTest pageContent 
-              HELPPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              HELPPAGE query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
