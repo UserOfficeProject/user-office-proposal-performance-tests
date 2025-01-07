@@ -3,12 +3,18 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getClientApi } from './graphql';
+import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { FAP } from '../graphql/support/fap';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
-import { SharedData, UserLogin } from '../utils/sharedType';
+import { User } from '../graphql/support/user';
+import {
+  SharedData,
+  UserLogin,
+  Call as CallType,
+  Fap,
+} from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
@@ -19,14 +25,19 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let retryCount = 0;
   let proposalHealthCheck = false;
   let users = null;
-  let testCall = null;
+  let testCall: CallType | null = null;
+  let testFap: Fap | null = null;
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
-  const apiClient = getClientApi(graphqlUrl, environmentConfig.GRAPHQL_TOKEN);
-  const call = new Call(apiClient);
-  const fap = new FAP(apiClient);
-  const template = new Template(apiClient);
+  const apiAsyncClient = getAsyncClientApi(
+    graphqlUrl,
+    environmentConfig.GRAPHQL_TOKEN
+  );
+  const call = new Call(apiAsyncClient);
+  const template = new Template(apiAsyncClient);
+  const fap = new FAP(apiAsyncClient);
+  const user = new User(apiAsyncClient);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
@@ -99,9 +110,21 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       );
       console.log(`response status ${res.status}`);
       if (__ENV.TEST_SETUP_FAP_ID) {
-        const reviewerIds = reviewerUsers.map((users) => users.userId);
-        fap.assignReviewersToFap(reviewerIds, Number(__ENV.TEST_SETUP_FAP_ID));
-        console.log(`assigned users to fap id ${__ENV.TEST_SETUP_FAP_ID}`);
+        reviewerUsers.map(async (r) => {
+          //login the user in the proposals system before assigning them to a FAP
+          const userToken = await user.getUserToken(`${r.sessionId}`);
+          if (userToken) {
+            testFap = await fap.assignReviewersToFap(
+              [r.userId],
+              Number(__ENV.TEST_SETUP_FAP_ID)
+            );
+            if (testFap) {
+              console.log(
+                `assigned userid ${r.userId} to fap id ${__ENV.TEST_SETUP_FAP_ID}`
+              );
+            }
+          }
+        });
       }
     }
   }
@@ -126,14 +149,16 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
 
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
-      testCall = call.getCall(+__ENV.TEST_SETUP_CALL_ID);
+      testCall = await call.getCall(+__ENV.TEST_SETUP_CALL_ID);
     } else {
-      testCall = call.createTestCall(template.createTemplate().templateId);
+      testCall = await call.createTestCall(
+        (await template.createTemplate()).templateId
+      );
       if (testCall) {
-        const instrument = new Instrument(apiClient);
-        const callInstrument = instrument.createInstrument(1);
+        const instrument = new Instrument(apiAsyncClient);
+        const callInstrument = await instrument.createInstrument(1);
         if (callInstrument) {
-          const callWithInstruments = call.assignInstrumentsToCall(
+          const callWithInstruments = await call.assignInstrumentsToCall(
             testCall.id,
             callInstrument.id
           );
