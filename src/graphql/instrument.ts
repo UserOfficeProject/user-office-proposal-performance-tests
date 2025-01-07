@@ -55,7 +55,7 @@ export async function instrumentTest(sharedData: SharedData) {
             return !!data.data?.instrument.id;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing instrumentTest instrument query VU_ID: ${exec.vu.idInTest}
-            Error response instrumentTest instrument query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            Error response instrumentTest instrument query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });

@@ -48,7 +48,7 @@ export async function userTest(sharedData: SharedData) {
             return !!data.data?.me.id;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing userTest me query VU_ID: ${exec.vu.idInTest}
-          Error response userTest me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+          Error response userTest me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
         'Me query returned current user roles': (res) => {
@@ -60,7 +60,7 @@ export async function userTest(sharedData: SharedData) {
             );
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing  userTest me query VU_ID: ${exec.vu.idInTest}
-          Error response userTest me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+          Error response userTest me query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -95,7 +95,7 @@ export async function userTest(sharedData: SharedData) {
               return !!data.data?.basicUserDetailsByEmail.id;
             } catch (error) {
               fail(`SCENARIO: ${exec.scenario.name} Executing userTest basicUserDetailsByEmail VU_ID: ${exec.vu.idInTest}
-            Error response basicUserDetailsByEmail ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            Error response basicUserDetailsByEmail ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
             }
           },
         });
