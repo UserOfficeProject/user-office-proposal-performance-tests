@@ -13,9 +13,10 @@
       kubernetes.core.helm:
         release_name: my-k6-operator
         create_namespace: true
-        release_namespace: my-k6-operator-system
+        release_namespace: default
         chart_ref: grafana/k6-operator
         chart_version: 3.10.1
         update_repo_cache: yes
         wait: yes
-        state: present
+        state: present 
+        update: yes
