@@ -66,10 +66,10 @@ spec:
      - secretRef:
          name: connection-secrets
     volumeMounts:
-      - name: features
-        mountPath: "/features"
+      - name: fixtures
+        mountPath: "/fixtures"
         readOnly: true
     volumes:
-        - name: features
+        - name: fixtures
           configMap:
-            name: test-features
+            name: test-fixtures
