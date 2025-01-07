@@ -28,10 +28,10 @@ pipeline {
  
         stage ('Install Helm dependencies') {
             agent {
-                label 'ansible'
+                label 'kubectl-1.28 && helm && ansible'
             }
             environment {
-                KUBECONFIG = credentials('load-test-kubeconfig')
+                K8S_AUTH_KUBECONFIG = credentials('load-test-kubeconfig')
                 ANSIBLE_FORCE_COLOR = '1'
             }
             steps {
