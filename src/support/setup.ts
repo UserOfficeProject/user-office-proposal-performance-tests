@@ -3,12 +3,18 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getAsyncClientApi } from './graphql';
+import { getAsyncAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { FAP } from '../graphql/support/fap';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
-import { SharedData, UserLogin, Call as CallType } from '../utils/sharedType';
+import { User } from '../graphql/support/user';
+import {
+  SharedData,
+  UserLogin,
+  Call as CallType,
+  Fap,
+} from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
@@ -20,6 +26,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let proposalHealthCheck = false;
   let users = null;
   let testCall: CallType | null = null;
+  let testFap: Fap | null = null;
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
@@ -28,8 +35,9 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     environmentConfig.GRAPHQL_TOKEN
   );
   const call = new Call(apiAsyncClient);
-  const fap = new FAP(apiClient);
   const template = new Template(apiAsyncClient);
+  const fap = new FAP(apiAsyncClient);
+  const user = new User(apiAsyncClient);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
@@ -102,9 +110,21 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       );
       console.log(`response status ${res.status}`);
       if (__ENV.TEST_SETUP_FAP_ID) {
-        const reviewerIds = reviewerUsers.map((users) => users.userId);
-        fap.assignReviewersToFap(reviewerIds, Number(__ENV.TEST_SETUP_FAP_ID));
-        console.log(`assigned users to fap id ${__ENV.TEST_SETUP_FAP_ID}`);
+        reviewerUsers.map(async (r) => {
+          //login the user in the proposals system before assigning them to a FAP
+          const userToken = await user.getUserToken(`${r.sessionId}`);
+          if (userToken) {
+            testFap = await fap.assignReviewersToFap(
+              [r.userId],
+              Number(__ENV.TEST_SETUP_FAP_ID)
+            );
+            if (testFap) {
+              console.log(
+                `assigned userid ${r.userId} to fap id ${__ENV.TEST_SETUP_FAP_ID}`
+              );
+            }
+          }
+        });
       }
     }
   }

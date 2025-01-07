@@ -1,4 +1,4 @@
-import { check, fail } from 'k6';
+import { check } from 'k6';
 
 import { AsyncClientApi, Fap, FapQueryResponse } from '../../utils/sharedType';
 
@@ -23,15 +23,16 @@ export class FAP {
       JSON.stringify({ query: mutation, variables })
     );
     const responseData = response.json() as FapQueryResponse;
-    console.log(`what is the graphql response???  ${responseData.data}`);
-    const checkValue = check(response, {
-      'Reviewers assigned to fap': (r) => r.status === 200,
-    }).valueOf();
 
-    if (!checkValue) {
-      fail(
-        'Performance test could not be created aborting test, Executing FAP.AssignReviewersToFap'
-      );
+    if (
+      !check(response, {
+        'Reviewers assigned to fap': (r) =>
+          r.status === 200 &&
+          !!responseData.data.assignReviewersToFap.id &&
+          true,
+      })
+    ) {
+      console.error('Failed to assign reviewers to fap', response.error);
     }
 
     return responseData?.data?.assignReviewersToFap as Fap;
