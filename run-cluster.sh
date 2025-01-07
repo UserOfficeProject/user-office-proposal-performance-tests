@@ -41,7 +41,7 @@ sleep 5
 echo "Removing previous k6 test $K6_TEST_FILE ..."
 envsubst < $root_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
 kubectl delete configmap test-scripts -n apps --ignore-not-found
-kubectl delete configmap test-features  -n apps --ignore-not-found
+kubectl delete configmap test-fixtures  -n apps --ignore-not-found
 sleep 5
 
 if [ "$SETUP_TEST_USERS" == "true" ]; then
@@ -57,8 +57,8 @@ echo "Add load test configmap ..."
 kubectl create configmap test-scripts -n apps  --from-file=$root_config_dir/test/$K6_TEST_FILE.js
 sleep 5
 
-echo "Add load test features ..."
-kubectl create configmap test-features -n apps --from-file=$root_config_dir/features/
+echo "Add load test fixtures ..."
+kubectl create configmap test-fixtures -n apps --from-file=$root_config_dir/fixtures/
 sleep 5
 
 echo "Start load test ..."
@@ -85,7 +85,7 @@ else
   echo "Could not initilise k6 pod runners after 10 attempts. Aborting."
   envsubst < $root_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
   kubectl delete configmap test-scripts -n apps --ignore-not-found
-  kubectl delete configmap test-features -n apps --ignore-not-found
+  kubectl delete configmap test-fixtures -n apps --ignore-not-found
   echo "Removing test setup"
   kubectl delete deployment/test-setup-deployment -n apps  &> /dev/null
   kubectl wait pods -l app=test-setup -n apps --timeout=-60s --for=delete &> /dev/null
@@ -129,12 +129,12 @@ if [[ $k6_pod_runners_succeeded -ge $k6_pod_runners_finished_tests ]]; then
   echo "K6 tests where successful"
   envsubst < $root_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
   kubectl delete configmap test-scripts -n apps --ignore-not-found
-  kubectl delete configmap test-features  -n apps --ignore-not-found
+  kubectl delete configmap test-fixtures  -n apps --ignore-not-found
   exit 0
 else
   echo "k6 test failed."
   envsubst < $root_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
   kubectl delete configmap test-scripts -n apps --ignore-not-found
-  kubectl delete configmap test-features -n apps --ignore-not-found
+  kubectl delete configmap test-fixtures -n apps --ignore-not-found
   exit 1
 fi
