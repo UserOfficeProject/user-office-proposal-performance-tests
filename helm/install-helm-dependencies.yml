@@ -7,7 +7,7 @@
       kubernetes.core.helm_repository:
         binary_path: ~/bin/helm
         repo_name: k6-operator
-        repo_url: helm repo add grafana https://grafana.github.io/helm-charts
+        repo_url: https://grafana.github.io/helm-charts
         state: present
 
     - name: Install k6-operator
