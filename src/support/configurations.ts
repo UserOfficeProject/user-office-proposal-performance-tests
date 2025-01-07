@@ -52,19 +52,19 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
   }
 }
 
-export async function getFeatureFile(fileName: string) {
+export async function getFixturesFile(fileName: string) {
   const configDir = __ENV.PWD;
 
   try {
     const configDir = __ENV.PWD;
     if (configDir == null) {
-      return await fsOpen(`/features/${fileName}`);
-    }
+      return await fsOpen(`/fixtures/${fileName}`);
+    } 
 
-    return await fsOpen(`${configDir}/features/${fileName}`);
+    return await fsOpen(`${configDir}/fixtures/${fileName}`);
   } catch (err) {
     throw new Error(
-      `File ${fileName} not found.Create the file in ${configDir}/features/ if you want to use it`
+      `File ${fileName} not found.Create the file in ${configDir}/fixtures/ if you want to use it ${err}`
     );
   }
 }

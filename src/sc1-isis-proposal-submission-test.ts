@@ -3,7 +3,7 @@ import { Options } from 'k6/options';
 import isisProposalSubmissionTest from './browser/isisProposalSubmission';
 import {
   getEnvironmentConfigurations,
-  getFeatureFile,
+  getFixturesFile,
 } from './support/configurations';
 import { sc1Setup } from './support/setup';
 import { sc1TearDown } from './support/teardown';
@@ -43,7 +43,7 @@ export const options: Options = {
 const environmentConfig = getEnvironmentConfigurations();
 let file: FsFile;
 (async function () {
-  file = await getFeatureFile('test.pdf');
+  file = await getFixturesFile('test.pdf');
 })();
 export async function setup() {
   return await sc1Setup(environmentConfig);
