@@ -1,8 +1,6 @@
 pipeline {
   
-    agent {
-        label 'kubectl-1.28 && helm && ansible'
-    }
+    agent none
 
     options {
         disableConcurrentBuilds()
@@ -28,35 +26,33 @@ pipeline {
 
     stages {
         stage ('Install Helm dependencies') {
+            agent {
+                label 'kubectl-1.28 && helm && ansible'
+            }
             environment {
-                KUBECONFIG = credentials('load-test-kubeconfig')
                 K8S_AUTH_KUBECONFIG = credentials('load-test-kubeconfig')
+                KUBECONFIG = credentials('load-test-kubeconfig')
                 ANSIBLE_FORCE_COLOR = '1' 
             }
             steps {
-               sh (
-                '''   
-                 ansible-playbook -v helm/install-helm-dependencies.yml
-                '''
-                )
-            }
-        }
-        stage('Setup cluster configs') {
-            environment {
-                KUBECONFIG = credentials('load-test-kubeconfig')
-            }
-            steps {
-                copyArtifacts(
+
+                 copyArtifacts(
                     projectName: 'Dev_Build_BisAppSettings',
                     filter: 'BISAppSettings/proposal-load-tester/cluster/*',
                     selector: lastSuccessful(),
                     fingerprintArtifacts: true
                 )
+            
+               sh (
+                '''   
+                 ansible-playbook -v helm/install-helm-dependencies.yml
+                '''
+                )
 
                 sh(
-                    '''
-                    kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
-                    '''
+                '''
+                 kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
+                '''
                 )
             }
         }
