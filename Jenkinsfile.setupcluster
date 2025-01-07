@@ -28,21 +28,18 @@ pipeline {
  
         stage ('Install Helm dependencies') {
             agent {
-                label 'kubectl-1.28 && helm && ansible'
+                label 'kubectl-1.28 && helm'
             }
             environment {
-                K8S_AUTH_KUBECONFIG = credentials('load-test-kubeconfig')
-                ANSIBLE_FORCE_COLOR = '1'
+                KUBECONFIG = credentials('load-test-kubeconfig')
             }
             steps {
-                sh (
-                '''   
-                 ansible-playbook -v helm/install-helm-dependencies.yml
-                
-                '''
-                )
+                sh ('helm repo add grafana https://grafana.github.io/helm-charts')
+                sh ('helm repo update')
+                sh ('helm install k6-operator grafana/k6-operator')
             }
         }
+
         // stage('Setup cluster configs') {
             //   agent {
             //         dockerfile {
