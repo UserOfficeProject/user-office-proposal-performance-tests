@@ -36,7 +36,7 @@ pipeline {
             steps {
                 sh ('helm repo add grafana https://grafana.github.io/helm-charts')
                 sh ('helm repo update')
-                sh ('helm install k6-operator grafana/k6-operator')
+                sh ('helm install my-k6-operator grafana/k6-operator')
             }
         }
 
