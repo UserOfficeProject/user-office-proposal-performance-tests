@@ -1,12 +1,6 @@
 pipeline {
   
-    agent {
-        dockerfile {
-            filename 'Dockerfile.run'
-            label 'k6 && docker'
-            filename 'Dockerfile.run'
-        }
-    }
+    agent none
 
     options {
         disableConcurrentBuilds()
@@ -31,44 +25,69 @@ pipeline {
     }
 
     stages {
-        stage('Setup') {
+ 
+        stage ('Install Helm dependencies') {
+            agent {
+                label 'ansible'
+            }
             environment {
                 KUBECONFIG = credentials('load-test-kubeconfig')
+                ANSIBLE_FORCE_COLOR = '1'
             }
             steps {
-                copyArtifacts(
-                    projectName: 'Dev_Build_BisAppSettings',
-                    filter: 'BISAppSettings/proposal-load-tester/cluster/*',
-                    selector: lastSuccessful(),
-                    fingerprintArtifacts: true
-                )
-
-                sh(
-                    '''
-                    kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
-                    '''
+                sh (
+                '''   
+                 ansible-playbook -v kubernetes/logstash/helm/dev/install-logstash-helm.yml
+                
+                '''
                 )
             }
         }
+        // stage('Setup cluster configs') {
+            //   agent {
+            //         dockerfile {
+            //         filename 'Dockerfile.run'
+            //         label 'k6 && docker'
+            //         reuseNode true
+            //         }
+            //     }
+        //     environment {
+        //         KUBECONFIG = credentials('load-test-kubeconfig')
+        //     }
+        //     steps {
+        //         copyArtifacts(
+        //             projectName: 'Dev_Build_BisAppSettings',
+        //             filter: 'BISAppSettings/proposal-load-tester/cluster/*',
+        //             selector: lastSuccessful(),
+        //             fingerprintArtifacts: true
+        //         )
+
+        //         sh(
+        //             '''
+        //             kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
+        //             '''
+        //         )
+        //     }
+        // }
     }
 
-    post {
-        regression {
-            emailext(
-                subject: '$DEFAULT_SUBJECT',
-                body: '$DEFAULT_CONTENT',
-                to: '$DEFAULT_RECIPIENTS',
-                recipientProviders: [developers()]
-            )
-        }
+    // post {
+    //     regression {
+    //         emailext(
+    //             subject: '$DEFAULT_SUBJECT',
+    //             body: '$DEFAULT_CONTENT',
+    //             to: '$DEFAULT_RECIPIENTS',
+    //             recipientProviders: [developers()]
+    //         )
+    //     }
 
-        fixed {
-            emailext(
-                subject: '$DEFAULT_SUBJECT',
-                body: '$DEFAULT_CONTENT',
-                to: '$DEFAULT_RECIPIENTS',
-                recipientProviders: [developers()]
-            )
-        }
-    }
+    //     fixed {
+    //         emailext(
+    //             subject: '$DEFAULT_SUBJECT',
+    //             body: '$DEFAULT_CONTENT',
+    //             to: '$DEFAULT_RECIPIENTS',
+    //             recipientProviders: [developers()]
+    //         )
+    //     }
+    // }
 }
