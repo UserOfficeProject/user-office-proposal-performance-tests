@@ -30,7 +30,6 @@ pipeline {
                 label 'kubectl-1.28 && helm && ansible'
             }
             environment {
-                K8S_AUTH_KUBECONFIG = credentials('load-test-kubeconfig')
                 KUBECONFIG = credentials('load-test-kubeconfig')
                 ANSIBLE_FORCE_COLOR = '1' 
             }
