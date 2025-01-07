@@ -59,7 +59,7 @@ export async function questionaryTest(sharedData: SharedData) {
               );
             } catch (error) {
               fail(`SCENARIO: ${exec.scenario.name} Executing questionaryTest blankQuestionaryStepsByCallId query VU_ID: ${exec.vu.idInTest}
-              Error response questionaryTest blankQuestionaryStepsByCallId query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              Error response questionaryTest blankQuestionaryStepsByCallId query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
             }
           },
         });
@@ -102,7 +102,7 @@ export async function questionaryTest(sharedData: SharedData) {
               );
             } catch (error) {
               fail(`SCENARIO: ${exec.scenario.name} Executing class questionaryTest blankQuestionary query VU_ID: ${exec.vu.idInTest}
-              Error response questionaryTest blankQuestionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              Error response questionaryTest blankQuestionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
             }
           },
         });

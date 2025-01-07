@@ -31,7 +31,7 @@ export class User {
       return responseData.data.externalTokenLogin;
     } catch (error) {
       fail(`SCENARIO: ${exec.scenario.name} Executing class User.getUserToken VU_ID: ${exec.vu.idInTest}
-      Error response getUserToken ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+      Error response getUserToken ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
     }
   }
 }
