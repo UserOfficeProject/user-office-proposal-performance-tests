@@ -30,6 +30,7 @@ pipeline {
         stage ('Install Helm dependencies') {
             environment {
                 KUBECONFIG = credentials('load-test-kubeconfig')
+                K8S_AUTH_KUBECONFIG = credentials('load-test-kubeconfig')
                 ANSIBLE_FORCE_COLOR = '1' 
             }
             steps {
