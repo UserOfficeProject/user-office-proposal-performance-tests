@@ -58,7 +58,6 @@ spec:
           preStop:
             exec:
               command: ["/bin/sh", "-c", "curl -s -X DELETE http://test-setup:8100/users/-220800000/-220900000"]
-      priorityClassName: high-priority
       imagePullSecrets:
       - name: registry-creds
   progressDeadlineSeconds: 600
