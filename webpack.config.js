@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { join } from 'path';
 import { resolve as _resolve } from 'path';
 import { fileURLToPath } from 'url'; 
