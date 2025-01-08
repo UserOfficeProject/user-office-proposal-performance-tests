@@ -1,12 +1,6 @@
 pipeline {
   
-    agent {
-        dockerfile {
-            filename 'Dockerfile.run'
-            label 'linux && docker'
-            filename 'Dockerfile.run'
-        }
-    }
+    agent none
 
     options {
         disableConcurrentBuilds()
@@ -31,22 +25,33 @@ pipeline {
     }
 
     stages {
-        stage('Setup') {
+        stage ('Install Helm dependencies') {
+            agent {
+                label 'kubectl-1.28 && helm && ansible'
+            }
             environment {
                 KUBECONFIG = credentials('load-test-kubeconfig')
+                ANSIBLE_FORCE_COLOR = '1' 
             }
             steps {
-                copyArtifacts(
+
+                 copyArtifacts(
                     projectName: 'Dev_Build_BisAppSettings',
                     filter: 'BISAppSettings/proposal-load-tester/cluster/*',
                     selector: lastSuccessful(),
                     fingerprintArtifacts: true
                 )
+            
+               sh (
+                '''   
+                 ansible-playbook -v helm/install-helm-dependencies.yml
+                '''
+                )
 
                 sh(
-                    '''
-                    kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
-                    '''
+                '''
+                 kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
+                '''
                 )
             }
         }
