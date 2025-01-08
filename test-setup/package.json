@@ -2,19 +2,21 @@
   "name": "test-setup",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.js",
+  "main": "./build/index.js",
   "author": "This is a test set up server for managing setup for proposal load testing.",
   "license": "UNLICENSED",
   "scripts": {
     "tsc": "tsc",
     "lint": "tsc --noEmit && eslint",
     "start": "node ./build/index.js",
+    "start:docker": "npm install && ts-node-dev --respawn -T ./src/index.ts",
     "build": "eslint && rm -rf ./build && node build.mjs"
   },
   "dependencies": {
     "@user-office-software/duo-logger": "^2.2.1",
     "express": "^4.19.2",
-    "oracledb": "^6.6.0"
+    "oracledb": "^6.6.0",
+    "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
