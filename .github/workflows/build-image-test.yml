@@ -1,8 +1,10 @@
 name: Build test
 
 on:
-  pull_request:
-    branches: [develop, master]
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   build-image-test:
