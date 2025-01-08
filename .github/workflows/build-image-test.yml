@@ -1,0 +1,48 @@
+name: Build test
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build-image-test:
+    name: Docker build and file validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate test build file
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          file: ./Dockerfile
+          call: check
+
+      - name: Validate test setup build file
+        uses: docker/build-push-action@v6
+        with:
+          context: ./test-setup
+          platforms: linux/amd64
+          file: ./Dockerfile
+          call: check
+
+      - name: Build test
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          push: false
+          tags: test:latest
+
+      - name: Build test setup
+        uses: docker/build-push-action@v6
+        with:
+          context: ./test-setup
+          push: false
+          tags: test-setup:latest
