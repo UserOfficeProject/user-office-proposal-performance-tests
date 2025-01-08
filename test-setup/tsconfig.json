@@ -1,9 +1,8 @@
-{
-    
+{  
+   
     "compilerOptions": {
-      "moduleResolution": "Bundler",
-      "target": "es5",
-      "module": "ES2022",
+      "target": "ES2022",
+      "module": "nodenext",
       "lib": [
         "es2022",
       ] ,

@@ -36,17 +36,13 @@ npm run build:k6-test&
 sleep 10
 # No command provided, run both build and test by default
 if [ "$SETUP_TEST_USERS" == "true" ]; then
-	echo "Setting up users"
-    npm run build:test-setup&
-    sleep 10&
-    npm run start:test-setup&
+
+    npm run start:docker-test-setup&
     sleep 10
     while ! nc -z localhost 8100; do
         sleep 5
         echo "Local test setup server is not ready "
     done
-    echo "Clean up any previous user data"
-    curl -X DELETE http://localhost:8100/users/$USER_STARTING_ID/$(($USER_STARTING_ID+$SETUP_TOTAL_USERS))
 fi
 sleep 10
 
@@ -54,8 +50,3 @@ sleep 10
 # Test can also out put to std using --out logger
 # Test can also be out put to opensearch --out xk6-output-opensearch 
 k6 run --no-usage-report --out dashboard - < <(cat ./test/${K6_TEST_FILE}.js)
-
-if [ "$SETUP_TEST_USERS" == "true" ]; then
-  echo "Clean up  created user data"
-  curl -X DELETE http://localhost:8100/users/$USER_STARTING_ID/$(($USER_STARTING_ID+$SETUP_TOTAL_USERS))
-fi
