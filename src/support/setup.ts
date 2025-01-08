@@ -7,6 +7,7 @@ import { getAsyncAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { FAP } from '../graphql/support/fap';
 import { Instrument } from '../graphql/support/instrument';
+import { Proposal } from '../graphql/support/proposal';
 import { Template } from '../graphql/support/template';
 import { User } from '../graphql/support/user';
 import {
@@ -38,6 +39,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   const template = new Template(apiAsyncClient);
   const fap = new FAP(apiAsyncClient);
   const user = new User(apiAsyncClient);
+  const proposal = new Proposal(apiAsyncClient);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
@@ -109,6 +111,12 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         }
       );
       console.log(`response status ${res.status}`);
+      if (__ENV.TEST_SET_UP_PROPOSAL_PKS) {
+        proposal.changeProposalsStatus(
+          [Number(__ENV.TEST_SET_UP_PROPOSAL_PKS)],
+          5
+        );
+      }
       if (__ENV.TEST_SETUP_FAP_ID) {
         reviewerUsers.map(async (r) => {
           //login the user in the proposals system before assigning them to a FAP

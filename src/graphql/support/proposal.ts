@@ -163,4 +163,23 @@ export class Proposal {
 
     return proposals;
   }
+  async changeProposalsStatus(proposalPks: number[], statusId: number) {
+    const mutation = `mutation ChangeProposalsStatus($changeProposalsStatusInput: ChangeProposalsStatusInput!) {
+  changeProposalsStatus(changeProposalsStatusInput: $changeProposalsStatusInput)
+}`;
+    const variables = {
+      changeProposalsStatusInput: {
+        proposalPks,
+        statusId,
+      },
+    };
+    const response = await this.apiAsyncClient(
+      JSON.stringify({ query: mutation, variables })
+    );
+    if (response.status !== 200) {
+      console.error(
+        `Error changing status of proposal ${response.status} - ${response.body}`
+      );
+    }
+  }
 }
