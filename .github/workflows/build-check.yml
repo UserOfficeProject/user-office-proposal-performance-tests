@@ -1,0 +1,25 @@
+name: Build test
+
+on:
+  pull_request:
+    branches: [develop, master]
+
+jobs:
+  build-test:
+    name: Build test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate build configuration
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          platforms: linux/amd64,linux/arm64/v8
+          file: ./Dockerfile
+          push: true
+          call: check
