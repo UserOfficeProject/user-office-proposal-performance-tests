@@ -18,7 +18,7 @@ jobs:
       - name: Validate test build file
         uses: docker/build-push-action@v6
         with:
-          context: ./
+          context: .
           platforms: linux/amd64
           file: ./Dockerfile
           call: check
@@ -37,3 +37,10 @@ jobs:
           context: ./
           push: false
           tags: test:latest
+
+      - name: Build test setup
+        uses: docker/build-push-action@v6
+        with:
+          context: ./test-setup
+          push: false
+          tags: test-setup:latest
