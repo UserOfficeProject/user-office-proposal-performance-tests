@@ -5,8 +5,8 @@ on:
     branches: [develop, master]
 
 jobs:
-  build-test:
-    name: Build test
+  build-image-test:
+    name: Docker build and file validation
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
