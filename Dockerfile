@@ -1,16 +1,15 @@
-FROM golang:1.23-alpine as k6-builder
+FROM golang:1.23-alpine AS k6-builder
 
 WORKDIR $GOPATH/src/go.k6.io/k6
 ADD . .
 RUN apk --no-cache add build-base git
-RUN go install go.k6.io/xk6/cmd/xk6@v0.12.2
-RUN xk6 build \
+RUN go install go.k6.io/xk6/cmd/xk6@v0.13.3
+RUN xk6 build v0.55.0 \
     --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-logger="$PWD/extensions/xk6-output-logger" \
     --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-opensearch="$PWD/extensions/xk6-output-opensearch" \
-    --with github.com/grafana/xk6-browser@v1.7.0\
     --output /tmp/k6
 
-FROM alpine:3.20 as release
+FROM alpine:3.20 AS release
 
 # Download and install Oracle Instant Client
 RUN apk --no-cache add libaio libnsl libc6-compat curl && \
@@ -27,7 +26,7 @@ RUN apk --no-cache add libaio libnsl libc6-compat curl && \
     ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2 && \
     ln -s /lib64/ld-linux-x86-64.so.2 /usr/lib/ld-linux-x86-64.so.2
 
-ENV LD_LIBRARY_PATH /usr/lib/instantclient
+ENV LD_LIBRARY_PATH=/usr/lib/instantclient
 
 RUN apk add --no-cache \
   chromium-swiftshader \

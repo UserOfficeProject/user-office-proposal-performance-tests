@@ -191,5 +191,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     testCall,
     testSetupBaseUrl,
     isClusterTestRun: environmentConfig.IS_CLUSTER_TEST_RUN === 'true' || false,
+    instrumentId: environmentConfig.INSTRUMENT_ID,
   } as SharedData;
 }

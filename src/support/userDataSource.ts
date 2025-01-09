@@ -24,7 +24,8 @@ export class UserDataSource {
       const query = `SELECT USER_NUMBER FROM person WHERE rid = ${userId.toString()}`;
       userList = sqlQuery(db, query);
     } catch (error) {
-      throw new Error(`Fail to query user details userId: ${userId}`);
+      if(error)
+        throw new Error(`Fail to query user details userId: ${userId}`);
     } finally {
       db.close();
     }

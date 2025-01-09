@@ -18,9 +18,12 @@ export function getDatabaseClient(
       `user="${username}" password="${password}" connectString="${connectionString}"`
     );
   } catch (error) {
-    throw new Error(
-      'Could not create database client verify you connection string and credentials'
-    );
+    if (error) {
+      throw new Error(
+        'Could not create database client verify you connection string and credentials'
+      );
+    }
+    throw new Error('General connection error');
   }
 }
 

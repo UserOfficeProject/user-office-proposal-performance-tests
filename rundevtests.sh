@@ -11,7 +11,8 @@ export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-220800000
 export SETUP_TOTAL_REVIEWERS=7
 export REVIEWER_STARTING_IDS=-220800000
-export TEST_SETUP_CALL_ID=1
+export TEST_SETUP_CALL_ID=54
+export INSTRUMENT_ID=6
 export TEST_SETUP_FAP_ID=1
 export TEST_SET_UP_PROPOSAL_PKS=1
 export SETUP_TEST_USERS="true"
@@ -21,9 +22,10 @@ export SETUP_TEST_REVIEWER_ROLE="fapMember"
 export K6_OPENSEARCH_PASSWORD="password"
 export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
-export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
 
-echo "K6_TEST_ID: $K6_TEST_ID" 
+export K6_OPENSEARCH_CREATE_INDEX="true"
+
+
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -34,7 +36,8 @@ for arg in "$@"; do
         export "$KEY"="$VALUE"
     fi
 done
-
+export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
+echo "K6_TEST_ID: $K6_TEST_ID" 
 # remove shreenshots
 rm -rf ./screenshots
 
@@ -42,17 +45,13 @@ npm run build:k6-test&
 sleep 10
 # No command provided, run both build and test by default
 if [ "$SETUP_TEST_USERS" == "true" ]; then
-	echo "Setting up users"
-    npm run build:test-setup&
-    sleep 10&
-    npm run start:test-setup&
+
+    npm run start:docker-test-setup&
     sleep 10
     while ! nc -z localhost 8100; do
         sleep 5
         echo "Local test setup server is not ready "
     done
-    echo "Clean up any previous user data"
-    curl -X DELETE http://localhost:8100/users/$USER_STARTING_ID/$(($USER_STARTING_ID+$SETUP_TOTAL_USERS))
 fi
 sleep 10
 

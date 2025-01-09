@@ -160,7 +160,7 @@ export class Call {
       return responseData?.data?.calls;
     } catch (error) {
       fail(`SCENARIO: ${exec.scenario.name} Executing class Call.getUserCalls VU_ID: ${exec.vu.idInTest}
-      Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+      Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
     }
   }
 

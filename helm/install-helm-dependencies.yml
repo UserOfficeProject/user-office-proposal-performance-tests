@@ -1,0 +1,21 @@
+- name: Install required Helm packages
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Add k6-operator Helm repo
+      kubernetes.core.helm_repository:
+        repo_name: k6-operator
+        repo_url: https://grafana.github.io/helm-charts
+        state: present
+
+    - name: Install k6-operator
+      kubernetes.core.helm:
+        release_name: my-k6-operator
+        create_namespace: true
+        release_namespace: default
+        chart_ref: grafana/k6-operator
+        chart_version: 3.10.1
+        update_repo_cache: yes
+        wait: yes
+        state: present 

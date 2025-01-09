@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { File as BrowserFile } from 'k6/browser';
+import { File as ExperimentalFsFile } from 'k6/experimental/fs';
 import { RefinedResponse } from 'k6/http';
+
+export class FsFile extends ExperimentalFsFile {}
 export enum AllocationTimeUnits {
   DAY = 'Day',
   HOUR = 'Hour',
@@ -58,6 +62,7 @@ export type SharedData = {
   testCall: Call | null;
   testSetupBaseUrl?: string | null;
   isClusterTestRun: boolean;
+  instrumentId: number;
 };
 export type Fap = {
   id: number;
@@ -162,3 +167,7 @@ export interface DatabaseClient {
   close(): any;
   begin(): any;
 }
+
+export type InputFileType = BrowserFile & {
+  mimetype: string;
+};

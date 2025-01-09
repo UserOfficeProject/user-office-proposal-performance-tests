@@ -57,7 +57,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.proposal.primaryKey;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest proposal query VU_ID: ${exec.vu.idInTest}
-            Error response proposalTest proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            Error response proposalTest proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -90,7 +90,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.proposalById.proposalId;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest proposal query VU_ID: ${exec.vu.idInTest}
-            Error response proposalTest proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+            Error response proposalTest proposal query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -124,7 +124,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.proposalStatus.id;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest proposalStatus query VU_ID: ${exec.vu.idInTest}
-              Error response proposalTest proposalStatus query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              Error response proposalTest proposalStatus query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -158,7 +158,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.genericTemplates;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest genericTemplates query VU_ID: ${exec.vu.idInTest}
-              Error response proposalTest genericTemplates query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              Error response proposalTest genericTemplates query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -197,7 +197,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.questionary.questionaryId;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest questionary query VU_ID: ${exec.vu.idInTest}
-              Error response proposalTest questionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              Error response proposalTest questionary query ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -235,7 +235,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.updateProposal.proposalId;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest updateProposal mutation VU_ID: ${exec.vu.idInTest}
-              Error response proposalTest updateProposal mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+              Error response proposalTest updateProposal mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
@@ -275,7 +275,7 @@ export function proposalTest(sharedData: SharedData) {
             return !!data.data?.answerTopic;
           } catch (error) {
             fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest answerTopic mutation VU_ID: ${exec.vu.idInTest}
-                Error response proposalTest answerTopic mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+                Error response proposalTest answerTopic mutation ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
           }
         },
       });
