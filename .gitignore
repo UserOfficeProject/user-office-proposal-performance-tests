@@ -2,5 +2,6 @@ node_modules
 .DS_Store
 screenshots
 test
+src/generated/*
 #.k6rc env file
 .k6rc
