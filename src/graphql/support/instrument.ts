@@ -3,15 +3,15 @@ import { check } from 'k6';
 import { getInitData } from '../../support/initData';
 import {
   Instrument as InstrumentType,
+  ClientApi,
   GenericQueryResponse,
-  AsyncClientApi,
 } from '../../utils/sharedType';
 
 export class Instrument {
   private initData = getInitData();
-  constructor(private apiAsyncClient: AsyncClientApi) {}
+  constructor(private apiClient: ClientApi) {}
 
-  async createInstrument(managerUserId: number): Promise<InstrumentType> {
+  createInstrument(managerUserId: number): InstrumentType {
     const mutation = `
     mutation CreateInstrument($name: String!, $shortCode: String!, $description: String!, $managerUserId: Int!) {
         createInstrument(name: $name, shortCode: $shortCode, description: $description, managerUserId: $managerUserId) {
@@ -27,7 +27,7 @@ export class Instrument {
       managerUserId,
     };
 
-    const response = await this.apiAsyncClient(
+    const response = this.apiClient(
       JSON.stringify({ query: mutation, variables })
     );
 
@@ -35,7 +35,7 @@ export class Instrument {
       ?.createInstrument as InstrumentType;
   }
 
-  async deleteInstrument(deleteInstrumentId: number): Promise<number> {
+  deleteInstrument(deleteInstrumentId: number): number {
     const mutation = `
             mutation DeleteInstrument($deleteInstrumentId: Int!) {
                 deleteInstrument(id: $deleteInstrumentId) {
@@ -47,7 +47,7 @@ export class Instrument {
     const variables = {
       deleteInstrumentId,
     };
-    const response = await this.apiAsyncClient(
+    const response = this.apiClient(
       JSON.stringify({ query: mutation, variables })
     );
 

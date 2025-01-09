@@ -3,38 +3,33 @@ import exec from 'k6/execution';
 
 import { Proposal } from './support/proposal';
 import { User } from './support/user';
-import { getAsyncClientApi } from '../support/graphql';
+import { getClientApi } from '../support/graphql';
 import { randomIntBetween, randomString } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export async function proposalTest(sharedData: SharedData) {
+export function proposalTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
   if (!sharedData.testCall) {
     fail(`Test call not set`);
   }
-  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
-  const user = new User(apiAsyncClient);
+  const apiClient = getClientApi(sharedData.graphqlUrl);
+  const user = new User(apiClient);
 
   sleep(randomIntBetween(5, 20));
   const currentUser = sharedData.users[exec.vu.idInTest];
-  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = user.getUserToken(`${currentUser.sessionId}`);
 
-  const apiAsyncUserClient = getAsyncClientApi(
-    sharedData.graphqlUrl,
-    userToken
-  );
-  const proposal = new Proposal(apiAsyncUserClient);
-  const userTestProposal = await proposal.createProposal(
-    sharedData.testCall.id
-  );
+  const apiUserClient = getClientApi(sharedData.graphqlUrl, userToken);
+  const proposal = new Proposal(apiUserClient);
+  const userTestProposal = proposal.createProposal(sharedData.testCall.id);
   if (!userTestProposal) {
     fail(`SCENARIO: ${exec.scenario.name} Executing proposalTest VU_ID: ${exec.vu.idInTest}
            Failed to create user test proposal`);
   }
   group('Proposal Test', () => {
-    group('Proposal query should return proposal details', async () => {
-      const response = await apiAsyncClient(
+    group('Proposal query should return proposal details', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query Proposal($primaryKey: Int!) {
@@ -68,8 +63,8 @@ export async function proposalTest(sharedData: SharedData) {
       });
     });
 
-    group('ProposalById query should return proposal', async () => {
-      const response = await apiAsyncClient(
+    group('ProposalById query should return proposal', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query ProposalById($proposalId: String!) {
@@ -101,8 +96,8 @@ export async function proposalTest(sharedData: SharedData) {
       });
     });
 
-    group('ProposalStatus query should return proposal status', async () => {
-      const response = await apiAsyncClient(
+    group('ProposalStatus query should return proposal status', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query ProposalStatus($proposalStatusId: Int!) {
@@ -135,8 +130,8 @@ export async function proposalTest(sharedData: SharedData) {
       });
     });
 
-    group('GenericTemplates query should return details', async () => {
-      const response = await apiAsyncClient(
+    group('GenericTemplates query should return details', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query GenericTemplates($filter: GenericTemplatesFilter) {
@@ -169,8 +164,8 @@ export async function proposalTest(sharedData: SharedData) {
       });
     });
 
-    group('Questionary query should return questionary', async () => {
-      const response = await apiAsyncClient(
+    group('Questionary query should return questionary', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query Questionary($questionaryId: Int!) {
@@ -208,8 +203,8 @@ export async function proposalTest(sharedData: SharedData) {
       });
     });
 
-    group('User should be able to update proposal', async () => {
-      const response = await apiAsyncClient(
+    group('User should be able to update proposal', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
             mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {
@@ -246,8 +241,8 @@ export async function proposalTest(sharedData: SharedData) {
       });
     });
 
-    group('User should be able to answer question', async () => {
-      const response = await apiAsyncClient(
+    group('User should be able to answer question', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
             mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {

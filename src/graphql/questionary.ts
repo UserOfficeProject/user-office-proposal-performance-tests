@@ -2,10 +2,10 @@ import { check, fail, group, sleep } from 'k6';
 import exec from 'k6/execution';
 
 import { User } from './support/user';
-import { getAsyncClientApi } from '../support/graphql';
+import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export async function questionaryTest(sharedData: SharedData) {
+export function questionaryTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
@@ -13,17 +13,17 @@ export async function questionaryTest(sharedData: SharedData) {
     fail(`Test call not set`);
   }
   const testCall = sharedData.testCall;
-  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
-  const user = new User(apiAsyncClient);
+  const apiClient = getClientApi(sharedData.graphqlUrl);
+  const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
   const currentUser = sharedData.users[exec.vu.idInTest];
-  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = user.getUserToken(`${currentUser.sessionId}`);
 
   group('Questionary Test', () => {
     group(
       'BlankQuestionaryStepsByCallId query should return blank questionary',
-      async () => {
-        const response = await apiAsyncClient(
+      () => {
+        const response = apiClient(
           JSON.stringify({
             query: `
             query getBlankQuestionaryStepsByCallId($callId: Int!) {
@@ -68,8 +68,8 @@ export async function questionaryTest(sharedData: SharedData) {
 
     group(
       'BlankQuestionarySteps query should return questionary steps details',
-      async () => {
-        const response = await apiAsyncClient(
+      () => {
+        const response = apiClient(
           JSON.stringify({
             query: `
           query BlankQuestionary($templateId: Int!) {

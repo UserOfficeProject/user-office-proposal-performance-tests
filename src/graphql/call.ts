@@ -2,10 +2,10 @@ import { check, fail, group, sleep } from 'k6';
 import exec from 'k6/execution';
 
 import { User } from './support/user';
-import { getAsyncClientApi } from '../support/graphql';
+import { getClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export async function callTest(sharedData: SharedData) {
+export function callTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
@@ -13,14 +13,14 @@ export async function callTest(sharedData: SharedData) {
     fail(`Test call not set`);
   }
   const testCall = sharedData.testCall;
-  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
-  const user = new User(apiAsyncClient);
+  const apiClient = getClientApi(sharedData.graphqlUrl);
+  const user = new User(apiClient);
   sleep(randomIntBetween(5, 20));
   const currentUser = sharedData.users[exec.vu.iterationInScenario];
-  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = user.getUserToken(`${currentUser.sessionId}`);
   group('Call Test', () => {
-    group('Calls query should return active calls', async () => {
-      const response = await apiAsyncClient(
+    group('Calls query should return active calls', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query Calls($filter: CallsFilter) {
@@ -55,8 +55,8 @@ export async function callTest(sharedData: SharedData) {
       });
     });
 
-    group('Call query should return call details', async () => {
-      const response = await apiAsyncClient(
+    group('Call query should return call details', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query Call($callId: Int!) {
@@ -88,8 +88,8 @@ export async function callTest(sharedData: SharedData) {
       });
     });
 
-    group('Template query should return template details', async () => {
-      const response = await apiAsyncClient(
+    group('Template query should return template details', () => {
+      const response = apiClient(
         JSON.stringify({
           query: `
           query Template($templateId: Int!) {
