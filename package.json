@@ -25,7 +25,7 @@
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
     "generate:uows": "openapi --output ./src/generated --name UOWS --input ./openapi.yaml",
     "prepare": "husky",
-    "postinstall": "cd test-setup && npm install"
+    "postinstall": "cd test-setup && npm install && husky install"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
