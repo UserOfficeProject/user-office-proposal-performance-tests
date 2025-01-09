@@ -2,25 +2,25 @@ import { check, fail, group, sleep } from 'k6';
 import exec from 'k6/execution';
 
 import { User } from './support/user';
-import { getClientApi } from '../support/graphql';
+import { getAsyncClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function settingsTest(sharedData: SharedData) {
+export async function settingsTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
   if (!sharedData.testCall) {
     fail(`Test call not set`);
   }
-  const apiClient = getClientApi(sharedData.graphqlUrl);
-  const user = new User(apiClient);
+  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
+  const user = new User(apiAsyncClient);
   sleep(randomIntBetween(5, 20));
   const currentUser =
     sharedData.users[Math.floor(Math.random() * (sharedData.users.length - 1))];
-  const userToken = user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
   group('settings', () => {
-    group('Settings query should return app settings', () => {
-      const response = apiClient(
+    group('Settings query should return app settings', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
           query Settings {

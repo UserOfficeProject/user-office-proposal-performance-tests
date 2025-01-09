@@ -3,7 +3,7 @@ import exec from 'k6/execution';
 import http from 'k6/http';
 
 import { EnvironmentConfigurations } from './configurations';
-import { getAsyncAsyncClientApi } from './graphql';
+import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { FAP } from '../graphql/support/fap';
 import { Instrument } from '../graphql/support/instrument';

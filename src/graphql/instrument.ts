@@ -2,23 +2,23 @@ import { check, fail, group, sleep } from 'k6';
 import exec from 'k6/execution';
 
 import { User } from './support/user';
-import { getClientApi } from '../support/graphql';
+import { getAsyncClientApi } from '../support/graphql';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { GenericQueryResponse, SharedData } from '../utils/sharedType';
-export function instrumentTest(sharedData: SharedData) {
+export async function instrumentTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }
   if (!sharedData.testCall) {
     fail(`Test call not set`);
   }
-  const apiClient = getClientApi(sharedData.graphqlUrl);
+  const apiAsyncClient = getAsyncClientApi(sharedData.graphqlUrl);
 
-  const user = new User(apiClient);
+  const user = new User(apiAsyncClient);
 
   sleep(randomIntBetween(5, 20));
   const currentUser = sharedData.users[exec.vu.iterationInScenario];
-  const userToken = user.getUserToken(`${currentUser.sessionId}`);
+  const userToken = await user.getUserToken(`${currentUser.sessionId}`);
 
   if (sharedData.testCall.instruments.length <= 0) {
     fail(`SCENARIO: ${exec.scenario.name} Executing instrumentTest VU_ID: ${exec.vu.idInTest}
@@ -27,8 +27,8 @@ export function instrumentTest(sharedData: SharedData) {
   const testCallInstruments = sharedData.testCall.instruments;
 
   group('instrumentTest', () => {
-    group('Instrument query should return instrument details', () => {
-      const response = apiClient(
+    group('Instrument query should return instrument details', async () => {
+      const response = await apiAsyncClient(
         JSON.stringify({
           query: `
           query Instrument($instrumentId: Int!) {
