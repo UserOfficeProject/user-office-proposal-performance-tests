@@ -24,7 +24,7 @@ spec:
         co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
         co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
         co.elastic.logs/processors.add_fields.fields.application.tier: "service"
-        co.elastic.logs/processors.dissect.tokenizer: "%{?log_message}"
+        co.elastic.logs/processors.dissect.tokenizer: "time=%{timestamp} level=%{log_level} msg=%{log_message} source=%{log_source}"
         co.elastic.logs/processors.dissect.ignore_failure: "true"
         co.elastic.logs/processors.dissect.target_prefix: ""
     resources:
