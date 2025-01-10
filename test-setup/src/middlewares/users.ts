@@ -2,8 +2,8 @@ import { logger } from '@user-office-software/duo-logger';
 import express, { Request, Response } from 'express';
 import oracledb from 'oracledb';
 import { createUserDataSource, UserDataSource } from '../datasources/userDataSource';
-import UOWSClient from '../../../src/UOWSClient';
-import { PermissionUserGroupDTO } from '../../../src/generated/models/PermissionUserGroupDTO';
+import UOWSClient from '../client/UOWSClient';
+import { PermissionUserGroupDTO } from '../../generated/models/PermissionUserGroupDTO';
 import { roles } from '../utils/roleMembership';
 
 export const FIRST_USER_ID = -220800000;

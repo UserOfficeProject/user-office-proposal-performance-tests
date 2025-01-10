@@ -23,9 +23,9 @@
     "start:docker-test-setup": "cd test-setup && npm run start:docker",
     "build": "concurrently \"npm run build:test-setup\" \"npm run build:k6-test\"",
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
-    "generate:uows": "openapi --output ./src/generated --name UOWS --input ./openapi.yaml",
     "prepare": "husky",
-    "postinstall": "cd test-setup && npm install && husky install"
+    "postinstall": "cd test-setup && npm install && husky install",
+    "generate:uows": "cd test-setup && npm run generate:uows"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -63,8 +63,6 @@
     "node": ">=19.0.0"
   },
   "dependencies": {
-    "concurrently": "^8.2.2",
-    "dotenv": "^16.4.5",
-    "openapi-typescript-codegen": "^0.29.0"
+    "concurrently": "^8.2.2"
   }
 }

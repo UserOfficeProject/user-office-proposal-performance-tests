@@ -9,12 +9,15 @@
     "tsc": "tsc",
     "lint": "tsc --noEmit && eslint",
     "start": "node ./build/index.js",
-    "build": "eslint && rm -rf ./build && node build.mjs"
+    "build": "eslint && rm -rf ./build && node build.mjs",
+    "generate:uows": "openapi --output ./generated --name UOWS --input ./openapi.yaml"
   },
   "dependencies": {
     "@user-office-software/duo-logger": "^2.2.1",
     "express": "^4.19.2",
-    "oracledb": "^6.6.0"
+    "oracledb": "^6.6.0",
+    "dotenv": "^16.4.5",
+    "openapi-typescript-codegen": "^0.29.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
