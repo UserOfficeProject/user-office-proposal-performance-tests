@@ -1,6 +1,8 @@
 name: Yaml Lint
+
 on:
-  - push
+  pull_request:
+    branches: [develop]
 
 jobs:
   lint-yaml:
