@@ -7,7 +7,7 @@ env:
   NODE_VERSION: 20.x
   GO_VERSION: '1.22.2'
   GOLANGCI_LINT_VERSION: v1.63.4
-  
+
 jobs:
   run-node-linters:
     name: Run Node linters
@@ -41,4 +41,4 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
-          working-directory: 
+          working-directory: extensions/xk6-output-logger
