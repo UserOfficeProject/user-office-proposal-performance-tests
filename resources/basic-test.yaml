@@ -1,3 +1,4 @@
+---
 apiVersion: k6.io/v1alpha1
 kind: TestRun
 metadata:
@@ -19,7 +20,7 @@ spec:
       - name: registry-creds
     metadata:
       annotations:
-        co.elastic.logs/enabled: 'true'
+        co.elastic.logs/enabled: "true"
         co.elastic.logs/processors.add_fields.target: ""
         co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
         co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
@@ -37,39 +38,39 @@ spec:
       - name: GRAPHQL_URL
         value: ${GRAPHQL_URL}
       - name: TEST_SETUP_URL
-        value: ${TEST_SETUP_URL}   
-      - name: K6_PS_VUS 
-        value: '${K6_PS_VUS}'
-      - name: K6_PS_ITERATIONS 
-        value: '${K6_PS_ITERATIONS}'
-      - name: SETUP_TOTAL_USERS 
-        value: '${K6_SETUP_TOTAL_USERS}' 
-      - name: TEST_SETUP_CALL_ID 
-        value: '${TEST_SETUP_CALL_ID}'
+        value: ${TEST_SETUP_URL}
+      - name: K6_PS_VUS
+        value: "${K6_PS_VUS}"
+      - name: K6_PS_ITERATIONS
+        value: "${K6_PS_ITERATIONS}"
+      - name: SETUP_TOTAL_USERS
+        value: "${K6_SETUP_TOTAL_USERS}"
+      - name: TEST_SETUP_CALL_ID
+        value: "${TEST_SETUP_CALL_ID}"
       - name: K6_TEST_PARALLELISM
-        value: '${K6_TEST_PARALLELISM}'
+        value: "${K6_TEST_PARALLELISM}"
       - name: SETUP_TEST_USERS
-        value: '${SETUP_TEST_USERS}'
+        value: "${SETUP_TEST_USERS}"
       - name: SETUP_TEST_CALL
-        value: '${SETUP_TEST_CALL}'
+        value: "${SETUP_TEST_CALL}"
       - name: K6_OPENSEARCH_ADDRESS
-        value: '${K6_OPENSEARCH_ADDRESS}'
+        value: "${K6_OPENSEARCH_ADDRESS}"
       - name: K6_TEST_ID
-        value: '${K6_TEST_ID}'
+        value: "${K6_TEST_ID}"
       - name: K6_OPENSEARCH_FLUSH_PERIOD
-        value: '${K6_OPENSEARCH_FLUSH_PERIOD}'
+        value: "${K6_OPENSEARCH_FLUSH_PERIOD}"
       - name: IS_CLUSTER_TEST_RUN
-        value: '${IS_CLUSTER_TEST_RUN}'
+        value: "${IS_CLUSTER_TEST_RUN}"
       - name: INSTRUMENT_ID
-        value: '${INSTRUMENT_ID}'
+        value: "${INSTRUMENT_ID}"
     envFrom:
-     - secretRef:
-         name: connection-secrets
+      - secretRef:
+          name: connection-secrets
     volumeMounts:
       - name: fixtures
         mountPath: "/fixtures"
         readOnly: true
     volumes:
-        - name: fixtures
-          configMap:
-            name: test-fixtures
+      - name: fixtures
+        configMap:
+          name: test-fixtures
