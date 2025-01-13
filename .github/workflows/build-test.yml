@@ -2,7 +2,7 @@ name: Build testing.
 
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, master]
 
 env:
   NODE_VERSION: 20.x
