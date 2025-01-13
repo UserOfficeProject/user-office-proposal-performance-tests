@@ -1,12 +1,9 @@
 name: Lint
 
-on:
-  push
+on: push
 
 env:
   NODE_VERSION: 20.x
-  GO_VERSION: '1.22.2'
-  GOLANGCI_LINT_VERSION: v1.63.4
 
 jobs:
   run-node-linters:
@@ -27,28 +24,3 @@ jobs:
 
       - name: Lint Action
         run: npm run lint
-
-  run-go-linters:
-    name: Run Go linters
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v4
-
-      - name: Set go version
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
-      - name: golangci-lint xk6-output-logger
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: ${{ env.GOLANGCI_LINT_VERSION }}
-          working-directory: extensions/xk6-output-logger
-
-      - name: golangci-lint xk6-output-opensearch
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: ${{ env.GOLANGCI_LINT_VERSION }}
-          working-directory: extensions/xk6-output-opensearch
