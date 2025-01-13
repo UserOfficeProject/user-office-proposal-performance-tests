@@ -1,0 +1,16 @@
+name: Yaml Lint
+on:
+  - push
+
+jobs:
+  lint-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Run yaml linters
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: kubernetes/**/*.yaml resources/*.yaml
+          config_file: .yamllint.yaml
