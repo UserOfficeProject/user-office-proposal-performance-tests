@@ -182,4 +182,26 @@ export class Proposal {
       );
     }
   }
+  async assignProposalsToInstruments(
+    proposalPks: number[],
+    instrumentIds: number[]
+  ) {
+    const mutation = `mutation AssignProposalsToInstruments($instrumentIds: [Int!]!, $proposalPks: [Int!]!) {
+  assignProposalsToInstruments(instrumentIds: $instrumentIds, proposalPks: $proposalPks)
+}`;
+    const variables = {
+      assignProposalsToInstrumentsInput: {
+        proposalPks,
+        instrumentIds,
+      },
+    };
+    const response = await this.apiAsyncClient(
+      JSON.stringify({ query: mutation, variables })
+    );
+    if (response.status !== 200) {
+      console.error(
+        `Error changing status of proposal ${response.status} - ${response.body}`
+      );
+    }
+  }
 }
