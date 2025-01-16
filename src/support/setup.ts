@@ -123,6 +123,13 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
           [Number(__ENV.TEST_SET_UP_INSTRUMENT_ID)]
         );
       }
+      if (__ENV.TEST_SET_UP_PROPOSAL_PKS) {
+        proposal.assignFapReviewersToProposals(
+          -220800001,
+          Number(__ENV.TEST_SET_UP_PROPOSAL_PKS),
+          Number(__ENV.TEST_SET_UP_FAP_ID)
+        );
+      }
       if (__ENV.TEST_SETUP_FAP_ID) {
         reviewerUsers.map(async (r) => {
           //login the user in the proposals system before assigning them to a FAP

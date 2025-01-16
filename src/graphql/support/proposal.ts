@@ -190,17 +190,43 @@ export class Proposal {
   assignProposalsToInstruments(instrumentIds: $instrumentIds, proposalPks: $proposalPks)
 }`;
     const variables = {
-      assignProposalsToInstrumentsInput: {
-        proposalPks,
-        instrumentIds,
-      },
+      proposalPks: proposalPks,
+      instrumentIds: instrumentIds,
     };
     const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     if (response.status !== 200) {
       console.error(
-        `Error changing status of proposal ${response.status} - ${response.body}`
+        `Error assigning proposal to instrument ${response.status} - ${response.body}`
+      );
+    }
+  }
+  async assignFapReviewersToProposals(
+    memberId: number,
+    proposalPk: number,
+    fapId: number
+  ) {
+    const mutation = `mutation AssignFapReviewersToProposals($assignments: [FapReviewAssignmentInput!]!, $fapId: Int!) {
+  assignFapReviewersToProposals(assignments: $assignments, fapId: $fapId) {
+    id
+  }
+}`;
+    const variables = {
+      assignments: [
+        {
+          memberId,
+          proposalPk,
+        },
+      ],
+      fapId: fapId,
+    };
+    const response = await this.apiAsyncClient(
+      JSON.stringify({ query: mutation, variables })
+    );
+    if (response.status !== 200) {
+      console.error(
+        `Error assigning FAP reviewer to proposals ${response.status} - ${response.body}`
       );
     }
   }
