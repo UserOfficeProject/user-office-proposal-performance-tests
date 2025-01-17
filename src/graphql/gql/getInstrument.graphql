@@ -1,0 +1,7 @@
+query getCall($callId: Int!) {
+  call(callId: $callId) {
+    id
+    title
+    shortCode
+  }
+}

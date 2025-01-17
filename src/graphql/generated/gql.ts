@@ -15,10 +15,54 @@ import * as types from './graphql';
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
+    "mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {\n  answerTopic(\n    questionaryId: $questionaryId\n    topicId: $topicId\n    answers: $answers\n    isPartialSave: $isPartialSave\n  ) {\n    questionId\n    answer\n    answerId\n  }\n}": types.AnswerTopicDocument,
+    "query BasicUserDetailsByEmail($email: String!) {\n  basicUserDetailsByEmail(email: $email) {\n    id\n  }\n}": types.BasicUserDetailsByEmailDocument,
+    "query BlankQuestionary($templateId: Int!) {\n  blankQuestionary(templateId: $templateId) {\n    isCompleted\n    questionaryId\n    steps {\n      fields {\n        topicId\n      }\n    }\n  }\n}": types.BlankQuestionaryDocument,
+    "query getBlankQuestionaryStepsByCallId($callId: Int!) {\n  blankQuestionaryStepsByCallId(callId: $callId) {\n    fields {\n      answerId\n      topicId\n    }\n    isCompleted\n  }\n}": types.GetBlankQuestionaryStepsByCallIdDocument,
+    "query Call($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n  }\n}": types.CallDocument,
+    "query Calls($filter: CallsFilter) {\n  calls(filter: $filter) {\n    id\n    title\n    shortCode\n  }\n}": types.CallsDocument,
+    "query GenericTemplates($filter: GenericTemplatesFilter) {\n  genericTemplates(filter: $filter) {\n    id\n    title\n  }\n}": types.GenericTemplatesDocument,
     "query getCall($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n  }\n}": types.GetCallDocument,
+    "query Me {\n  me {\n    id\n    created\n    roles {\n      id\n      shortCode\n      title\n    }\n  }\n}": types.MeDocument,
+    "query PageContent($pageId: PageName!) {\n  pageContent(pageId: $pageId)\n}": types.PageContentDocument,
+    "query Proposal($primaryKey: Int!) {\n  proposal(primaryKey: $primaryKey) {\n    title\n    created\n    primaryKey\n    proposalId\n    proposerId\n  }\n}": types.ProposalDocument,
+    "query ProposalById($proposalId: String!) {\n  proposalById(proposalId: $proposalId) {\n    proposalId\n    primaryKey\n    callId\n  }\n}": types.ProposalByIdDocument,
+    "query ProposalStatus($proposalStatusId: Int!) {\n  proposalStatus(proposalStatusId: $proposalStatusId) {\n    id\n    isDefault\n    name\n    shortCode\n  }\n}": types.ProposalStatusDocument,
     "query getProposalsMinimal($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}": types.GetProposalsMinimalDocument,
+    "query Questionary($questionaryId: Int!) {\n  questionary(questionaryId: $questionaryId) {\n    questionaryId\n    templateId\n    steps {\n      topic {\n        templateId\n        title\n        id\n      }\n    }\n  }\n}": types.QuestionaryDocument,
+    "query Settings {\n  settings {\n    description\n    id\n  }\n}": types.SettingsDocument,
+    "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}": types.InstrumentDocument,
+    "mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {\n  updateProposal(\n    proposalPk: $proposalPk\n    title: $title\n    abstract: $abstract\n    users: $users\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n  }\n}": types.UpdateProposalDocument,
 };
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {\n  answerTopic(\n    questionaryId: $questionaryId\n    topicId: $topicId\n    answers: $answers\n    isPartialSave: $isPartialSave\n  ) {\n    questionId\n    answer\n    answerId\n  }\n}"): typeof import('./graphql').AnswerTopicDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query BasicUserDetailsByEmail($email: String!) {\n  basicUserDetailsByEmail(email: $email) {\n    id\n  }\n}"): typeof import('./graphql').BasicUserDetailsByEmailDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query BlankQuestionary($templateId: Int!) {\n  blankQuestionary(templateId: $templateId) {\n    isCompleted\n    questionaryId\n    steps {\n      fields {\n        topicId\n      }\n    }\n  }\n}"): typeof import('./graphql').BlankQuestionaryDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query getBlankQuestionaryStepsByCallId($callId: Int!) {\n  blankQuestionaryStepsByCallId(callId: $callId) {\n    fields {\n      answerId\n      topicId\n    }\n    isCompleted\n  }\n}"): typeof import('./graphql').GetBlankQuestionaryStepsByCallIdDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Call($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n  }\n}"): typeof import('./graphql').CallDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Calls($filter: CallsFilter) {\n  calls(filter: $filter) {\n    id\n    title\n    shortCode\n  }\n}"): typeof import('./graphql').CallsDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GenericTemplates($filter: GenericTemplatesFilter) {\n  genericTemplates(filter: $filter) {\n    id\n    title\n  }\n}"): typeof import('./graphql').GenericTemplatesDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -26,7 +70,43 @@ export function graphql(source: "query getCall($callId: Int!) {\n  call(callId: 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "query Me {\n  me {\n    id\n    created\n    roles {\n      id\n      shortCode\n      title\n    }\n  }\n}"): typeof import('./graphql').MeDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query PageContent($pageId: PageName!) {\n  pageContent(pageId: $pageId)\n}"): typeof import('./graphql').PageContentDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Proposal($primaryKey: Int!) {\n  proposal(primaryKey: $primaryKey) {\n    title\n    created\n    primaryKey\n    proposalId\n    proposerId\n  }\n}"): typeof import('./graphql').ProposalDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query ProposalById($proposalId: String!) {\n  proposalById(proposalId: $proposalId) {\n    proposalId\n    primaryKey\n    callId\n  }\n}"): typeof import('./graphql').ProposalByIdDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query ProposalStatus($proposalStatusId: Int!) {\n  proposalStatus(proposalStatusId: $proposalStatusId) {\n    id\n    isDefault\n    name\n    shortCode\n  }\n}"): typeof import('./graphql').ProposalStatusDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "query getProposalsMinimal($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsMinimalDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Questionary($questionaryId: Int!) {\n  questionary(questionaryId: $questionaryId) {\n    questionaryId\n    templateId\n    steps {\n      topic {\n        templateId\n        title\n        id\n      }\n    }\n  }\n}"): typeof import('./graphql').QuestionaryDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Settings {\n  settings {\n    description\n    id\n  }\n}"): typeof import('./graphql').SettingsDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}"): typeof import('./graphql').InstrumentDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {\n  updateProposal(\n    proposalPk: $proposalPk\n    title: $title\n    abstract: $abstract\n    users: $users\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n  }\n}"): typeof import('./graphql').UpdateProposalDocument;
 
 
 export function graphql(source: string) {

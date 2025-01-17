@@ -1,0 +1,7 @@
+query Calls($filter: CallsFilter) {
+  calls(filter: $filter) {
+    id
+    title
+    shortCode
+  }
+}

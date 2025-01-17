@@ -4056,6 +4056,58 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']['output']>;
 };
 
+export type AnswerTopicMutationVariables = Exact<{
+  questionaryId: Scalars['Int']['input'];
+  topicId: Scalars['Int']['input'];
+  answers: Array<AnswerInput> | AnswerInput;
+  isPartialSave?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type AnswerTopicMutation = { __typename?: 'Mutation', answerTopic: Array<{ __typename?: 'AnswerBasic', questionId: string, answer: any, answerId?: number | null }> };
+
+export type BasicUserDetailsByEmailQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type BasicUserDetailsByEmailQuery = { __typename?: 'Query', basicUserDetailsByEmail?: { __typename?: 'BasicUserDetails', id: number } | null };
+
+export type BlankQuestionaryQueryVariables = Exact<{
+  templateId: Scalars['Int']['input'];
+}>;
+
+
+export type BlankQuestionaryQuery = { __typename?: 'Query', blankQuestionary: { __typename?: 'Questionary', isCompleted: boolean, questionaryId: number, steps: Array<{ __typename?: 'QuestionaryStep', fields: Array<{ __typename?: 'Answer', topicId: number }> }> } };
+
+export type GetBlankQuestionaryStepsByCallIdQueryVariables = Exact<{
+  callId: Scalars['Int']['input'];
+}>;
+
+
+export type GetBlankQuestionaryStepsByCallIdQuery = { __typename?: 'Query', blankQuestionaryStepsByCallId?: Array<{ __typename?: 'QuestionaryStep', isCompleted: boolean, fields: Array<{ __typename?: 'Answer', answerId?: number | null, topicId: number }> }> | null };
+
+export type CallQueryVariables = Exact<{
+  callId: Scalars['Int']['input'];
+}>;
+
+
+export type CallQuery = { __typename?: 'Query', call?: { __typename?: 'Call', id: number, title?: string | null, shortCode: string } | null };
+
+export type CallsQueryVariables = Exact<{
+  filter?: InputMaybe<CallsFilter>;
+}>;
+
+
+export type CallsQuery = { __typename?: 'Query', calls?: Array<{ __typename?: 'Call', id: number, title?: string | null, shortCode: string }> | null };
+
+export type GenericTemplatesQueryVariables = Exact<{
+  filter?: InputMaybe<GenericTemplatesFilter>;
+}>;
+
+
+export type GenericTemplatesQuery = { __typename?: 'Query', genericTemplates?: Array<{ __typename?: 'GenericTemplate', id: number, title: string }> | null };
+
 export type GetCallQueryVariables = Exact<{
   callId: Scalars['Int']['input'];
 }>;
@@ -4063,12 +4115,74 @@ export type GetCallQueryVariables = Exact<{
 
 export type GetCallQuery = { __typename?: 'Query', call?: { __typename?: 'Call', id: number, title?: string | null, shortCode: string } | null };
 
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, created: string, roles: Array<{ __typename?: 'Role', id: number, shortCode: string, title: string }> } | null };
+
+export type PageContentQueryVariables = Exact<{
+  pageId: PageName;
+}>;
+
+
+export type PageContentQuery = { __typename?: 'Query', pageContent?: string | null };
+
+export type ProposalQueryVariables = Exact<{
+  primaryKey: Scalars['Int']['input'];
+}>;
+
+
+export type ProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', title: string, created: any, primaryKey: number, proposalId: string, proposerId: number } | null };
+
+export type ProposalByIdQueryVariables = Exact<{
+  proposalId: Scalars['String']['input'];
+}>;
+
+
+export type ProposalByIdQuery = { __typename?: 'Query', proposalById?: { __typename?: 'Proposal', proposalId: string, primaryKey: number, callId: number } | null };
+
+export type ProposalStatusQueryVariables = Exact<{
+  proposalStatusId: Scalars['Int']['input'];
+}>;
+
+
+export type ProposalStatusQuery = { __typename?: 'Query', proposalStatus?: { __typename?: 'ProposalStatus', id: number, isDefault: boolean, name: string, shortCode: string } | null };
+
 export type GetProposalsMinimalQueryVariables = Exact<{
   filter?: InputMaybe<ProposalsFilter>;
 }>;
 
 
 export type GetProposalsMinimalQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, status?: { __typename?: 'ProposalStatus', name: string } | null }> } | null };
+
+export type QuestionaryQueryVariables = Exact<{
+  questionaryId: Scalars['Int']['input'];
+}>;
+
+
+export type QuestionaryQuery = { __typename?: 'Query', questionary?: { __typename?: 'Questionary', questionaryId: number, templateId: number, steps: Array<{ __typename?: 'QuestionaryStep', topic: { __typename?: 'Topic', templateId: number, title: string, id: number } }> } | null };
+
+export type SettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SettingsQuery = { __typename?: 'Query', settings: Array<{ __typename?: 'Settings', description?: string | null, id: SettingsId }> };
+
+export type InstrumentQueryVariables = Exact<{
+  instrumentId: Scalars['Int']['input'];
+}>;
+
+
+export type InstrumentQuery = { __typename?: 'Query', instrument?: { __typename?: 'Instrument', id: number, name: string, managerUserId: number, shortCode: string } | null };
+
+export type UpdateProposalMutationVariables = Exact<{
+  proposalPk: Scalars['Int']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+  abstract?: InputMaybe<Scalars['String']['input']>;
+  users?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
+}>;
+
+
+export type UpdateProposalMutation = { __typename?: 'Mutation', updateProposal: { __typename?: 'Proposal', callId: number, statusId: number, primaryKey: number, proposalId: string } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -4085,6 +4199,77 @@ export class TypedDocumentString<TResult, TVariables>
   }
 }
 
+export const AnswerTopicDocument = new TypedDocumentString(`
+    mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {
+  answerTopic(
+    questionaryId: $questionaryId
+    topicId: $topicId
+    answers: $answers
+    isPartialSave: $isPartialSave
+  ) {
+    questionId
+    answer
+    answerId
+  }
+}
+    `) as unknown as TypedDocumentString<AnswerTopicMutation, AnswerTopicMutationVariables>;
+export const BasicUserDetailsByEmailDocument = new TypedDocumentString(`
+    query BasicUserDetailsByEmail($email: String!) {
+  basicUserDetailsByEmail(email: $email) {
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<BasicUserDetailsByEmailQuery, BasicUserDetailsByEmailQueryVariables>;
+export const BlankQuestionaryDocument = new TypedDocumentString(`
+    query BlankQuestionary($templateId: Int!) {
+  blankQuestionary(templateId: $templateId) {
+    isCompleted
+    questionaryId
+    steps {
+      fields {
+        topicId
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<BlankQuestionaryQuery, BlankQuestionaryQueryVariables>;
+export const GetBlankQuestionaryStepsByCallIdDocument = new TypedDocumentString(`
+    query getBlankQuestionaryStepsByCallId($callId: Int!) {
+  blankQuestionaryStepsByCallId(callId: $callId) {
+    fields {
+      answerId
+      topicId
+    }
+    isCompleted
+  }
+}
+    `) as unknown as TypedDocumentString<GetBlankQuestionaryStepsByCallIdQuery, GetBlankQuestionaryStepsByCallIdQueryVariables>;
+export const CallDocument = new TypedDocumentString(`
+    query Call($callId: Int!) {
+  call(callId: $callId) {
+    id
+    title
+    shortCode
+  }
+}
+    `) as unknown as TypedDocumentString<CallQuery, CallQueryVariables>;
+export const CallsDocument = new TypedDocumentString(`
+    query Calls($filter: CallsFilter) {
+  calls(filter: $filter) {
+    id
+    title
+    shortCode
+  }
+}
+    `) as unknown as TypedDocumentString<CallsQuery, CallsQueryVariables>;
+export const GenericTemplatesDocument = new TypedDocumentString(`
+    query GenericTemplates($filter: GenericTemplatesFilter) {
+  genericTemplates(filter: $filter) {
+    id
+    title
+  }
+}
+    `) as unknown as TypedDocumentString<GenericTemplatesQuery, GenericTemplatesQueryVariables>;
 export const GetCallDocument = new TypedDocumentString(`
     query getCall($callId: Int!) {
   call(callId: $callId) {
@@ -4094,6 +4279,54 @@ export const GetCallDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetCallQuery, GetCallQueryVariables>;
+export const MeDocument = new TypedDocumentString(`
+    query Me {
+  me {
+    id
+    created
+    roles {
+      id
+      shortCode
+      title
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<MeQuery, MeQueryVariables>;
+export const PageContentDocument = new TypedDocumentString(`
+    query PageContent($pageId: PageName!) {
+  pageContent(pageId: $pageId)
+}
+    `) as unknown as TypedDocumentString<PageContentQuery, PageContentQueryVariables>;
+export const ProposalDocument = new TypedDocumentString(`
+    query Proposal($primaryKey: Int!) {
+  proposal(primaryKey: $primaryKey) {
+    title
+    created
+    primaryKey
+    proposalId
+    proposerId
+  }
+}
+    `) as unknown as TypedDocumentString<ProposalQuery, ProposalQueryVariables>;
+export const ProposalByIdDocument = new TypedDocumentString(`
+    query ProposalById($proposalId: String!) {
+  proposalById(proposalId: $proposalId) {
+    proposalId
+    primaryKey
+    callId
+  }
+}
+    `) as unknown as TypedDocumentString<ProposalByIdQuery, ProposalByIdQueryVariables>;
+export const ProposalStatusDocument = new TypedDocumentString(`
+    query ProposalStatus($proposalStatusId: Int!) {
+  proposalStatus(proposalStatusId: $proposalStatusId) {
+    id
+    isDefault
+    name
+    shortCode
+  }
+}
+    `) as unknown as TypedDocumentString<ProposalStatusQuery, ProposalStatusQueryVariables>;
 export const GetProposalsMinimalDocument = new TypedDocumentString(`
     query getProposalsMinimal($filter: ProposalsFilter) {
   proposals(filter: $filter) {
@@ -4109,3 +4342,51 @@ export const GetProposalsMinimalDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetProposalsMinimalQuery, GetProposalsMinimalQueryVariables>;
+export const QuestionaryDocument = new TypedDocumentString(`
+    query Questionary($questionaryId: Int!) {
+  questionary(questionaryId: $questionaryId) {
+    questionaryId
+    templateId
+    steps {
+      topic {
+        templateId
+        title
+        id
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<QuestionaryQuery, QuestionaryQueryVariables>;
+export const SettingsDocument = new TypedDocumentString(`
+    query Settings {
+  settings {
+    description
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<SettingsQuery, SettingsQueryVariables>;
+export const InstrumentDocument = new TypedDocumentString(`
+    query Instrument($instrumentId: Int!) {
+  instrument(instrumentId: $instrumentId) {
+    id
+    name
+    managerUserId
+    shortCode
+  }
+}
+    `) as unknown as TypedDocumentString<InstrumentQuery, InstrumentQueryVariables>;
+export const UpdateProposalDocument = new TypedDocumentString(`
+    mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {
+  updateProposal(
+    proposalPk: $proposalPk
+    title: $title
+    abstract: $abstract
+    users: $users
+  ) {
+    callId
+    statusId
+    primaryKey
+    proposalId
+  }
+}
+    `) as unknown as TypedDocumentString<UpdateProposalMutation, UpdateProposalMutationVariables>;

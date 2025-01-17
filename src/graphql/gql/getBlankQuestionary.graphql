@@ -1,0 +1,11 @@
+query BlankQuestionary($templateId: Int!) {
+  blankQuestionary(templateId: $templateId) {
+    isCompleted
+    questionaryId
+    steps {
+      fields {
+        topicId
+      }
+    }
+  }
+}
