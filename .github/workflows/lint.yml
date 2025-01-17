@@ -6,6 +6,7 @@ on:
 
 env:
   NODE_VERSION: 20.x
+  GRAPHQL_URL: https://devproposal.facilities.rl.ac.uk/graphql
 
 jobs:
   run-linters:
