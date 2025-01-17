@@ -6,7 +6,6 @@ on:
 
 env:
   NODE_VERSION: 20.x
-  GRAPHQL_URL: https://devproposal.facilities.rl.ac.uk/graphql
 
 jobs:
   run-linters:
@@ -24,9 +23,6 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm ci
-
-      - name: Generate uop
-        run: npm run generate-uop
 
       - name: Lint Action
         run: npm run lint
