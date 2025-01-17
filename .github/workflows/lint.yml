@@ -24,5 +24,8 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
+      - name: Generate uop
+        run: npm run generate-uop
+
       - name: Lint Action
         run: npm run lint
