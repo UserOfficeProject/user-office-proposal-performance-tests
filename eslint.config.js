@@ -9,7 +9,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ['src/**/*.ts'] },
-  { ignores: ['**/*.js', '!**/eslint.config.js'] },
+  { ignores: ['**/*.js', '!**/eslint.config.js','src/graphql/generated'] },
   { languageOptions: { globals: globals.es2016 } },
   {
     plugins: {

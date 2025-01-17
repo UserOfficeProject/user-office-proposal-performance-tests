@@ -2,5 +2,5 @@ node_modules
 .DS_Store
 screenshots
 test
-#.k6rc env file
+src/graphql/generated
 .k6rc
