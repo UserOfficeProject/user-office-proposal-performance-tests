@@ -1,0 +1,22 @@
+mutation CreateProposal($callId: Int!) {
+  createProposal(callId: $callId) {
+    primaryKey
+    proposalId
+    callId
+    status {
+      id
+      name
+      shortCode
+    }
+    questionary {
+      steps {
+        topic {
+          id
+          templateId
+        }
+      }
+      questionaryId
+      templateId
+    }
+  }
+}

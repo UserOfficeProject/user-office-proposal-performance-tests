@@ -4080,12 +4080,67 @@ export type CreateCallMutationVariables = Exact<{
 
 export type CreateCallMutation = { __typename?: 'Mutation', createCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, description: string, managerUserId: number, name: string, shortCode: string }> } };
 
+export type CreateInstrumentMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  shortCode: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  managerUserId: Scalars['Int']['input'];
+}>;
+
+
+export type CreateInstrumentMutation = { __typename?: 'Mutation', createInstrument: { __typename?: 'Instrument', id: number, description: string, managerUserId: number, name: string, shortCode: string } };
+
+export type CreateProposalMutationVariables = Exact<{
+  callId: Scalars['Int']['input'];
+}>;
+
+
+export type CreateProposalMutation = { __typename?: 'Mutation', createProposal: { __typename?: 'Proposal', primaryKey: number, proposalId: string, callId: number, status?: { __typename?: 'ProposalStatus', id: number, name: string, shortCode: string } | null, questionary: { __typename?: 'Questionary', questionaryId: number, templateId: number, steps: Array<{ __typename?: 'QuestionaryStep', topic: { __typename?: 'Topic', id: number, templateId: number } }> } } };
+
+export type CreateTemplateMutationVariables = Exact<{
+  groupId: TemplateGroupId;
+  name: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateTemplateMutation = { __typename?: 'Mutation', createTemplate: { __typename?: 'Template', templateId: number, name: string, description?: string | null } };
+
 export type DeleteCallMutationVariables = Exact<{
   deleteCallId: Scalars['Int']['input'];
 }>;
 
 
 export type DeleteCallMutation = { __typename?: 'Mutation', deleteCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number } };
+
+export type DeleteInstrumentMutationVariables = Exact<{
+  deleteInstrumentId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteInstrumentMutation = { __typename?: 'Mutation', deleteInstrument: { __typename?: 'Instrument', id: number, description: string } };
+
+export type DeleteProposalMutationVariables = Exact<{
+  proposalPk: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteProposalMutation = { __typename?: 'Mutation', deleteProposal: { __typename?: 'Proposal', primaryKey: number, proposalId: string, callId: number, status?: { __typename?: 'ProposalStatus', id: number, name: string, shortCode: string } | null, questionary: { __typename?: 'Questionary', questionaryId: number, templateId: number, steps: Array<{ __typename?: 'QuestionaryStep', topic: { __typename?: 'Topic', id: number, templateId: number } }> } } };
+
+export type DeleteTemplateMutationVariables = Exact<{
+  templateId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteTemplateMutation = { __typename?: 'Mutation', deleteTemplate: { __typename?: 'Template', templateId: number, name: string, groupId: TemplateGroupId } };
+
+export type ExternalTokenLoginMutationVariables = Exact<{
+  redirectUri: Scalars['String']['input'];
+  externalToken: Scalars['String']['input'];
+}>;
+
+
+export type ExternalTokenLoginMutation = { __typename?: 'Mutation', externalTokenLogin: string };
 
 export type BasicUserDetailsByEmailQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -4169,12 +4224,12 @@ export type ProposalStatusQueryVariables = Exact<{
 
 export type ProposalStatusQuery = { __typename?: 'Query', proposalStatus?: { __typename?: 'ProposalStatus', id: number, isDefault: boolean, name: string, shortCode: string } | null };
 
-export type GetProposalsMinimalQueryVariables = Exact<{
+export type GetProposalsQueryVariables = Exact<{
   filter?: InputMaybe<ProposalsFilter>;
 }>;
 
 
-export type GetProposalsMinimalQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, status?: { __typename?: 'ProposalStatus', name: string } | null }> } | null };
+export type GetProposalsQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, status?: { __typename?: 'ProposalStatus', name: string } | null }> } | null };
 
 export type QuestionaryQueryVariables = Exact<{
   questionaryId: Scalars['Int']['input'];
@@ -4277,6 +4332,55 @@ export const CreateCallDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<CreateCallMutation, CreateCallMutationVariables>;
+export const CreateInstrumentDocument = new TypedDocumentString(`
+    mutation CreateInstrument($name: String!, $shortCode: String!, $description: String!, $managerUserId: Int!) {
+  createInstrument(
+    name: $name
+    shortCode: $shortCode
+    description: $description
+    managerUserId: $managerUserId
+  ) {
+    id
+    description
+    managerUserId
+    name
+    shortCode
+  }
+}
+    `) as unknown as TypedDocumentString<CreateInstrumentMutation, CreateInstrumentMutationVariables>;
+export const CreateProposalDocument = new TypedDocumentString(`
+    mutation CreateProposal($callId: Int!) {
+  createProposal(callId: $callId) {
+    primaryKey
+    proposalId
+    callId
+    status {
+      id
+      name
+      shortCode
+    }
+    questionary {
+      steps {
+        topic {
+          id
+          templateId
+        }
+      }
+      questionaryId
+      templateId
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<CreateProposalMutation, CreateProposalMutationVariables>;
+export const CreateTemplateDocument = new TypedDocumentString(`
+    mutation CreateTemplate($groupId: TemplateGroupId!, $name: String!, $description: String) {
+  createTemplate(groupId: $groupId, name: $name, description: $description) {
+    templateId
+    name
+    description
+  }
+}
+    `) as unknown as TypedDocumentString<CreateTemplateMutation, CreateTemplateMutationVariables>;
 export const DeleteCallDocument = new TypedDocumentString(`
     mutation DeleteCall($deleteCallId: Int!) {
   deleteCall(id: $deleteCallId) {
@@ -4287,6 +4391,52 @@ export const DeleteCallDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<DeleteCallMutation, DeleteCallMutationVariables>;
+export const DeleteInstrumentDocument = new TypedDocumentString(`
+    mutation DeleteInstrument($deleteInstrumentId: Int!) {
+  deleteInstrument(id: $deleteInstrumentId) {
+    id
+    description
+  }
+}
+    `) as unknown as TypedDocumentString<DeleteInstrumentMutation, DeleteInstrumentMutationVariables>;
+export const DeleteProposalDocument = new TypedDocumentString(`
+    mutation DeleteProposal($proposalPk: Int!) {
+  deleteProposal(proposalPk: $proposalPk) {
+    primaryKey
+    proposalId
+    callId
+    status {
+      id
+      name
+      shortCode
+    }
+    questionary {
+      steps {
+        topic {
+          id
+          templateId
+        }
+      }
+      questionaryId
+      templateId
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<DeleteProposalMutation, DeleteProposalMutationVariables>;
+export const DeleteTemplateDocument = new TypedDocumentString(`
+    mutation DeleteTemplate($templateId: Int!) {
+  deleteTemplate(templateId: $templateId) {
+    templateId
+    name
+    groupId
+  }
+}
+    `) as unknown as TypedDocumentString<DeleteTemplateMutation, DeleteTemplateMutationVariables>;
+export const ExternalTokenLoginDocument = new TypedDocumentString(`
+    mutation ExternalTokenLogin($redirectUri: String!, $externalToken: String!) {
+  externalTokenLogin(redirectUri: $redirectUri, externalToken: $externalToken)
+}
+    `) as unknown as TypedDocumentString<ExternalTokenLoginMutation, ExternalTokenLoginMutationVariables>;
 export const BasicUserDetailsByEmailDocument = new TypedDocumentString(`
     query BasicUserDetailsByEmail($email: String!) {
   basicUserDetailsByEmail(email: $email) {
@@ -4413,8 +4563,8 @@ export const ProposalStatusDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<ProposalStatusQuery, ProposalStatusQueryVariables>;
-export const GetProposalsMinimalDocument = new TypedDocumentString(`
-    query getProposalsMinimal($filter: ProposalsFilter) {
+export const GetProposalsDocument = new TypedDocumentString(`
+    query getProposals($filter: ProposalsFilter) {
   proposals(filter: $filter) {
     proposals {
       primaryKey
@@ -4427,7 +4577,7 @@ export const GetProposalsMinimalDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<GetProposalsMinimalQuery, GetProposalsMinimalQueryVariables>;
+    `) as unknown as TypedDocumentString<GetProposalsQuery, GetProposalsQueryVariables>;
 export const QuestionaryDocument = new TypedDocumentString(`
     query Questionary($questionaryId: Int!) {
   questionary(questionaryId: $questionaryId) {

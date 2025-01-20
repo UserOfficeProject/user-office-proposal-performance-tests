@@ -18,7 +18,14 @@ const documents = {
     "mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {\n  answerTopic(\n    questionaryId: $questionaryId\n    topicId: $topicId\n    answers: $answers\n    isPartialSave: $isPartialSave\n  ) {\n    questionId\n    answer\n    answerId\n  }\n}": types.AnswerTopicDocument,
     "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n      description\n    }\n  }\n}": types.AssignInstrumentsToCallDocument,
     "mutation CreateCall($createCallInput: CreateCallInput!) {\n  createCall(createCallInput: $createCallInput) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      description\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.CreateCallDocument,
+    "mutation CreateInstrument($name: String!, $shortCode: String!, $description: String!, $managerUserId: Int!) {\n  createInstrument(\n    name: $name\n    shortCode: $shortCode\n    description: $description\n    managerUserId: $managerUserId\n  ) {\n    id\n    description\n    managerUserId\n    name\n    shortCode\n  }\n}": types.CreateInstrumentDocument,
+    "mutation CreateProposal($callId: Int!) {\n  createProposal(callId: $callId) {\n    primaryKey\n    proposalId\n    callId\n    status {\n      id\n      name\n      shortCode\n    }\n    questionary {\n      steps {\n        topic {\n          id\n          templateId\n        }\n      }\n      questionaryId\n      templateId\n    }\n  }\n}": types.CreateProposalDocument,
+    "mutation CreateTemplate($groupId: TemplateGroupId!, $name: String!, $description: String) {\n  createTemplate(groupId: $groupId, name: $name, description: $description) {\n    templateId\n    name\n    description\n  }\n}": types.CreateTemplateDocument,
     "mutation DeleteCall($deleteCallId: Int!) {\n  deleteCall(id: $deleteCallId) {\n    id\n    shortCode\n    title\n    templateId\n  }\n}": types.DeleteCallDocument,
+    "mutation DeleteInstrument($deleteInstrumentId: Int!) {\n  deleteInstrument(id: $deleteInstrumentId) {\n    id\n    description\n  }\n}": types.DeleteInstrumentDocument,
+    "mutation DeleteProposal($proposalPk: Int!) {\n  deleteProposal(proposalPk: $proposalPk) {\n    primaryKey\n    proposalId\n    callId\n    status {\n      id\n      name\n      shortCode\n    }\n    questionary {\n      steps {\n        topic {\n          id\n          templateId\n        }\n      }\n      questionaryId\n      templateId\n    }\n  }\n}": types.DeleteProposalDocument,
+    "mutation DeleteTemplate($templateId: Int!) {\n  deleteTemplate(templateId: $templateId) {\n    templateId\n    name\n    groupId\n  }\n}": types.DeleteTemplateDocument,
+    "mutation ExternalTokenLogin($redirectUri: String!, $externalToken: String!) {\n  externalTokenLogin(redirectUri: $redirectUri, externalToken: $externalToken)\n}": types.ExternalTokenLoginDocument,
     "query BasicUserDetailsByEmail($email: String!) {\n  basicUserDetailsByEmail(email: $email) {\n    id\n  }\n}": types.BasicUserDetailsByEmailDocument,
     "query BlankQuestionary($templateId: Int!) {\n  blankQuestionary(templateId: $templateId) {\n    isCompleted\n    questionaryId\n    steps {\n      fields {\n        topicId\n      }\n    }\n  }\n}": types.BlankQuestionaryDocument,
     "query getBlankQuestionaryStepsByCallId($callId: Int!) {\n  blankQuestionaryStepsByCallId(callId: $callId) {\n    fields {\n      answerId\n      topicId\n    }\n    isCompleted\n  }\n}": types.GetBlankQuestionaryStepsByCallIdDocument,
@@ -31,7 +38,7 @@ const documents = {
     "query Proposal($primaryKey: Int!) {\n  proposal(primaryKey: $primaryKey) {\n    title\n    created\n    primaryKey\n    proposalId\n    proposerId\n  }\n}": types.ProposalDocument,
     "query ProposalById($proposalId: String!) {\n  proposalById(proposalId: $proposalId) {\n    proposalId\n    primaryKey\n    callId\n  }\n}": types.ProposalByIdDocument,
     "query ProposalStatus($proposalStatusId: Int!) {\n  proposalStatus(proposalStatusId: $proposalStatusId) {\n    id\n    isDefault\n    name\n    shortCode\n  }\n}": types.ProposalStatusDocument,
-    "query getProposalsMinimal($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}": types.GetProposalsMinimalDocument,
+    "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}": types.GetProposalsDocument,
     "query Questionary($questionaryId: Int!) {\n  questionary(questionaryId: $questionaryId) {\n    questionaryId\n    templateId\n    steps {\n      topic {\n        templateId\n        title\n        id\n      }\n    }\n  }\n}": types.QuestionaryDocument,
     "query Settings {\n  settings {\n    description\n    id\n  }\n}": types.SettingsDocument,
     "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}": types.InstrumentDocument,
@@ -54,7 +61,35 @@ export function graphql(source: "mutation CreateCall($createCallInput: CreateCal
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation CreateInstrument($name: String!, $shortCode: String!, $description: String!, $managerUserId: Int!) {\n  createInstrument(\n    name: $name\n    shortCode: $shortCode\n    description: $description\n    managerUserId: $managerUserId\n  ) {\n    id\n    description\n    managerUserId\n    name\n    shortCode\n  }\n}"): typeof import('./graphql').CreateInstrumentDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateProposal($callId: Int!) {\n  createProposal(callId: $callId) {\n    primaryKey\n    proposalId\n    callId\n    status {\n      id\n      name\n      shortCode\n    }\n    questionary {\n      steps {\n        topic {\n          id\n          templateId\n        }\n      }\n      questionaryId\n      templateId\n    }\n  }\n}"): typeof import('./graphql').CreateProposalDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateTemplate($groupId: TemplateGroupId!, $name: String!, $description: String) {\n  createTemplate(groupId: $groupId, name: $name, description: $description) {\n    templateId\n    name\n    description\n  }\n}"): typeof import('./graphql').CreateTemplateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation DeleteCall($deleteCallId: Int!) {\n  deleteCall(id: $deleteCallId) {\n    id\n    shortCode\n    title\n    templateId\n  }\n}"): typeof import('./graphql').DeleteCallDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeleteInstrument($deleteInstrumentId: Int!) {\n  deleteInstrument(id: $deleteInstrumentId) {\n    id\n    description\n  }\n}"): typeof import('./graphql').DeleteInstrumentDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeleteProposal($proposalPk: Int!) {\n  deleteProposal(proposalPk: $proposalPk) {\n    primaryKey\n    proposalId\n    callId\n    status {\n      id\n      name\n      shortCode\n    }\n    questionary {\n      steps {\n        topic {\n          id\n          templateId\n        }\n      }\n      questionaryId\n      templateId\n    }\n  }\n}"): typeof import('./graphql').DeleteProposalDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeleteTemplate($templateId: Int!) {\n  deleteTemplate(templateId: $templateId) {\n    templateId\n    name\n    groupId\n  }\n}"): typeof import('./graphql').DeleteTemplateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation ExternalTokenLogin($redirectUri: String!, $externalToken: String!) {\n  externalTokenLogin(redirectUri: $redirectUri, externalToken: $externalToken)\n}"): typeof import('./graphql').ExternalTokenLoginDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -106,7 +141,7 @@ export function graphql(source: "query ProposalStatus($proposalStatusId: Int!) {
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query getProposalsMinimal($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsMinimalDocument;
+export function graphql(source: "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

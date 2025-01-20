@@ -10,6 +10,7 @@ import {
   DeleteCallDocument,
   AssignInstrumentsToCallDocument,
   RemoveAssignedInstrumentFromCallDocument,
+  GetCallQuery,
 } from '../generated/graphql';
 
 export class Call {
@@ -53,8 +54,10 @@ export class Call {
         callId: callId,
       }
     ).then((data) => {
+      
       return data.call;
     });
+    
     if (!call) {
       return null;
     }

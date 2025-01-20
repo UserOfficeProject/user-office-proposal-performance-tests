@@ -1,0 +1,11 @@
+mutation CreateTemplate(
+  $groupId: TemplateGroupId!
+  $name: String!
+  $description: String
+) {
+  createTemplate(groupId: $groupId, name: $name, description: $description) {
+    templateId
+    name
+    description
+  }
+}

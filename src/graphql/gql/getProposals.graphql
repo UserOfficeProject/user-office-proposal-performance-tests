@@ -1,4 +1,4 @@
-query getProposalsMinimal($filter: ProposalsFilter) {
+query getProposals($filter: ProposalsFilter) {
   proposals(filter: $filter) {
     proposals {
       primaryKey

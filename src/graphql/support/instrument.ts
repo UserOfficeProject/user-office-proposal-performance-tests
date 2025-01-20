@@ -1,67 +1,43 @@
-import { check } from 'k6';
-
 import { getInitData } from '../../support/initData';
-import {
-  Instrument as InstrumentType,
-  GenericQueryResponse,
-  AsyncClientApi,
-} from '../../utils/sharedType';
+import { AsyncClientApi } from '../../utils/sharedType';
+import { executeGraphqlQuery } from '../../support/graphql';
+import { CreateInstrumentDocument, DeleteInstrumentDocument } from '../generated/graphql';
+
 
 export class Instrument {
   private initData = getInitData();
   constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  async createInstrument(managerUserId: number): Promise<InstrumentType> {
-    const mutation = `
-    mutation CreateInstrument($name: String!, $shortCode: String!, $description: String!, $managerUserId: Int!) {
-        createInstrument(name: $name, shortCode: $shortCode, description: $description, managerUserId: $managerUserId) {
-          id
-          description
-          managerUserId
-          name
-          shortCode
-        }
-      }`;
-    const variables = {
-      ...this.initData?.instrument,
-      managerUserId,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-
-    return (response.json() as GenericQueryResponse)?.data
-      ?.createInstrument as InstrumentType;
+  async createInstrument(managerUserId: number) {
+    const createdInstrument = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      CreateInstrumentDocument,
+      {
+        ...this.initData?.instrument,
+        managerUserId,
+      }
+    ).then((data) => {
+      return data.createInstrument;
+    });
+    if (!createdInstrument) {
+      throw new Error('Fail to create instrument');
+    }
+    return createdInstrument;
   }
 
-  async deleteInstrument(deleteInstrumentId: number): Promise<number> {
-    const mutation = `
-            mutation DeleteInstrument($deleteInstrumentId: Int!) {
-                deleteInstrument(id: $deleteInstrumentId) {
-                    id
-                    description
-                }
-            }`;
-
-    const variables = {
-      deleteInstrumentId,
-    };
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-
-    const responseData = response.json() as GenericQueryResponse;
-
-    if (
-      !check(response, {
-        'Instrument deleted': (r) =>
-          r.status === 200 && !!responseData.data.deleteInstrument.id,
-      })
-    ) {
-      console.error('Fail to delete Instrument', response.error);
+  async deleteInstrument(deleteInstrumentId: number) {
+    const deletedInstrument = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      DeleteInstrumentDocument,
+      {
+        deleteInstrumentId,
+      }
+    ).then((data) => {
+      return data.deleteInstrument;
+    });
+    if (!deletedInstrument) {
+      throw new Error('Fail to delete instrument');
     }
-
-    return responseData.data?.deleteInstrument.id;
+    return deletedInstrument;
   }
 }

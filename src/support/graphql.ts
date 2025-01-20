@@ -1,6 +1,6 @@
 import http from 'k6/http';
 
-import { AsyncClientApi, ClientApi } from '../utils/sharedType';
+import { AsyncClientApi, ClientApi, GenericQueryResponse } from '../utils/sharedType';
 import { TypedDocumentString } from '../graphql/generated/graphql';
 
 export function generateBearerToken(token: string): string {
@@ -104,9 +104,10 @@ export async function executeGraphqlQuery<TResult, TVariables>(
       })
     );
     if (response.error || response.status !== 200) {
-      throw new Error(`Error executing request: ${response.error}`);
+      throw new Error(`Error executing graphql request  status: ${response.status} ${response.error}`);
     }
-    return response.json() as TResult;
+    const result= response.json() as GenericQueryResponse 
+    return result.data as TResult;
   }
   const response = await client(
     JSON.stringify({
@@ -116,7 +117,7 @@ export async function executeGraphqlQuery<TResult, TVariables>(
     userToken
   );
   if (response.error || response.status !== 200) {
-    throw new Error(`Error executing request: ${response.error}`);
+    throw new Error(`Error executing graphql request  status: ${response.status} ${response.error}`);
   }
   return response.json() as TResult;
 }
