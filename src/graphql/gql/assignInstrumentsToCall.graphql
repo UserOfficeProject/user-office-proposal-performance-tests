@@ -13,6 +13,7 @@ mutation AssignInstrumentsToCall(
       managerUserId
       name
       shortCode
+      description
     }
   }
 }

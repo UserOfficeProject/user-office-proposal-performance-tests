@@ -16,7 +16,7 @@ import * as types from './graphql';
  */
 const documents = {
     "mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {\n  answerTopic(\n    questionaryId: $questionaryId\n    topicId: $topicId\n    answers: $answers\n    isPartialSave: $isPartialSave\n  ) {\n    questionId\n    answer\n    answerId\n  }\n}": types.AnswerTopicDocument,
-    "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.AssignInstrumentsToCallDocument,
+    "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n      description\n    }\n  }\n}": types.AssignInstrumentsToCallDocument,
     "mutation CreateCall($createCallInput: CreateCallInput!) {\n  createCall(createCallInput: $createCallInput) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      description\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.CreateCallDocument,
     "mutation DeleteCall($deleteCallId: Int!) {\n  deleteCall(id: $deleteCallId) {\n    id\n    shortCode\n    title\n    templateId\n  }\n}": types.DeleteCallDocument,
     "query BasicUserDetailsByEmail($email: String!) {\n  basicUserDetailsByEmail(email: $email) {\n    id\n  }\n}": types.BasicUserDetailsByEmailDocument,
@@ -46,7 +46,7 @@ export function graphql(source: "mutation AnswerTopic($questionaryId: Int!, $top
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}"): typeof import('./graphql').AssignInstrumentsToCallDocument;
+export function graphql(source: "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n      description\n    }\n  }\n}"): typeof import('./graphql').AssignInstrumentsToCallDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

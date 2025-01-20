@@ -4071,7 +4071,7 @@ export type AssignInstrumentsToCallMutationVariables = Exact<{
 }>;
 
 
-export type AssignInstrumentsToCallMutation = { __typename?: 'Mutation', assignInstrumentsToCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, managerUserId: number, name: string, shortCode: string }> } };
+export type AssignInstrumentsToCallMutation = { __typename?: 'Mutation', assignInstrumentsToCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, managerUserId: number, name: string, shortCode: string, description: string }> } };
 
 export type CreateCallMutationVariables = Exact<{
   createCallInput: CreateCallInput;
@@ -4255,6 +4255,7 @@ export const AssignInstrumentsToCallDocument = new TypedDocumentString(`
       managerUserId
       name
       shortCode
+      description
     }
   }
 }
