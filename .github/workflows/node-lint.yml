@@ -1,4 +1,4 @@
-name: Lint
+name: Node Lint
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ env:
 
 jobs:
   run-node-linters:
-    name: Run Node linters
+    name: Run node linters
     runs-on: ubuntu-latest
 
     steps:
