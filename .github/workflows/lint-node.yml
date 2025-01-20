@@ -1,4 +1,4 @@
-name: Node Lint
+name: Lint
 
 on:
   pull_request:
@@ -8,8 +8,8 @@ env:
   NODE_VERSION: 20.x
 
 jobs:
-  run-node-linters:
-    name: Run node linters
+  run-linters:
+    name: Run linters
     runs-on: ubuntu-latest
 
     steps:
