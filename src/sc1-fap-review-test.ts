@@ -2,8 +2,9 @@ import { Options } from 'k6/options';
 
 import { getEnvironmentConfigurations } from './support/configurations';
 import { sc1Setup } from './support/setup';
-import { sc1TearDown } from './support/teardown';
 import { SharedData } from './utils/sharedType';
+import fapReviewTest from './browser/fapReview';
+import { sc1TearDownFapReview } from './support/teardownFapReview';
 
 export const options: Options = {
   // thresholds: {
@@ -22,8 +23,8 @@ export const options: Options = {
   //   checks: ['rate>0.90'],
   // },
   scenarios: {
-    proposalSubmission: {
-      exec: 'proposalFapReview',
+    fapReview: {
+      exec: 'fapReview',
       executor: 'per-vu-iterations',
       vus: +__ENV.K6_PS_VUS || 5,
       iterations: +__ENV.K6_PS_ITERATIONS || 2,
@@ -41,9 +42,9 @@ const environmentConfig = getEnvironmentConfigurations();
 export async function setup() {
   return await sc1Setup(environmentConfig);
 }
-export function proposalFapReview() {
-  // proposalSubmissionTest(sharedData);
+export function fapReview(sharedData: SharedData) {
+  //fapReviewTest(sharedData);
 }
 export async function teardown(sharedData: SharedData) {
-  return await sc1TearDown(sharedData, environmentConfig);
+  return await sc1TearDownFapReview(sharedData, environmentConfig);
 }

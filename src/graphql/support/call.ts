@@ -95,6 +95,9 @@ export class Call {
               title
               shortCode
               templateId
+              faps {
+                 id
+              }
             }
           }`;
 

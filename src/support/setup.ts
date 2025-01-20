@@ -14,7 +14,9 @@ import {
   SharedData,
   UserLogin,
   Call as CallType,
+  Proposal as ProposalType,
   Fap,
+  FapReviewAssignment,
 } from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
@@ -28,6 +30,9 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let users = null;
   let testCall: CallType | null = null;
   let testFap: Fap | null = null;
+  let testProposals: [ProposalType];
+  let testFapId: number;
+  let fapReviewAssignments: FapReviewAssignment[] = new Array();
   const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
   const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
@@ -90,65 +95,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       exec.test.abort();
     }
   }
-  if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
-    console.log('we landed here!!');
-    if (Array.isArray(users)) {
-      const userLogin = users as UserLogin[];
-      const reviewerUsers = userLogin.slice(0, 6);
-      const reviewerIds = reviewerUsers.map((users) => String(users.userId));
-      const payLoad = JSON.stringify({
-        ids: reviewerIds,
-        roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
-      });
-      const res = await http.asyncRequest(
-        'POST',
-        `${testSetupBaseUrl}/users/assignRole`,
-        payLoad,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      console.log(`response status ${res.status}`);
-      if (__ENV.TEST_SET_UP_PROPOSAL_PKS) {
-        proposal.changeProposalsStatus(
-          [Number(__ENV.TEST_SET_UP_PROPOSAL_PKS)],
-          5
-        );
-      }
-      if (__ENV.TEST_SET_UP_PROPOSAL_PKS) {
-        proposal.assignProposalsToInstruments(
-          [Number(__ENV.TEST_SET_UP_PROPOSAL_PKS)],
-          [Number(__ENV.TEST_SET_UP_INSTRUMENT_ID)]
-        );
-      }
-      if (__ENV.TEST_SET_UP_PROPOSAL_PKS) {
-        proposal.assignFapReviewersToProposals(
-          -220800001,
-          Number(__ENV.TEST_SET_UP_PROPOSAL_PKS),
-          Number(__ENV.TEST_SET_UP_FAP_ID)
-        );
-      }
-      if (__ENV.TEST_SETUP_FAP_ID) {
-        reviewerUsers.map(async (r) => {
-          //login the user in the proposals system before assigning them to a FAP
-          const userToken = await user.getUserToken(`${r.sessionId}`);
-          if (userToken) {
-            testFap = await fap.assignReviewersToFap(
-              [r.userId],
-              Number(__ENV.TEST_SETUP_FAP_ID)
-            );
-            if (testFap) {
-              console.log(
-                `assigned userid ${r.userId} to fap id ${__ENV.TEST_SETUP_FAP_ID}`
-              );
-            }
-          }
-        });
-      }
-    }
-  }
 
   // Check for final setup outcome and abort if necessary
   if (!proposalHealthCheck) {
@@ -197,6 +143,102 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     }
   }
 
+  if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
+    console.log('we landed here!!');
+    if (Array.isArray(users)) {
+      const userLogin = users as UserLogin[];
+      const reviewerUsers = userLogin.slice(
+        0,
+        Number(__ENV.SETUP_TOTAL_REVIEWERS)
+      );
+      const reviewerIds = reviewerUsers.map((users) => String(users.userId));
+      const payLoad = JSON.stringify({
+        ids: reviewerIds,
+        roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
+      });
+      const res = await http.asyncRequest(
+        'POST',
+        `${testSetupBaseUrl}/users/assignRole`,
+        payLoad,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log(`response status ${res.status}`);
+      if (testCall?.faps) {
+        testFapId = testCall?.faps[0].id;
+        console.log(`FAP id from test call is ${testFapId}`);
+        if (testFapId) {
+          reviewerUsers.map(async (r) => {
+            //login the user in the proposals system before assigning them to a FAP
+            const userToken = await user.getUserToken(`${r.sessionId}`);
+            if (userToken) {
+              testFap = await fap.assignReviewersToFap([r.userId], testFapId);
+              if (testFap) {
+                console.log(
+                  `assigned userid ${r.userId} to fap id ${testFapId}`
+                );
+              }
+            }
+          });
+        }
+
+        testProposals = await proposal.getProposals(
+          testCall?.id ? testCall?.id : 0
+        );
+        if (testProposals) {
+          let testFapProposals = testProposals.slice(
+            0,
+            Number(__ENV.FAP_PROPOSALS)
+          );
+          let testFapProposalKeys = testFapProposals.map((p) => p.primaryKey);
+          let proposalStatusChanged = await proposal.changeProposalsStatus(
+            testFapProposalKeys,
+            Number(__ENV.FAP_REVIEW_STATUS_ID)
+          );
+          if (proposalStatusChanged) {
+            let instrumentsAssigned =
+              await proposal.assignProposalsToInstruments(testFapProposalKeys, [
+                Number(__ENV.TEST_SET_UP_INSTRUMENT_ID),
+              ]);
+            if (instrumentsAssigned) {
+              const reviewerIterator = reviewerUsers.entries();
+              let j = 0;
+              for (let entry of reviewerIterator) {
+                const [index, userLogin] = entry;
+                let i = 0;
+                while (i < Number(__ENV.PROPOSALS_PER_REVIEWER)) {
+                  j = j >= testFapProposals.length ? 0 : j;
+                  let assignment = {
+                    memberId: userLogin.userId,
+                    proposalPk: testFapProposals[j].primaryKey,
+                    fapId: testFapId,
+                  };
+                  fapReviewAssignments.push(assignment);
+                  let reviewersAssigned =
+                    await fap.assignFapReviewersToProposals(
+                      userLogin.userId,
+                      testFapProposals[j].primaryKey,
+                      testFapId
+                    );
+                  if (reviewersAssigned) {
+                    console.log(
+                      `Fap reviewer ${userLogin.userId} assigned to proposal ${testFapProposals[j].proposalId}`
+                    );
+                  }
+                  j++;
+                  i++;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   return {
     users,
     browserBaseUrl,
@@ -205,5 +247,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     testSetupBaseUrl,
     isClusterTestRun: environmentConfig.IS_CLUSTER_TEST_RUN === 'true' || false,
     instrumentId: environmentConfig.INSTRUMENT_ID,
+    fapReviewAssignments,
   } as SharedData;
 }

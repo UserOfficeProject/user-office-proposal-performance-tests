@@ -11,10 +11,14 @@ export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-220800000
 export SETUP_TOTAL_REVIEWERS=7
 export REVIEWER_STARTING_IDS=-220800000
-export TEST_SETUP_CALL_ID=1
+export TEST_SETUP_CALL_ID=154
 export TEST_SETUP_FAP_ID=1
 export TEST_SET_UP_PROPOSAL_PKS=1
-export TEST_SET_UP_INSTRUMENT_ID=14
+export TEST_SET_UP_INSTRUMENT_ID=39
+export FAP_PROPOSALS=5
+export PROPOSALS_PER_REVIEWER=2
+export FAP_REVIEW_STATUS_ID=5
+export SUBMITTED_STATUS_ID=15
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export SETUP_TEST_REVIEWERS="true"
@@ -59,31 +63,31 @@ sleep 10
 
 k6 run --no-usage-report --out dashboard - < <(cat ./test/${K6_TEST_FILE}.js)
 
-if [ "$SETUP_TEST_USERS" = "true" ]; then
-    echo "Clean up created user data"
-    curl -X DELETE http://localhost:8100/users/$USER_STARTING_ID/$(expr $USER_STARTING_ID + $SETUP_TOTAL_USERS)
-fi
+# if [ "$SETUP_TEST_USERS" = "true" ]; then
+#     echo "Clean up created user data"
+#     curl -X DELETE http://localhost:8100/users/$USER_STARTING_ID/$(expr $USER_STARTING_ID + $SETUP_TOTAL_USERS)
+# fi
 
-if [ "$SETUP_TEST_REVIEWERS" = "true" ]; then
-    echo "Clean up reviewers data"
-    reviewer_ids=""
-    i=0
-    while [ $i -lt $SETUP_TOTAL_REVIEWERS ]; do
-        current_id=$(($REVIEWER_STARTING_IDS - $i))
-        reviewer_ids="$reviewer_ids$current_id"
-        i=$(expr $i + 1)
+# if [ "$SETUP_TEST_REVIEWERS" = "true" ]; then
+#     echo "Clean up reviewers data"
+#     reviewer_ids=""
+#     i=0
+#     while [ $i -lt $SETUP_TOTAL_REVIEWERS ]; do
+#         current_id=$(($REVIEWER_STARTING_IDS - $i))
+#         reviewer_ids="$reviewer_ids$current_id"
+#         i=$(expr $i + 1)
 
-        if [ $i -lt $SETUP_TOTAL_REVIEWERS ]; then
-            reviewer_ids="$reviewer_ids,"
-        fi
-    done
+#         if [ $i -lt $SETUP_TOTAL_REVIEWERS ]; then
+#             reviewer_ids="$reviewer_ids,"
+#         fi
+#     done
 
-    echo "Reviewer IDs: $reviewer_ids"
+#     echo "Reviewer IDs: $reviewer_ids"
 
-    curl --location --request DELETE 'http://localhost:8100/users/removeRole' \
-    --header 'Content-Type: application/json' \
-    --data "{
-        \"ids\": [$reviewer_ids],
-        \"roleName\": \"$SETUP_TEST_REVIEWER_ROLE\"
-    }"
-fi
+#     curl --location --request DELETE 'http://localhost:8100/users/removeRole' \
+#     --header 'Content-Type: application/json' \
+#     --data "{
+#         \"ids\": [$reviewer_ids],
+#         \"roleName\": \"$SETUP_TEST_REVIEWER_ROLE\"
+#     }"
+# fi

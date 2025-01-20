@@ -21,6 +21,7 @@ export type Call = {
   title: string;
   templateId: number;
   instruments: [Instrument];
+  faps: [Fap];
 };
 export type TemplateStep = {
   topic: {
@@ -63,12 +64,28 @@ export type SharedData = {
   testSetupBaseUrl?: string | null;
   isClusterTestRun: boolean;
   instrumentId: number;
+  fapReviewAssignments: FapReviewAssignment[] | null;
 };
 export type Fap = {
   id: number;
   code: string;
   proposalCurrentCount: number;
 };
+export type FapReviewAssignment = {
+  memberId: number;
+  proposalPk: number;
+  fapId: number;
+};
+export enum UserRole {
+  FAP_CHAIR = 'FAP_CHAIR',
+  FAP_REVIEWER = 'FAP_REVIEWER',
+  FAP_SECRETARY = 'FAP_SECRETARY',
+  INSTRUMENT_SCIENTIST = 'INSTRUMENT_SCIENTIST',
+  INTERNAL_REVIEWER = 'INTERNAL_REVIEWER',
+  SAMPLE_SAFETY_REVIEWER = 'SAMPLE_SAFETY_REVIEWER',
+  USER = 'USER',
+  USER_OFFICER = 'USER_OFFICER',
+}
 export type ClientResponse = RefinedResponse<any>;
 export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 

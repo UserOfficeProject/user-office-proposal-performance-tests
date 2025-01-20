@@ -96,7 +96,7 @@ export class Proposal {
     return proposalPk;
   }
 
-  private async getProposals(callId: number): Promise<[ProposalType]> {
+  async getProposals(callId: number): Promise<[ProposalType]> {
     const query = `
       query Proposals($filter: ProposalsFilter) {
         proposals(filter: $filter) {
@@ -163,7 +163,10 @@ export class Proposal {
 
     return proposals;
   }
-  async changeProposalsStatus(proposalPks: number[], statusId: number) {
+  async changeProposalsStatus(
+    proposalPks: number[],
+    statusId: number
+  ): Promise<boolean> {
     const mutation = `mutation ChangeProposalsStatus($changeProposalsStatusInput: ChangeProposalsStatusInput!) {
   changeProposalsStatus(changeProposalsStatusInput: $changeProposalsStatusInput)
 }`;
@@ -181,11 +184,13 @@ export class Proposal {
         `Error changing status of proposal ${response.status} - ${response.body}`
       );
     }
+    const responseData = response.json() as GenericQueryResponse;
+    return responseData.data.changeProposalsStatus;
   }
   async assignProposalsToInstruments(
     proposalPks: number[],
     instrumentIds: number[]
-  ) {
+  ): Promise<boolean> {
     const mutation = `mutation AssignProposalsToInstruments($instrumentIds: [Int!]!, $proposalPks: [Int!]!) {
   assignProposalsToInstruments(instrumentIds: $instrumentIds, proposalPks: $proposalPks)
 }`;
@@ -201,32 +206,23 @@ export class Proposal {
         `Error assigning proposal to instrument ${response.status} - ${response.body}`
       );
     }
+    const responseData = response.json() as GenericQueryResponse;
+    return responseData.data.assignProposalsToInstruments;
   }
-  async assignFapReviewersToProposals(
-    memberId: number,
-    proposalPk: number,
-    fapId: number
-  ) {
-    const mutation = `mutation AssignFapReviewersToProposals($assignments: [FapReviewAssignmentInput!]!, $fapId: Int!) {
-  assignFapReviewersToProposals(assignments: $assignments, fapId: $fapId) {
-    id
-  }
-}`;
+
+  async removeProposalsFromInstrument(proposalPks: number[]) {
+    const mutation = `mutation RemoveProposalsFromInstrument($proposalPks: [Int!]!) {
+          removeProposalsFromInstrument(proposalPks: $proposalPks)
+      }`;
     const variables = {
-      assignments: [
-        {
-          memberId,
-          proposalPk,
-        },
-      ],
-      fapId: fapId,
+      proposalPks: proposalPks,
     };
     const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
     if (response.status !== 200) {
       console.error(
-        `Error assigning FAP reviewer to proposals ${response.status} - ${response.body}`
+        `Error removing instrument from proposal: response status - ${response.status} and response body - ${response.body}`
       );
     }
   }
