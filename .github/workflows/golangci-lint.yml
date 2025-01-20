@@ -1,0 +1,35 @@
+name: GO Lint
+
+on:
+  pull_request:
+    branches: [develop, master]
+
+env:
+  GO_VERSION: "1.22.2"
+  GOLANGCI_LINT_VERSION: v1.63.4
+
+jobs:
+  run-go-linters:
+    name: Run Go linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set go version
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: golangci-lint xk6-output-logger
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          working-directory: extensions/xk6-output-logger
+
+      - name: golangci-lint xk6-output-opensearch
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          working-directory: extensions/xk6-output-opensearch
