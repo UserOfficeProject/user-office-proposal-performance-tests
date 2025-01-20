@@ -23,7 +23,7 @@
     "build": "concurrently \"npm run build:test-setup\" \"npm run build:k6-test\"",
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
     "prepare": "husky",
-    "postinstall": "cd test-setup && npm install && husky instal",
+    "postinstall": "cd test-setup && npm install && husky init",
     "generate-uop": "graphql-codegen --require dotenv/config --config codegen.ts"
   },
   "devDependencies": {
