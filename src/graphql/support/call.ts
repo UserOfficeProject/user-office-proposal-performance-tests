@@ -10,7 +10,6 @@ import {
   DeleteCallDocument,
   AssignInstrumentsToCallDocument,
   RemoveAssignedInstrumentFromCallDocument,
-  GetCallQuery,
 } from '../generated/graphql';
 
 export class Call {
