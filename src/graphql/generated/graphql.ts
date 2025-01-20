@@ -4066,6 +4066,27 @@ export type AnswerTopicMutationVariables = Exact<{
 
 export type AnswerTopicMutation = { __typename?: 'Mutation', answerTopic: Array<{ __typename?: 'AnswerBasic', questionId: string, answer: any, answerId?: number | null }> };
 
+export type AssignInstrumentsToCallMutationVariables = Exact<{
+  assignInstrumentsToCallInput: AssignInstrumentsToCallInput;
+}>;
+
+
+export type AssignInstrumentsToCallMutation = { __typename?: 'Mutation', assignInstrumentsToCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, managerUserId: number, name: string, shortCode: string }> } };
+
+export type CreateCallMutationVariables = Exact<{
+  createCallInput: CreateCallInput;
+}>;
+
+
+export type CreateCallMutation = { __typename?: 'Mutation', createCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, description: string, managerUserId: number, name: string, shortCode: string }> } };
+
+export type DeleteCallMutationVariables = Exact<{
+  deleteCallId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteCallMutation = { __typename?: 'Mutation', deleteCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number } };
+
 export type BasicUserDetailsByEmailQueryVariables = Exact<{
   email: Scalars['String']['input'];
 }>;
@@ -4092,14 +4113,14 @@ export type CallQueryVariables = Exact<{
 }>;
 
 
-export type CallQuery = { __typename?: 'Query', call?: { __typename?: 'Call', id: number, title?: string | null, shortCode: string } | null };
+export type CallQuery = { __typename?: 'Query', call?: { __typename?: 'Call', id: number, title?: string | null, shortCode: string, templateId: number } | null };
 
-export type CallsQueryVariables = Exact<{
+export type GetCallsQueryVariables = Exact<{
   filter?: InputMaybe<CallsFilter>;
 }>;
 
 
-export type CallsQuery = { __typename?: 'Query', calls?: Array<{ __typename?: 'Call', id: number, title?: string | null, shortCode: string }> | null };
+export type GetCallsQuery = { __typename?: 'Query', calls?: Array<{ __typename?: 'Call', id: number, title?: string | null, shortCode: string, templateId: number, endCall: any, endCallInternal?: any | null, allocationTimeUnit: AllocationTimeUnits, cycleComment: string, isActive: boolean, isActiveInternal: boolean, startCall: any, startCycle: any, pdfTemplateId?: number | null }> | null };
 
 export type GenericTemplatesQueryVariables = Exact<{
   filter?: InputMaybe<GenericTemplatesFilter>;
@@ -4174,6 +4195,13 @@ export type InstrumentQueryVariables = Exact<{
 
 export type InstrumentQuery = { __typename?: 'Query', instrument?: { __typename?: 'Instrument', id: number, name: string, managerUserId: number, shortCode: string } | null };
 
+export type RemoveAssignedInstrumentFromCallMutationVariables = Exact<{
+  removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput;
+}>;
+
+
+export type RemoveAssignedInstrumentFromCallMutation = { __typename?: 'Mutation', removeAssignedInstrumentFromCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, managerUserId: number, name: string, shortCode: string }> } };
+
 export type UpdateProposalMutationVariables = Exact<{
   proposalPk: Scalars['Int']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
@@ -4213,6 +4241,51 @@ export const AnswerTopicDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<AnswerTopicMutation, AnswerTopicMutationVariables>;
+export const AssignInstrumentsToCallDocument = new TypedDocumentString(`
+    mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {
+  assignInstrumentsToCall(
+    assignInstrumentsToCallInput: $assignInstrumentsToCallInput
+  ) {
+    id
+    shortCode
+    title
+    templateId
+    instruments {
+      id
+      managerUserId
+      name
+      shortCode
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<AssignInstrumentsToCallMutation, AssignInstrumentsToCallMutationVariables>;
+export const CreateCallDocument = new TypedDocumentString(`
+    mutation CreateCall($createCallInput: CreateCallInput!) {
+  createCall(createCallInput: $createCallInput) {
+    id
+    shortCode
+    title
+    templateId
+    instruments {
+      id
+      description
+      managerUserId
+      name
+      shortCode
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<CreateCallMutation, CreateCallMutationVariables>;
+export const DeleteCallDocument = new TypedDocumentString(`
+    mutation DeleteCall($deleteCallId: Int!) {
+  deleteCall(id: $deleteCallId) {
+    id
+    shortCode
+    title
+    templateId
+  }
+}
+    `) as unknown as TypedDocumentString<DeleteCallMutation, DeleteCallMutationVariables>;
 export const BasicUserDetailsByEmailDocument = new TypedDocumentString(`
     query BasicUserDetailsByEmail($email: String!) {
   basicUserDetailsByEmail(email: $email) {
@@ -4250,18 +4323,30 @@ export const CallDocument = new TypedDocumentString(`
     id
     title
     shortCode
+    templateId
   }
 }
     `) as unknown as TypedDocumentString<CallQuery, CallQueryVariables>;
-export const CallsDocument = new TypedDocumentString(`
-    query Calls($filter: CallsFilter) {
+export const GetCallsDocument = new TypedDocumentString(`
+    query getCalls($filter: CallsFilter) {
   calls(filter: $filter) {
     id
     title
     shortCode
+    templateId
+    endCall
+    endCallInternal
+    allocationTimeUnit
+    cycleComment
+    isActive
+    isActiveInternal
+    shortCode
+    startCall
+    startCycle
+    pdfTemplateId
   }
 }
-    `) as unknown as TypedDocumentString<CallsQuery, CallsQueryVariables>;
+    `) as unknown as TypedDocumentString<GetCallsQuery, GetCallsQueryVariables>;
 export const GenericTemplatesDocument = new TypedDocumentString(`
     query GenericTemplates($filter: GenericTemplatesFilter) {
   genericTemplates(filter: $filter) {
@@ -4375,6 +4460,24 @@ export const InstrumentDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<InstrumentQuery, InstrumentQueryVariables>;
+export const RemoveAssignedInstrumentFromCallDocument = new TypedDocumentString(`
+    mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {
+  removeAssignedInstrumentFromCall(
+    removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput
+  ) {
+    id
+    shortCode
+    title
+    templateId
+    instruments {
+      id
+      managerUserId
+      name
+      shortCode
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<RemoveAssignedInstrumentFromCallMutation, RemoveAssignedInstrumentFromCallMutationVariables>;
 export const UpdateProposalDocument = new TypedDocumentString(`
     mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {
   updateProposal(

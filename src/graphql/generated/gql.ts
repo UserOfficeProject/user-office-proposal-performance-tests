@@ -16,11 +16,14 @@ import * as types from './graphql';
  */
 const documents = {
     "mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {\n  answerTopic(\n    questionaryId: $questionaryId\n    topicId: $topicId\n    answers: $answers\n    isPartialSave: $isPartialSave\n  ) {\n    questionId\n    answer\n    answerId\n  }\n}": types.AnswerTopicDocument,
+    "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.AssignInstrumentsToCallDocument,
+    "mutation CreateCall($createCallInput: CreateCallInput!) {\n  createCall(createCallInput: $createCallInput) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      description\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.CreateCallDocument,
+    "mutation DeleteCall($deleteCallId: Int!) {\n  deleteCall(id: $deleteCallId) {\n    id\n    shortCode\n    title\n    templateId\n  }\n}": types.DeleteCallDocument,
     "query BasicUserDetailsByEmail($email: String!) {\n  basicUserDetailsByEmail(email: $email) {\n    id\n  }\n}": types.BasicUserDetailsByEmailDocument,
     "query BlankQuestionary($templateId: Int!) {\n  blankQuestionary(templateId: $templateId) {\n    isCompleted\n    questionaryId\n    steps {\n      fields {\n        topicId\n      }\n    }\n  }\n}": types.BlankQuestionaryDocument,
     "query getBlankQuestionaryStepsByCallId($callId: Int!) {\n  blankQuestionaryStepsByCallId(callId: $callId) {\n    fields {\n      answerId\n      topicId\n    }\n    isCompleted\n  }\n}": types.GetBlankQuestionaryStepsByCallIdDocument,
-    "query Call($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n  }\n}": types.CallDocument,
-    "query Calls($filter: CallsFilter) {\n  calls(filter: $filter) {\n    id\n    title\n    shortCode\n  }\n}": types.CallsDocument,
+    "query Call($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n    templateId\n  }\n}": types.CallDocument,
+    "query getCalls($filter: CallsFilter) {\n  calls(filter: $filter) {\n    id\n    title\n    shortCode\n    templateId\n    endCall\n    endCallInternal\n    allocationTimeUnit\n    cycleComment\n    isActive\n    isActiveInternal\n    shortCode\n    startCall\n    startCycle\n    pdfTemplateId\n  }\n}": types.GetCallsDocument,
     "query GenericTemplates($filter: GenericTemplatesFilter) {\n  genericTemplates(filter: $filter) {\n    id\n    title\n  }\n}": types.GenericTemplatesDocument,
     "query getCall($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n  }\n}": types.GetCallDocument,
     "query Me {\n  me {\n    id\n    created\n    roles {\n      id\n      shortCode\n      title\n    }\n  }\n}": types.MeDocument,
@@ -32,6 +35,7 @@ const documents = {
     "query Questionary($questionaryId: Int!) {\n  questionary(questionaryId: $questionaryId) {\n    questionaryId\n    templateId\n    steps {\n      topic {\n        templateId\n        title\n        id\n      }\n    }\n  }\n}": types.QuestionaryDocument,
     "query Settings {\n  settings {\n    description\n    id\n  }\n}": types.SettingsDocument,
     "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}": types.InstrumentDocument,
+    "mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {\n  removeAssignedInstrumentFromCall(\n    removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.RemoveAssignedInstrumentFromCallDocument,
     "mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {\n  updateProposal(\n    proposalPk: $proposalPk\n    title: $title\n    abstract: $abstract\n    users: $users\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n  }\n}": types.UpdateProposalDocument,
 };
 
@@ -39,6 +43,18 @@ const documents = {
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation AnswerTopic($questionaryId: Int!, $topicId: Int!, $answers: [AnswerInput!]!, $isPartialSave: Boolean) {\n  answerTopic(\n    questionaryId: $questionaryId\n    topicId: $topicId\n    answers: $answers\n    isPartialSave: $isPartialSave\n  ) {\n    questionId\n    answer\n    answerId\n  }\n}"): typeof import('./graphql').AnswerTopicDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {\n  assignInstrumentsToCall(\n    assignInstrumentsToCallInput: $assignInstrumentsToCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}"): typeof import('./graphql').AssignInstrumentsToCallDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateCall($createCallInput: CreateCallInput!) {\n  createCall(createCallInput: $createCallInput) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      description\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}"): typeof import('./graphql').CreateCallDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeleteCall($deleteCallId: Int!) {\n  deleteCall(id: $deleteCallId) {\n    id\n    shortCode\n    title\n    templateId\n  }\n}"): typeof import('./graphql').DeleteCallDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -54,11 +70,11 @@ export function graphql(source: "query getBlankQuestionaryStepsByCallId($callId:
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query Call($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n  }\n}"): typeof import('./graphql').CallDocument;
+export function graphql(source: "query Call($callId: Int!) {\n  call(callId: $callId) {\n    id\n    title\n    shortCode\n    templateId\n  }\n}"): typeof import('./graphql').CallDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query Calls($filter: CallsFilter) {\n  calls(filter: $filter) {\n    id\n    title\n    shortCode\n  }\n}"): typeof import('./graphql').CallsDocument;
+export function graphql(source: "query getCalls($filter: CallsFilter) {\n  calls(filter: $filter) {\n    id\n    title\n    shortCode\n    templateId\n    endCall\n    endCallInternal\n    allocationTimeUnit\n    cycleComment\n    isActive\n    isActiveInternal\n    shortCode\n    startCall\n    startCycle\n    pdfTemplateId\n  }\n}"): typeof import('./graphql').GetCallsDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -103,6 +119,10 @@ export function graphql(source: "query Settings {\n  settings {\n    description
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}"): typeof import('./graphql').InstrumentDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {\n  removeAssignedInstrumentFromCall(\n    removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}"): typeof import('./graphql').RemoveAssignedInstrumentFromCallDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
