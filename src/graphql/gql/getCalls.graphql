@@ -1,7 +1,18 @@
-query Calls($filter: CallsFilter) {
+query getCalls($filter: CallsFilter) {
   calls(filter: $filter) {
     id
     title
     shortCode
+    templateId
+    endCall
+    endCallInternal
+    allocationTimeUnit
+    cycleComment
+    isActive
+    isActiveInternal
+    shortCode
+    startCall
+    startCycle
+    pdfTemplateId
   }
 }

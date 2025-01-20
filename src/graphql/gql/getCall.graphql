@@ -3,5 +3,6 @@ query Call($callId: Int!) {
     id
     title
     shortCode
+    templateId
   }
 }

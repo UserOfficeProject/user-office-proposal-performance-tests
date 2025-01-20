@@ -1,0 +1,18 @@
+mutation AssignInstrumentsToCall(
+  $assignInstrumentsToCallInput: AssignInstrumentsToCallInput!
+) {
+  assignInstrumentsToCall(
+    assignInstrumentsToCallInput: $assignInstrumentsToCallInput
+  ) {
+    id
+    shortCode
+    title
+    templateId
+    instruments {
+      id
+      managerUserId
+      name
+      shortCode
+    }
+  }
+}
