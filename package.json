@@ -23,7 +23,8 @@
     "build": "concurrently \"npm run build:test-setup\" \"npm run build:k6-test\"",
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
     "prepare": "husky",
-    "postinstall": "cd test-setup && npm install && husky install"
+    "postinstall": "cd test-setup && npm install && husky init",
+    "generate-uop": "graphql-codegen --require dotenv/config --config codegen.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -31,8 +32,10 @@
     "@babel/plugin-transform-object-rest-spread": "^7.24.1",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-typescript": "^7.23.3",
-    "@types/k6": "v0.54.2",
     "@eslint/js": "^9.17.0",
+    "@graphql-codegen/cli": "^5.0.3",
+    "@graphql-codegen/typed-document-node": "^5.0.12",
+    "@types/k6": "v0.54.2",
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "babel-loader": "^9.1.3",

@@ -1,0 +1,13 @@
+query getProposals($filter: ProposalsFilter) {
+  proposals(filter: $filter) {
+    proposals {
+      primaryKey
+      proposalId
+      title
+      submitted
+      status {
+        name
+      }
+    }
+  }
+}

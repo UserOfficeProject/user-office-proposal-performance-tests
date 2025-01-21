@@ -1,0 +1,8 @@
+mutation DeleteCall($deleteCallId: Int!) {
+  deleteCall(id: $deleteCallId) {
+    id
+    shortCode
+    title
+    templateId
+  }
+}

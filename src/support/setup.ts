@@ -8,7 +8,6 @@ import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
 import { SharedData, Call as CallType } from '../utils/sharedType';
-
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
       Check if the system under test and user setup server are available.
@@ -99,11 +98,11 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
 
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
-      testCall = await call.getCall(+__ENV.TEST_SETUP_CALL_ID);
+      testCall = await call.getCall(+__ENV.TEST_SETUP_CALL_ID) as CallType;
     } else {
       testCall = await call.createTestCall(
         (await template.createTemplate()).templateId
-      );
+      )  as CallType;
       if (testCall) {
         const instrument = new Instrument(apiAsyncClient);
         const callInstrument = await instrument.createInstrument(1);
@@ -112,7 +111,19 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
             testCall.id,
             callInstrument.id
           );
-          testCall.instruments = [...callWithInstruments.instruments];
+          if(callWithInstruments){
+            callWithInstruments.instruments.map(instrument=>{
+              testCall!.instruments.push({
+                description: instrument.description,
+                id: instrument.id,
+                managerUserId: instrument.managerUserId,
+                name: instrument.name,
+                shortCode: instrument.shortCode
+              })
+            })
+      
+          }
+          
         } else {
           console.error('Failed to create instrument aborting test');
           exec.test.abort();
