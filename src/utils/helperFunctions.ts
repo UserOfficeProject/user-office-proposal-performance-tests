@@ -1,7 +1,9 @@
 import { FsFile, UserLogin } from './sharedType';
+import { crypto } from 'k6/experimental/webcrypto';
 
 export function randomUUIDv4(): string {
-  return crypto.randomUUID()
+  //This is an experimental module.
+  return crypto.randomUUID();
 }
 export function randomIntBetween(min: number, max: number): number {
   // Ensure correct inclusive behavior:
