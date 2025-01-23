@@ -69,8 +69,9 @@ func New(params output.Params) (output.Output, error) {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: config.InsecureSkipVerify},
 	}
 
+	// Ensure TLS certificate verification is enabled
 	osConfig.Client.Transport = &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig: &tls.Config{},
 	}
 	osConfig.Client.EnableRetryOnTimeout=true;
 	osConfig.Client.MaxRetries=10;
