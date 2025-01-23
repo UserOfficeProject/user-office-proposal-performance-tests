@@ -1,18 +1,28 @@
 mutation UpdateProposal(
   $proposalPk: Int!
+  $users: [Int!]
   $title: String
   $abstract: String
-  $users: [Int!]
+  $proposerId: Int
+  $created: DateTime
 ) {
   updateProposal(
     proposalPk: $proposalPk
+    users: $users
     title: $title
     abstract: $abstract
-    users: $users
+    proposerId: $proposerId
+    created: $created
   ) {
     callId
     statusId
     primaryKey
     proposalId
+    proposer {
+      id
+    }
+    users {
+      id
+    }
   }
 }
