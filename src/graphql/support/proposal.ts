@@ -2,7 +2,7 @@
 import {
   AsyncClientApi,
 } from '../../utils/sharedType';
-import { CreateProposalDocument, DeleteProposalDocument, GetProposalsDocument } from '../generated/graphql';
+import { CreateProposalDocument, DeleteProposalDocument, GetProposalsDocument, UpdateProposalDocument } from '../generated/graphql';
 import { executeGraphqlQuery } from '../../support/graphql';
 
 export class Proposal {
@@ -40,7 +40,7 @@ export class Proposal {
     return deletedProposal;
   }
 
-  public async getProposals(callId: number){
+  async getProposals(callId: number){
     const proposals = await executeGraphqlQuery(
       this.apiAsyncClient,
       GetProposalsDocument,
@@ -50,12 +50,34 @@ export class Proposal {
         },
       }
     ).then((data) => {
-      return data.proposals;
+      return data.proposals?.proposals;
     });
     if (!proposals) {
       throw new Error(`Fail to get proposals on call ${callId}`);
     }
     return proposals;
+  }
+
+  async updateProposal(proposalPk: number,title: string,abstract:string,users:number[],proposerId?: number,created?:Date){
+
+    const updatedProposal = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      UpdateProposalDocument,
+      {
+        proposalPk,
+        title,
+        abstract,
+        users,
+        proposerId,
+        created
+      }
+    ).then((data) => {
+      return data.updateProposal;
+    });
+    if (!updatedProposal) {
+      throw new Error('Fail to update proposal');
+    }
+    return updatedProposal;
   }
 
   async deleteCallProposals(callId: number) {

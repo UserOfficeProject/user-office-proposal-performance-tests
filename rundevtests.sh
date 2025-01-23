@@ -10,6 +10,7 @@ export GRAPHQL_URL=http://duo-reverse-proxy:80/graphql
 export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-240800000
 export TEST_SETUP_CALL_ID=54
+export K6_PS_ITERATIONS=2
 export INSTRUMENT_ID=6
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
@@ -36,14 +37,14 @@ echo "K6_TEST_ID: $K6_TEST_ID"
 rm -rf ./screenshots
 
 npm run build:k6-test&
-sleep 10
+sleep 15
 # No command provided, run both build and test by default
 if [ "$SETUP_TEST_USERS" == "true" ]; then
 
     npm run start:docker-test-setup&
     sleep 10
     while ! nc -z localhost 8100; do
-        sleep 5
+        sleep 10
         echo "Local test setup server is not ready "
     done
 fi
