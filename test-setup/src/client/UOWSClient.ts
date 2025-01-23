@@ -1,9 +1,9 @@
 import { UOWS } from '../../generated';
 
 const UOWSClient = new UOWS({
-  BASE: 'http://user-office-web-service:8080/users-service',
+  BASE: process.env.BASE_URL,
   HEADERS: {
-    Authorization: `Api-key 93391b02-ead7-4c7d-ba3e-687adf269906`,
+    Authorization: `Api-key ${process.env.API_KEY}`,
   },
 });
 export default UOWSClient;
