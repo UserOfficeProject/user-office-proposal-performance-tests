@@ -1,4 +1,5 @@
-import { check } from 'k6';
+import { check, fail } from 'k6';
+import exec from 'k6/execution';
 
 import {
   AsyncClientApi,
@@ -33,11 +34,12 @@ export class FAP {
       !check(response, {
         'Reviewers assigned to fap': (r) =>
           r.status === 200 &&
-          !!responseData.data.assignReviewersToFap.id &&
+          !!responseData?.data?.assignReviewersToFap.id &&
           true,
       })
     ) {
-      console.error('Failed to assign reviewers to fap', response.error);
+      fail(`SCENARIO: ${exec.scenario.name} Executing class FAP.assignReviewersToFap VU_ID: ${exec.vu.idInTest}
+            Error response assignReviewersToFap ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
     }
 
     return responseData?.data?.assignReviewersToFap as Fap;
@@ -65,12 +67,19 @@ export class FAP {
     const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
-    if (response.status !== 200) {
-      console.error(
-        `Error assigning FAP reviewer to proposals ${response.status} - ${response.body}`
-      );
-    }
+
     const responseData = response.json() as FapQueryResponse;
+    if (
+      !check(response, {
+        'Reviewers assigned to proposals': (r) =>
+          r.status === 200 &&
+          !!responseData?.data?.assignFapReviewersToProposals.id &&
+          true,
+      })
+    ) {
+      fail(`SCENARIO: ${exec.scenario.name} Executing class FAP.assignFapReviewersToProposals VU_ID: ${exec.vu.idInTest}
+            Error response assignFapReviewersToProposals ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+    }
     return responseData.data.assignFapReviewersToProposals;
   }
 
@@ -92,12 +101,19 @@ export class FAP {
     const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
-    if (response.status !== 200) {
-      console.error(
-        `Error removing fap reviewer from proposal: response status - ${response.status} and response body - ${response.body}`
-      );
-    }
+
     const responseData = response.json() as FapQueryResponse;
+    if (
+      !check(response, {
+        'Remove reviewers from proposals': (r) =>
+          r.status === 200 &&
+          !!responseData?.data?.removeMemberFromFapProposal.id &&
+          true,
+      })
+    ) {
+      fail(`SCENARIO: ${exec.scenario.name} Executing class FAP.removeMemberFromFapProposal VU_ID: ${exec.vu.idInTest}
+            Error response removeMemberFromFapProposal ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+    }
     return responseData.data.removeMemberFromFapProposal;
   }
 
@@ -119,12 +135,19 @@ export class FAP {
     const response = await this.apiAsyncClient(
       JSON.stringify({ query: mutation, variables })
     );
-    if (response.status !== 200) {
-      console.error(
-        `Error removing fap reviewer from fap: response status - ${response.status} and response body - ${response.body}`
-      );
-    }
+
     const responseData = response.json() as FapQueryResponse;
+    if (
+      !check(response, {
+        'Remove reviewers from fap': (r) =>
+          r.status === 200 &&
+          !!responseData?.data?.removeMemberFromFap.id &&
+          true,
+      })
+    ) {
+      fail(`SCENARIO: ${exec.scenario.name} Executing class FAP.removeMemberFromFap VU_ID: ${exec.vu.idInTest}
+            Error response removeMemberFromFap ${response.status} ${response?.body} ${response?.error} ${response?.error_code}`);
+    }
     return responseData.data.removeMemberFromFap;
   }
 }
