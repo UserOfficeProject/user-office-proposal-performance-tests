@@ -37,6 +37,12 @@ RUN apk add --no-cache \
 # Install build dependencies for k6
 COPY --from=k6-builder /tmp/k6 /bin/
 
+WORKDIR /app
+
+COPY ./ ./
+
+RUN npm run generate:uows
+
 USER root
 
 ENV CHROME_BIN=/usr/bin/chromium-browser
