@@ -8,6 +8,10 @@ RUN npm ci --loglevel error --no-fund
 
 COPY src ./src
 
+COPY openapi.yaml openapi.yaml
+
+RUN npm run generate:uows
+
 RUN npm run build
 
 FROM oraclelinux:8
