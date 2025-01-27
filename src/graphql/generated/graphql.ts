@@ -4229,7 +4229,7 @@ export type GetProposalsQueryVariables = Exact<{
 }>;
 
 
-export type GetProposalsQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, status?: { __typename?: 'ProposalStatus', name: string } | null }> } | null };
+export type GetProposalsQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, proposerId: number, abstract: string, status?: { __typename?: 'ProposalStatus', name: string } | null, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, users: Array<{ __typename?: 'BasicUserDetails', id: number }> }> } | null };
 
 export type QuestionaryQueryVariables = Exact<{
   questionaryId: Scalars['Int']['input'];
@@ -4259,13 +4259,15 @@ export type RemoveAssignedInstrumentFromCallMutation = { __typename?: 'Mutation'
 
 export type UpdateProposalMutationVariables = Exact<{
   proposalPk: Scalars['Int']['input'];
+  users?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   abstract?: InputMaybe<Scalars['String']['input']>;
-  users?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
+  proposerId?: InputMaybe<Scalars['Int']['input']>;
+  created?: InputMaybe<Scalars['DateTime']['input']>;
 }>;
 
 
-export type UpdateProposalMutation = { __typename?: 'Mutation', updateProposal: { __typename?: 'Proposal', callId: number, statusId: number, primaryKey: number, proposalId: string } };
+export type UpdateProposalMutation = { __typename?: 'Mutation', updateProposal: { __typename?: 'Proposal', callId: number, statusId: number, primaryKey: number, proposalId: string, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, users: Array<{ __typename?: 'BasicUserDetails', id: number }> } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -4571,8 +4573,16 @@ export const GetProposalsDocument = new TypedDocumentString(`
       proposalId
       title
       submitted
+      proposerId
+      abstract
       status {
         name
+      }
+      proposer {
+        id
+      }
+      users {
+        id
       }
     }
   }
@@ -4630,17 +4640,25 @@ export const RemoveAssignedInstrumentFromCallDocument = new TypedDocumentString(
 }
     `) as unknown as TypedDocumentString<RemoveAssignedInstrumentFromCallMutation, RemoveAssignedInstrumentFromCallMutationVariables>;
 export const UpdateProposalDocument = new TypedDocumentString(`
-    mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {
+    mutation UpdateProposal($proposalPk: Int!, $users: [Int!], $title: String, $abstract: String, $proposerId: Int, $created: DateTime) {
   updateProposal(
     proposalPk: $proposalPk
+    users: $users
     title: $title
     abstract: $abstract
-    users: $users
+    proposerId: $proposerId
+    created: $created
   ) {
     callId
     statusId
     primaryKey
     proposalId
+    proposer {
+      id
+    }
+    users {
+      id
+    }
   }
 }
     `) as unknown as TypedDocumentString<UpdateProposalMutation, UpdateProposalMutationVariables>;

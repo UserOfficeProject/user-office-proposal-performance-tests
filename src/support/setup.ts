@@ -18,11 +18,9 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let proposalHealthCheck = false;
   let users = null;
   let testCall: CallType | null = null;
-  const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
-  const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
-  const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
+
   const apiAsyncClient = getAsyncClientApi(
-    graphqlUrl,
+    environmentConfig.GRAPHQL_URL,
     environmentConfig.GRAPHQL_TOKEN
   );
   const call = new Call(apiAsyncClient);
@@ -32,7 +30,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
     if (!proposalHealthCheck) {
       // Check for successful proposal health check flags
-      const response = http.get(`${browserBaseUrl}/health`);
+      const response = http.get(`${environmentConfig.BROWSER_BASE_URL}/health`);
       check(response, {
         'Proposal health check successful': (r) => {
           const status = r.status === 200;
@@ -57,7 +55,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   }
   if (environmentConfig.SETUP_TEST_USERS === 'true') {
     const response = http.get(
-      `${testSetupBaseUrl}/users/${environmentConfig.SETUP_TOTAL_USERS}`
+      `${environmentConfig.TEST_SETUP_URL}/users/${environmentConfig.SETUP_TOTAL_USERS}`
     );
     check(response, {
       'User auth setup successful': (r) => {
@@ -74,6 +72,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       console.error(
         `Setup failed after ${environmentConfig.SETUP_RETRIES} attempts. Aborting test!`
       );
+      console.error('Failed to get test users');
       exec.test.abort();
     }
   }
@@ -98,11 +97,11 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
 
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
-      testCall = await call.getCall(+__ENV.TEST_SETUP_CALL_ID) as CallType;
+      testCall = (await call.getCall(+__ENV.TEST_SETUP_CALL_ID)) as CallType;
     } else {
-      testCall = await call.createTestCall(
+      testCall = (await call.createTestCall(
         (await template.createTemplate()).templateId
-      )  as CallType;
+      )) as CallType;
       if (testCall) {
         const instrument = new Instrument(apiAsyncClient);
         const callInstrument = await instrument.createInstrument(1);
@@ -111,19 +110,17 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
             testCall.id,
             callInstrument.id
           );
-          if(callWithInstruments){
-            callWithInstruments.instruments.map(instrument=>{
+          if (callWithInstruments) {
+            callWithInstruments.instruments.map((instrument) => {
               testCall!.instruments.push({
                 description: instrument.description,
                 id: instrument.id,
                 managerUserId: instrument.managerUserId,
                 name: instrument.name,
-                shortCode: instrument.shortCode
-              })
-            })
-      
+                shortCode: instrument.shortCode,
+              });
+            });
           }
-          
         } else {
           console.error('Failed to create instrument aborting test');
           exec.test.abort();
@@ -139,10 +136,10 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
 
   return {
     users,
-    browserBaseUrl,
-    graphqlUrl,
+    browserBaseUrl: environmentConfig.BROWSER_BASE_URL,
+    graphqlUrl: environmentConfig.GRAPHQL_URL,
     testCall,
-    testSetupBaseUrl,
+    testSetupBaseUrl: environmentConfig.TEST_SETUP_URL,
     isClusterTestRun: environmentConfig.IS_CLUSTER_TEST_RUN === 'true' || false,
     instrumentId: environmentConfig.INSTRUMENT_ID,
   } as SharedData;

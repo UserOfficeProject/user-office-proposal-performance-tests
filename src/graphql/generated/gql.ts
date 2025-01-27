@@ -38,12 +38,12 @@ const documents = {
     "query Proposal($primaryKey: Int!) {\n  proposal(primaryKey: $primaryKey) {\n    title\n    created\n    primaryKey\n    proposalId\n    proposerId\n  }\n}": types.ProposalDocument,
     "query ProposalById($proposalId: String!) {\n  proposalById(proposalId: $proposalId) {\n    proposalId\n    primaryKey\n    callId\n  }\n}": types.ProposalByIdDocument,
     "query ProposalStatus($proposalStatusId: Int!) {\n  proposalStatus(proposalStatusId: $proposalStatusId) {\n    id\n    isDefault\n    name\n    shortCode\n  }\n}": types.ProposalStatusDocument,
-    "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}": types.GetProposalsDocument,
+    "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      proposerId\n      abstract\n      status {\n        name\n      }\n      proposer {\n        id\n      }\n      users {\n        id\n      }\n    }\n  }\n}": types.GetProposalsDocument,
     "query Questionary($questionaryId: Int!) {\n  questionary(questionaryId: $questionaryId) {\n    questionaryId\n    templateId\n    steps {\n      topic {\n        templateId\n        title\n        id\n      }\n    }\n  }\n}": types.QuestionaryDocument,
     "query Settings {\n  settings {\n    description\n    id\n  }\n}": types.SettingsDocument,
     "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}": types.InstrumentDocument,
     "mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {\n  removeAssignedInstrumentFromCall(\n    removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput\n  ) {\n    id\n    shortCode\n    title\n    templateId\n    instruments {\n      id\n      managerUserId\n      name\n      shortCode\n    }\n  }\n}": types.RemoveAssignedInstrumentFromCallDocument,
-    "mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {\n  updateProposal(\n    proposalPk: $proposalPk\n    title: $title\n    abstract: $abstract\n    users: $users\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n  }\n}": types.UpdateProposalDocument,
+    "mutation UpdateProposal($proposalPk: Int!, $users: [Int!], $title: String, $abstract: String, $proposerId: Int, $created: DateTime) {\n  updateProposal(\n    proposalPk: $proposalPk\n    users: $users\n    title: $title\n    abstract: $abstract\n    proposerId: $proposerId\n    created: $created\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n    proposer {\n      id\n    }\n    users {\n      id\n    }\n  }\n}": types.UpdateProposalDocument,
 };
 
 /**
@@ -141,7 +141,7 @@ export function graphql(source: "query ProposalStatus($proposalStatusId: Int!) {
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      status {\n        name\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsDocument;
+export function graphql(source: "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      proposerId\n      abstract\n      status {\n        name\n      }\n      proposer {\n        id\n      }\n      users {\n        id\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -161,7 +161,7 @@ export function graphql(source: "mutation RemoveAssignedInstrumentFromCall($remo
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation UpdateProposal($proposalPk: Int!, $title: String, $abstract: String, $users: [Int!]) {\n  updateProposal(\n    proposalPk: $proposalPk\n    title: $title\n    abstract: $abstract\n    users: $users\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n  }\n}"): typeof import('./graphql').UpdateProposalDocument;
+export function graphql(source: "mutation UpdateProposal($proposalPk: Int!, $users: [Int!], $title: String, $abstract: String, $proposerId: Int, $created: DateTime) {\n  updateProposal(\n    proposalPk: $proposalPk\n    users: $users\n    title: $title\n    abstract: $abstract\n    proposerId: $proposerId\n    created: $created\n  ) {\n    callId\n    statusId\n    primaryKey\n    proposalId\n    proposer {\n      id\n    }\n    users {\n      id\n    }\n  }\n}"): typeof import('./graphql').UpdateProposalDocument;
 
 
 export function graphql(source: string) {

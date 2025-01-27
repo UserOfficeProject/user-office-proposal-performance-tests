@@ -5,8 +5,16 @@ query getProposals($filter: ProposalsFilter) {
       proposalId
       title
       submitted
+      proposerId
+      abstract
       status {
         name
+      }
+      proposer {
+        id
+      }
+      users {
+        id
       }
     }
   }

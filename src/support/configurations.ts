@@ -10,11 +10,17 @@ export type EnvironmentConfigurations = {
   SETUP_TEST_CALL: string;
   IS_CLUSTER_TEST_RUN: string;
   INSTRUMENT_ID: number;
+  BROWSER_BASE_URL: string;
+  GRAPHQL_URL: string;
+  TEST_SETUP_URL: string;
 };
 
 export function getEnvironmentConfigurations(): EnvironmentConfigurations {
 
     return {
+      BROWSER_BASE_URL: __ENV.BROWSER_BASE_URL || 'http://localhost:8081',
+      GRAPHQL_URL: __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql',
+      TEST_SETUP_URL: __ENV.TEST_SETUP_URL || 'http://localhost:8100',
       SETUP_RETRIES: +__ENV.SETUP_RETRIES || 5,
       SETUP_RETRY_INTERVAL: +__ENV.SETUP_RETRY_INTERVAL || 1000,
       SETUP_TOTAL_USERS: +__ENV.SETUP_TOTAL_USERS || 200,
@@ -25,7 +31,6 @@ export function getEnvironmentConfigurations(): EnvironmentConfigurations {
       IS_CLUSTER_TEST_RUN: __ENV.IS_CLUSTER_TEST_RUN || 'false',
       INSTRUMENT_ID: +__ENV.INSTRUMENT_ID || 37,
     };
-  
 }
 
 export async function getFixturesFile(fileName: string) {
@@ -35,7 +40,7 @@ export async function getFixturesFile(fileName: string) {
     const configDir = __ENV.PWD;
     if (configDir == null) {
       return await fsOpen(`/fixtures/${fileName}`);
-    } 
+    }
 
     return await fsOpen(`${configDir}/fixtures/${fileName}`);
   } catch (err) {
