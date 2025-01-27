@@ -4,8 +4,8 @@ query Call($callId: Int!) {
     title
     shortCode
     templateId
-  }
-  faps {
-    id
+    faps {
+      id
+    }
   }
 }
