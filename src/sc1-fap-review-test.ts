@@ -7,21 +7,21 @@ import fapReviewTest from './browser/fapReview';
 import { sc1TearDownFapReview } from './support/teardownFapReview';
 
 export const options: Options = {
-  // thresholds: {
-  //   browser_http_req_failed: [
-  //     {
-  //       threshold: 'rate <= 0.95',
-  //       abortOnFail: true,
-  //     },
-  //   ],
-  //   http_req_failed: [
-  //     {
-  //       threshold: 'rate <= 0.95',
-  //       abortOnFail: true,
-  //     },
-  //   ],
-  //   checks: ['rate>0.90'],
-  // },
+  thresholds: {
+    browser_http_req_failed: [
+      {
+        threshold: 'rate <= 0.95',
+        abortOnFail: true,
+      },
+    ],
+    http_req_failed: [
+      {
+        threshold: 'rate <= 0.95',
+        abortOnFail: true,
+      },
+    ],
+    checks: ['rate>0.90'],
+  },
   scenarios: {
     fapReview: {
       exec: 'fapReview',
@@ -45,6 +45,6 @@ export async function setup() {
 export function fapReview(sharedData: SharedData) {
   fapReviewTest(sharedData);
 }
-export async function teardown(sharedData: SharedData) {
-  return await sc1TearDownFapReview(sharedData, environmentConfig);
-}
+// export async function teardown(sharedData: SharedData) {
+//   return await sc1TearDownFapReview(sharedData, environmentConfig);
+// }

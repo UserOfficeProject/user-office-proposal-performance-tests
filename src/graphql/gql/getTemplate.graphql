@@ -1,0 +1,8 @@
+query Instrument($instrumentId: Int!) {
+  instrument(instrumentId: $instrumentId) {
+    id
+    name
+    managerUserId
+    shortCode
+  }
+}

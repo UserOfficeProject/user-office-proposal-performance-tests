@@ -12,6 +12,7 @@ export USER_STARTING_ID=-220800000
 export SETUP_TOTAL_REVIEWERS=7
 export REVIEWER_STARTING_IDS=-220800000
 export TEST_SETUP_CALL_ID=154
+export K6_PS_ITERATIONS=2
 export TEST_SETUP_FAP_ID=1
 export TEST_SET_UP_PROPOSAL_PKS=1
 export TEST_SET_UP_INSTRUMENT_ID=39
@@ -46,14 +47,14 @@ echo "K6_TEST_ID: $K6_TEST_ID"
 rm -rf ./screenshots
 
 npm run build:k6-test&
-sleep 10
+sleep 15
 # No command provided, run both build and test by default
 if [ "$SETUP_TEST_USERS" == "true" ]; then
 
     npm run start:docker-test-setup&
     sleep 10
     while ! nc -z localhost 8100; do
-        sleep 5
+        sleep 10
         echo "Local test setup server is not ready "
     done
     echo "Clean up any previous user data"

@@ -1,0 +1,5 @@
+query BasicUserDetailsByEmail($email: String!) {
+  basicUserDetailsByEmail(email: $email) {
+    id
+  }
+}

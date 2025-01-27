@@ -1,163 +1,119 @@
-import { check } from 'k6';
-
+import { AsyncClientApi, GenericQueryResponse } from '../../utils/sharedType';
 import {
-  AsyncClientApi,
-  GenericQueryResponse,
-  ProposalQueryResponse,
-  Proposal as ProposalType,
-  ProposalsQueryResponse,
-} from '../../utils/sharedType';
+  CreateProposalDocument,
+  DeleteProposalDocument,
+  GetProposalsDocument,
+  UpdateProposalDocument,
+} from '../generated/graphql';
+import { executeGraphqlQuery } from '../../support/graphql';
 
 export class Proposal {
   constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  async createProposal(callId: number): Promise<ProposalType> {
-    const mutation = `
-    mutation CreateProposal($callId: Int!) {
-      createProposal(callId: $callId) {
-        primaryKey
-        proposalId
-        callId
-        status {
-          id
-          name
-          shortCode
-        }
-        questionary {
-          steps {
-            topic {
-              id
-              templateId
-            }
-          }
-          questionaryId
-          templateId
-        }
-      }
-    }`;
-
-    const variables = {
-      callId,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-
-    return (response.json() as GenericQueryResponse)?.data
-      ?.createProposal as ProposalType;
-  }
-
-  async deleteProposal(proposalPk: number): Promise<number> {
-    const query = `
-          mutation DeleteProposal($proposalPk: Int!) {
-                deleteProposal(proposalPk: $proposalPk) {
-                    primaryKey
-                    proposalId
-                    callId
-                    status {
-                      id
-                      name
-                      shortCode
-                    }
-                    questionary {
-                      steps {
-                        topic {
-                          id
-                          templateId
-                        }
-                      }
-                      questionaryId
-                      templateId
-                    }
-                  }
-                }
-          }`;
-
-    const variables = {
-      proposalPk: proposalPk,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query, variables })
-    );
-    const responseData = response.json() as ProposalQueryResponse;
-
-    if (
-      !check(response, {
-        'Delete proposal': (r) =>
-          r.status === 200 &&
-          +responseData.data.deleteProposal.primaryKey === proposalPk,
-      })
-    ) {
-      console.error('Proposal was not deleted', response.error);
-    }
-
-    return proposalPk;
-  }
-
-  async getProposals(callId: number): Promise<[ProposalType]> {
-    const query = `
-      query Proposals($filter: ProposalsFilter) {
-        proposals(filter: $filter) {
-          proposals {
-            primaryKey
-            proposalId
-          }
-        }
-      }`;
-
-    const variables = {
-      filter: {
+  async createProposal(callId: number) {
+    const createdProposal = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      CreateProposalDocument,
+      {
         callId,
-      },
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query, variables })
-    );
-    const responseData = response.json() as ProposalsQueryResponse;
-
-    if (
-      response.status === 200 &&
-      responseData.data.proposals.proposals.length < 1
-    ) {
-      console.warn('No proposals where found', response.error);
+      }
+    ).then((data) => {
+      return data.createProposal;
+    });
+    if (!createdProposal) {
+      throw new Error('Fail to created proposal');
     }
-
-    return responseData.data.proposals.proposals;
+    return createdProposal;
   }
 
-  async deleteCallProposals(callId: number): Promise<[ProposalType]> {
-    const proposals = await this.getProposals(callId);
+  async deleteProposal(proposalPk: number) {
+    const deletedProposal = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      DeleteProposalDocument,
+      {
+        proposalPk: proposalPk,
+      }
+    ).then((data) => {
+      return data.deleteProposal;
+    });
+    if (!deletedProposal) {
+      throw new Error('Fail to delete proposal');
+    }
+    return deletedProposal;
+  }
 
-    const mutation = `
-    mutation DeleteProposal($proposalPk: Int!) {
-          deleteProposal(proposalPk: $proposalPk) {
-              proposalId
-              primaryKey
-          }
-    }`;
+  async getProposals(callId: number) {
+    const proposals = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      GetProposalsDocument,
+      {
+        filter: {
+          callId,
+        },
+      }
+    ).then((data) => {
+      return data.proposals?.proposals;
+    });
+    if (!proposals) {
+      throw new Error(`Fail to get proposals on call ${callId}`);
+    }
+    return proposals;
+  }
 
-    const proposalPromises = proposals.map((proposal: ProposalType) =>
-      this.apiAsyncClient(
-        JSON.stringify({
-          query: mutation,
-          variables: { proposalPk: proposal.primaryKey },
-        })
-      ).then((res) => {
-        if (res.status !== 200) {
-          console.error(
-            `Error deleting proposal ${proposal.primaryKey}: ${res.status} - ${res.body}`
-          );
-        }
+  async updateProposal(
+    proposalPk: number,
+    title: string,
+    abstract: string,
+    users: number[],
+    proposerId?: number,
+    created?: Date
+  ) {
+    const updatedProposal = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      UpdateProposalDocument,
+      {
+        proposalPk,
+        title,
+        abstract,
+        users,
+        proposerId,
+        created,
+      }
+    ).then((data) => {
+      return data.updateProposal;
+    });
+    if (!updatedProposal) {
+      throw new Error('Fail to update proposal');
+    }
+    return updatedProposal;
+  }
+
+  async deleteCallProposals(callId: number) {
+    const proposals = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      GetProposalsDocument,
+      {
+        filter: {
+          callId,
+        },
+      }
+    ).then((data) => {
+      return data.proposals?.proposals;
+    });
+    if (!proposals) {
+      throw new Error(`Fail to get proposals on call ${callId}`);
+    }
+    const proposalPromises = proposals.map((proposal) =>
+      executeGraphqlQuery(this.apiAsyncClient, DeleteProposalDocument, {
+        proposalPk: proposal.primaryKey,
       })
     );
+
     Promise.allSettled(proposalPromises).then((results) => {
       if (results.filter((result) => result.status === 'rejected').length > 0) {
-        check(proposalPromises, {
-          'Delete test proposals': (r) => proposals.length === r.length,
-        });
+        if (proposals.length === proposalPromises.length) {
+          throw new Error(`Fail to delete proposals on call ${callId}`);
+        }
       }
     });
 

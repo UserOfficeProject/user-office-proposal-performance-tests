@@ -2,3 +2,4 @@ node_modules
 test
 extensions
 test-setup
+src/graphql/generated

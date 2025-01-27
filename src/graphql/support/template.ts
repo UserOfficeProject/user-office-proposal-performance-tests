@@ -1,75 +1,48 @@
-import { check, fail } from 'k6';
 
 import { getInitData } from '../../support/initData';
+import { AsyncClientApi } from '../../utils/sharedType';
+import { executeGraphqlQuery } from '../../support/graphql';
 import {
-  Template as TemplateType,
-  TemplateQueryResponse,
-  AsyncClientApi,
-} from '../../utils/sharedType';
+  CreateTemplateDocument,
+  DeleteTemplateDocument,
+} from '../generated/graphql';
 
 export class Template {
   private initData = getInitData();
   constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  async createTemplate(): Promise<TemplateType> {
-    const mutation = `
-    mutation CreateTemplate($groupId: TemplateGroupId!, $name: String!, $description: String) {
-        createTemplate(groupId: $groupId, name: $name, description: $description) {
-          templateId
-          name
-          description
-        }
-      }`;
+  async createTemplate() {
+    const createdTemplate = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      CreateTemplateDocument,
 
-    const variables = {
-      ...this.initData?.template,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    const responseData = response.json() as TemplateQueryResponse;
-    const checkValue = check(response, {
-      'Template for call test created': (r) =>
-        r.status === 200 && !!responseData.data?.createTemplate?.templateId,
-    }).valueOf();
-
-    if (!checkValue) {
-      fail(
-        'Performance test template could not be created aborting test, Executing class Template.createTemplate'
-      );
+      {
+        groupId: this.initData?.template.groupId,
+        name: this.initData?.template.name,
+        description: this.initData?.template.description,
+      }
+    ).then((data) => {
+      return data.createTemplate;
+    });
+    if (!createdTemplate) {
+      throw new Error('Fail to create template');
     }
-
-    return responseData.data?.createTemplate as TemplateType;
+    return createdTemplate;
   }
 
-  async deleteTemplate(deleteTemplateId: number): Promise<number> {
-    const mutation = `
-            mutation DeleteTemplate($templateId: Int!) {
-                deleteTemplate(templateId: $templateId) {
-                templateId
-                name
-                groupId
-                }
-            }`;
-
-    const variables = {
-      templateId: deleteTemplateId,
-    };
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    const responseData = response.json() as TemplateQueryResponse;
-
-    if (
-      !check(response, {
-        'Template deleted': (r) =>
-          r.status === 200 && !!responseData.data.deleteTemplate.templateId,
-      })
-    ) {
-      console.error('Fail to delete template', response.error);
+  async deleteTemplate(deleteTemplateId: number) {
+    const deletedTemplate = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      DeleteTemplateDocument,
+      {
+        templateId: deleteTemplateId,
+      }
+    ).then((data) => {
+      return data.deleteTemplate;
+    });
+    if (!deletedTemplate) {
+      throw new Error('Fail to deleted template');
     }
-
-    return deleteTemplateId;
+    return deletedTemplate;
   }
 }

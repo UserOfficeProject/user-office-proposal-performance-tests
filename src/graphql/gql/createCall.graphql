@@ -1,0 +1,15 @@
+mutation CreateCall($createCallInput: CreateCallInput!) {
+  createCall(createCallInput: $createCallInput) {
+    id
+    shortCode
+    title
+    templateId
+    instruments {
+      id
+      description
+      managerUserId
+      name
+      shortCode
+    }
+  }
+}

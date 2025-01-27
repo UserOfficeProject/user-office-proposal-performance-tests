@@ -1,14 +1,10 @@
 import { FsFile, UserLogin } from './sharedType';
+import { crypto } from 'k6/experimental/webcrypto';
 
 export function randomUUIDv4(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0; // Convert to integer
-    const v = c === 'x' ? r : (r & 0x3) | 0x8; // Use ternary operator for clarity
-
-    return v.toString(16);
-  });
+  //This is an experimental module.
+  return crypto.randomUUID();
 }
-
 export function randomIntBetween(min: number, max: number): number {
   // Ensure correct inclusive behavior:
   return Math.floor(Math.random() * (max - min + 1)) + min;

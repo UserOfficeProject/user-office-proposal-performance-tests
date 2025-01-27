@@ -1,0 +1,11 @@
+query Call($callId: Int!) {
+  call(callId: $callId) {
+    id
+    title
+    shortCode
+    templateId
+  }
+  faps {
+    id
+  }
+}
