@@ -1,4 +1,3 @@
-
 import { getInitData } from '../../support/initData';
 import { AsyncClientApi } from '../../utils/sharedType';
 import { executeGraphqlQuery } from '../../support/graphql';
@@ -63,14 +62,16 @@ export class Call {
     return call;
   }
 
-  async getUserCalls(userToken: string, callsFilter: CallsFilter) {
+  async getUserCalls(token: string, callsFilter: CallsFilter) {
     const calls = await executeGraphqlQuery(
       this.apiAsyncClient,
       GetCallsDocument,
       {
         filter: callsFilter,
       },
-      userToken
+      {
+        token,
+      }
     ).then((data) => {
       return data.calls;
     });
@@ -99,11 +100,10 @@ export class Call {
     return assignInstrumentsToCall;
   }
 
-  async removeAssignedInstrumentFromCall(
-    callId: number,
-    instrumentId: number
-  ){
-    const removeAssignedInstrumentFromCall= await executeGraphqlQuery(this.apiAsyncClient,RemoveAssignedInstrumentFromCallDocument,
+  async removeAssignedInstrumentFromCall(callId: number, instrumentId: number) {
+    const removeAssignedInstrumentFromCall = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      RemoveAssignedInstrumentFromCallDocument,
       {
         removeAssignedInstrumentFromCallInput: {
           callId,

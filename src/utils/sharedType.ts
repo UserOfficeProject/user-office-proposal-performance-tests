@@ -1,19 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { File as BrowserFile } from 'k6/browser';
 import { File as ExperimentalFsFile } from 'k6/experimental/fs';
-import { RefinedResponse } from 'k6/http';
-import { CreateCallInput, Instrument, TemplateGroupId } from '../graphql/generated/graphql';
+import { RefinedParams, RefinedResponse, RequestBody } from 'k6/http';
+import {
+  CreateCallInput,
+  Instrument,
+  TemplateGroupId,
+} from '../graphql/generated/graphql';
 
 export class FsFile extends ExperimentalFsFile {}
-
 
 export type Call = {
   id: number;
   shortCode: string;
   title: string;
   templateId: number;
-  instruments: [Pick<Instrument, "id" | "managerUserId"| "name"| "shortCode"| "description">];
-};      
+  instruments: [
+    Pick<
+      Instrument,
+      'id' | 'managerUserId' | 'name' | 'shortCode' | 'description'
+    >,
+  ];
+};
 export type TemplateStep = {
   topic: {
     id: number;
@@ -61,9 +69,14 @@ export type ClientResponse = RefinedResponse<any>;
 export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 
 export type ClientApi = (body: string, userToken?: string) => ClientResponse;
+export type AsyncRequestOptions = {
+  params?: RefinedParams<any> | null, 
+  token?: string
+  };
 export type AsyncClientApi = (
-  body: string,
-  userToken?: string
+  method: string,
+  body: RequestBody | null,
+  options?: AsyncRequestOptions | undefined
 ) => AsyncClientResponse;
 export type CallQueryResponse = {
   data: { [name: string]: Call };
@@ -89,7 +102,7 @@ export type GenericQueryResponse = {
 };
 
 export type InitData = {
-  call:CreateCallInput;
+  call: CreateCallInput;
   proposal: {
     id: number;
     title: string;
@@ -105,7 +118,10 @@ export type InitData = {
     };
     defaultDroppableGroup: string;
   };
-  instrument: Pick<Instrument,"name"| "shortCode"| "shortCode"|"description">;
+  instrument: Pick<
+    Instrument,
+    'name' | 'shortCode' | 'shortCode' | 'description'
+  >;
 };
 
 export type UserLogin = { userId: number; sessionId: string; email: string };
@@ -123,3 +139,7 @@ export interface DatabaseClient {
 export type InputFileType = BrowserFile & {
   mimetype: string;
 };
+
+export interface HttpURL {
+  __brand: 'http-url';
+}

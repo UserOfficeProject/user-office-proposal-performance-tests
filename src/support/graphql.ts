@@ -1,6 +1,11 @@
-import http from 'k6/http';
+import http, { RequestBody } from 'k6/http';
 
-import { AsyncClientApi, ClientApi, GenericQueryResponse } from '../utils/sharedType';
+import {
+  AsyncClientApi,
+  ClientApi,
+  GenericQueryResponse,
+  AsyncRequestOptions,
+} from '../utils/sharedType';
 import { TypedDocumentString } from '../graphql/generated/graphql';
 
 export function generateBearerToken(token: string): string {
@@ -60,32 +65,45 @@ export function getAsyncClientApi(
   bearerToken?: string
 ): AsyncClientApi {
   if (bearerToken) {
-    return function (body: string, userToken?: string) {
-      return http.asyncRequest('POST', graphqlUrl, body, {
+    return function (
+      method: string,
+      body: RequestBody | null,
+      options: AsyncRequestOptions | undefined
+    ) {
+      const optionsArgs = options ? { ...options?.params } : undefined;
+      return http.asyncRequest(method, graphqlUrl, body, {
         headers: {
-          Authorization: userToken
-            ? generateBearerToken(userToken)
-            : generateBearerToken(bearerToken),
+          Authorization:
+            options && options.token
+              ? generateBearerToken(options.token)
+              : generateBearerToken(bearerToken),
           'Content-Type': 'application/json',
         },
+        ...optionsArgs,
       });
     };
   }
 
-  return function (body: string, userToken?: string) {
-    if (userToken) {
-      return http.asyncRequest('POST', graphqlUrl, body, {
+  return function (
+    method: string,
+    body: RequestBody | null,
+    options: AsyncRequestOptions | undefined
+  ) {
+    if (options && options.token) {
+      return http.asyncRequest(method, graphqlUrl, body, {
         headers: {
-          Authorization: generateBearerToken(userToken),
+          Authorization: generateBearerToken(options.token),
           'Content-Type': 'application/json',
         },
+        ...options.params,
       });
     }
-
-    return http.asyncRequest('POST', graphqlUrl, body, {
+    const optionsArgs = options ? { ...options?.params } : undefined;
+    return http.asyncRequest(method, graphqlUrl, body, {
       headers: {
         'Content-Type': 'application/json',
       },
+      ...optionsArgs,
     });
   };
 }
@@ -94,30 +112,38 @@ export async function executeGraphqlQuery<TResult, TVariables>(
   client: AsyncClientApi,
   query: TypedDocumentString<TResult, TVariables>,
   variables: TVariables,
-  userToken?: string
+  options?: AsyncRequestOptions
 ) {
-  if (!userToken) {
+  const optionsArgs = options ? { ...options } : undefined;
+  if (!optionsArgs?.token) {
     const response = await client(
+      'POST',
       JSON.stringify({
         query,
         variables,
-      })
+      }),
+      optionsArgs
     );
     if (response.error || response.status !== 200) {
-      throw new Error(`Error executing graphql request  status: ${response.status} ${response.error}`);
+      throw new Error(
+        `Error executing graphql request  status: ${response.status} ${response.error}`
+      );
     }
-    const result= response.json() as GenericQueryResponse 
+    const result = response.json() as GenericQueryResponse;
     return result.data as TResult;
   }
   const response = await client(
+    'POST',
     JSON.stringify({
       query,
       variables,
     }),
-    userToken
+    optionsArgs 
   );
   if (response.error || response.status !== 200) {
-    throw new Error(`Error executing graphql request  status: ${response.status} ${response.error}`);
+    throw new Error(
+      `Error executing graphql request  status: ${response.status} ${response.error}`
+    );
   }
   return response.json() as TResult;
 }
