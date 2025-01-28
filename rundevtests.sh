@@ -1,7 +1,10 @@
 #!/bin/sh
-# runtests.sh
+# rundevtests.sh
 # set some env we require
-export K6_TEST_FILE=sc1-proposal-submission-test
+try() {
+    "$@" || return 1
+}
+export K6_TEST_FILE=api-v1-pdf-user-download-test
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
@@ -17,10 +20,26 @@ export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_PASSWORD="password"
 export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
-
+export TEST_SETUP_DOTENV_PATH="../.env"
 export K6_OPENSEARCH_CREATE_INDEX="true"
 
+try
+    while IFS='=' read -r key value || [ -n "$key" ]; do
+        if [ -n "$value" ]; then
+            if [ "$key" = "TEST_SETUP_SERVER_PORT" ]; then
+                export "$key"=$(echo "$value" | sed "s/[\"']//g")
+            else
+                export "$key"="$(echo "$value" | sed "s/[\"']//g")"
+            fi
+            
+        fi
+    done <./.env
 
+if [ $? -gt 0 ]; then
+    echo "Failed to load environment variables from .env"
+    echo "Please create .env file in local path"
+    exit 1
+fi
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -32,18 +51,18 @@ for arg in "$@"; do
     fi
 done
 export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
-echo "K6_TEST_ID: $K6_TEST_ID" 
+echo "K6_TEST_ID: $K6_TEST_ID"
 # remove shreenshots
 rm -rf ./screenshots
 
 npm run build:k6-test&
 sleep 15
 # No command provided, run both build and test by default
-if [ "$SETUP_TEST_USERS" == "true" ]; then
+if [ "$SETUP_TEST_USERS" = "true" ]; then
 
     npm run start:docker-test-setup&
     sleep 10
-    while ! nc -z localhost 8100; do
+    while ! nc -z localhost $TEST_SETUP_SERVER_PORT; do
         sleep 10
         echo "Local test setup server is not ready "
     done

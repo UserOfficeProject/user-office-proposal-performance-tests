@@ -10,8 +10,7 @@
     "lint": "tsc --noEmit && eslint",
     "start": "node ./build/index.js",
     "start:docker": "npm install && ts-node-dev --respawn -T ./src/index.ts",
-    "build": "eslint && rm -rf ./build && node build.mjs",
-    "prepare": "husky"
+    "build": "eslint && rm -rf ./build && node build.mjs"
   },
   "dependencies": {
     "@user-office-software/duo-logger": "^2.2.1",

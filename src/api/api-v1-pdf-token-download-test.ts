@@ -5,7 +5,7 @@ import exec from 'k6/execution';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { generateBearerToken, getAsyncClientApi } from '../support/graphql';
 import { Proposal } from '../graphql/support/proposal';
-import { Counter } from 'k6/metrics';
+import { Counter, Trend } from 'k6/metrics';
 
 const environmentConfig = getEnvironmentConfigurations();
 const testVus=+__ENV.K6_PS_VUS || 50;
@@ -18,6 +18,8 @@ const downloadedProposalsById = new Counter(
   'downloaded_proposals_by_id',
   false
 );
+const downloadPkTrend = new Trend('download_proposal_pk_trend');
+const downloadIdTrend = new Trend('download_proposal_id_trend');
 const apiAsyncClient = getAsyncClientApi(
   environmentConfig.GRAPHQL_URL,
   environmentConfig.GRAPHQL_TOKEN
@@ -97,7 +99,7 @@ export default async function (sharedData: TestData) {
       return true;
     },
   });
-
+  downloadPkTrend.add(responsePk.timings.connecting, { download_proposal_pk_trend: "download_proposal_pk_trend" });
   //"User download proposal by proposal id"
   const responseId = await http.asyncRequest(
     'GET',
@@ -105,8 +107,12 @@ export default async function (sharedData: TestData) {
     null,
     {
       headers,
+      tags: {
+        tag_name: "token-pdf-proposal-download-id",
+      },
     }
   );
+  downloadIdTrend.add(responsePk.timings.connecting, { download_proposal_Id_trend: "download_proposal_id_trend" });
   check(responseId, {
     'Proposal pdf downloaded by proposal id': (res) => {
       if (res.headers['Content-Type'] !== 'application/pdf') {
