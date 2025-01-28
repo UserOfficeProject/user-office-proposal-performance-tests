@@ -11,8 +11,7 @@
     "start": "node ./build/index.js",
     "build": "eslint && rm -rf ./build && node build.mjs",
     "generate:uows": "openapi --output ./generated --name UOWS --input ./openapi.yaml",
-    "start:docker": "npm install && ts-node-dev --respawn -T ./src/index.ts",
-    "prepare": "husky"
+    "start:docker": "npm install && ts-node-dev --respawn -T ./src/index.ts"
   },
   "dependencies": {
     "@user-office-software/duo-logger": "^2.2.1",
