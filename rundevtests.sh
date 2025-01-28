@@ -4,7 +4,7 @@
 try() {
     "$@" || return 1
 }
-export K6_TEST_FILE=sc1-proposal-submission-test
+export K6_TEST_FILE=api-v1-pdf-user-download-test
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
@@ -24,7 +24,7 @@ export TEST_SETUP_DOTENV_PATH="../.env"
 export K6_OPENSEARCH_CREATE_INDEX="true"
 
 try
-    while IFS='=' read -r key value; do
+    while IFS='=' read -r key value || [ -n "$key" ]; do
         if [ -n "$value" ]; then
             if [ "$key" = "TEST_SETUP_SERVER_PORT" ]; then
                 export "$key"=$(echo "$value" | sed "s/[\"']//g")
