@@ -1,4 +1,4 @@
-query Call($callId: Int!) {
+query getCall($callId: Int!) {
   call(callId: $callId) {
     id
     title

@@ -1,0 +1,3 @@
+mutation AssignProposalsToInstruments($proposalPks: [Int!]!, $instrumentIds: [Int!]!) {
+  assignProposalsToInstruments(proposalPks: $proposalPks, instrumentIds: $instrumentIds)
+}

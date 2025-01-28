@@ -1,8 +1,11 @@
 import { AsyncClientApi, GenericQueryResponse } from '../../utils/sharedType';
 import {
+  AssignProposalsToInstrumentsDocument,
+  ChangeProposalsStatusDocument,
   CreateProposalDocument,
   DeleteProposalDocument,
   GetProposalsDocument,
+  RemoveProposalsFromInstrumentDocument,
   UpdateProposalDocument,
 } from '../generated/graphql';
 import { executeGraphqlQuery } from '../../support/graphql';
@@ -123,63 +126,56 @@ export class Proposal {
     proposalPks: number[],
     statusId: number
   ): Promise<boolean> {
-    const mutation = `mutation ChangeProposalsStatus($changeProposalsStatusInput: ChangeProposalsStatusInput!) {
-  changeProposalsStatus(changeProposalsStatusInput: $changeProposalsStatusInput)
-}`;
-    const variables = {
-      changeProposalsStatusInput: {
-        proposalPks,
-        statusId,
-      },
-    };
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    if (response.status !== 200) {
-      console.error(
-        `Error changing status of proposal ${response.status} - ${response.body}`
-      );
+    const changeProposalsStatus = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      ChangeProposalsStatusDocument,
+      {
+        changeProposalsStatusInput: {
+          proposalPks,
+          statusId,
+        },
+      }
+    ).then((data) => {
+      return data.changeProposalsStatus;
+    });
+    if(!changeProposalsStatus){
+      throw new Error('Failed to change status of proposals');
     }
-    const responseData = response.json() as GenericQueryResponse;
-    return responseData.data.changeProposalsStatus;
+    return changeProposalsStatus;
   }
   async assignProposalsToInstruments(
     proposalPks: number[],
     instrumentIds: number[]
   ): Promise<boolean> {
-    const mutation = `mutation AssignProposalsToInstruments($instrumentIds: [Int!]!, $proposalPks: [Int!]!) {
-  assignProposalsToInstruments(instrumentIds: $instrumentIds, proposalPks: $proposalPks)
-}`;
-    const variables = {
-      proposalPks: proposalPks,
-      instrumentIds: instrumentIds,
+    const assignProposalsToInstruments = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      AssignProposalsToInstrumentsDocument,
+      {
+        proposalPks: proposalPks,
+        instrumentIds: instrumentIds,
+      }
+    ).then((data) => {
+      return data.assignProposalsToInstruments;
+    });
+    if(!assignProposalsToInstruments){
+      throw new Error('Failed to assign instruments to proposals');
     };
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    if (response.status !== 200) {
-      console.error(
-        `Error assigning proposal to instrument ${response.status} - ${response.body}`
-      );
-    }
-    const responseData = response.json() as GenericQueryResponse;
-    return responseData.data.assignProposalsToInstruments;
+    return assignProposalsToInstruments;
   }
 
   async removeProposalsFromInstrument(proposalPks: number[]) {
-    const mutation = `mutation RemoveProposalsFromInstrument($proposalPks: [Int!]!) {
-          removeProposalsFromInstrument(proposalPks: $proposalPks)
-      }`;
-    const variables = {
-      proposalPks: proposalPks,
-    };
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    if (response.status !== 200) {
-      console.error(
-        `Error removing instrument from proposal: response status - ${response.status} and response body - ${response.body}`
-      );
+    const removeProposalsFromInstrument = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      RemoveProposalsFromInstrumentDocument,
+      {
+        proposalPks: proposalPks,
+      }
+    ).then((data) => {
+      return data.removeProposalsFromInstrument;
+    });
+    if(!removeProposalsFromInstrument){
+      throw new Error('Failed to remove proposals from instrument');
     }
+    return removeProposalsFromInstrument;
   }
 }

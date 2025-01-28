@@ -7,7 +7,5 @@ mutation AssignReviewersToFap(
     fapId: $fapId
   ) {
     id
-    code
-    proposalCurrentCount
   }
 }

@@ -1,12 +1,12 @@
-mutation RemoveMemberFromFapProposal(
+mutation RemoveMemberFromFap(
   $memberId: Int!
   $fapId: Int!
-  $proposalPk: Int!
+  $roleId: UserRole!
 ) {
-  removeMemberFromFapProposal(
+  removeMemberFromFap(
     memberId: $memberId
     fapId: $fapId
-    proposalPk: $proposalPk
+    roleId: $roleId
   ) {
     id
   }
