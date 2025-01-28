@@ -10,8 +10,7 @@
     "lint": "tsc --noEmit && eslint",
     "start": "node ./build/index.js",
     "start:docker": "npm install && ts-node-dev --respawn -T ./src/index.ts",
-    "build": "eslint && rm -rf ./build && node build.mjs",
-    "prepare": "husky"
+    "build": "eslint && rm -rf ./build && node build.mjs"
   },
   "dependencies": {
     "@user-office-software/duo-logger": "^2.2.1",
@@ -36,7 +35,9 @@
     "prettier": "^3.2.5",
     "typescript": "^5.5.4",
     "ts-node-dev": "^2.0.0",
-    "typescript-eslint": "^8.3.0"
+    "typescript-eslint": "^8.3.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
   },
   "engines": {
     "npm": ">=10.2.5",
