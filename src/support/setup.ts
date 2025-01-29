@@ -87,7 +87,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         return status;
       },
     });
-    check(users,{'Is Users variable an array ?':(u) => {
+    check(users,{'Users variable is an array':(u) => {
       return Array.isArray(u);
     }})
 
@@ -121,6 +121,14 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
       testCall = (await call.getCall(+__ENV.TEST_SETUP_CALL_ID)) as CallType;
+      check(testCall,{'This test call short code is ISIS Direct 2022_2': (c) => {
+        console.error(`test call short code is ${c.shortCode}`);
+        return c.shortCode === 'ISIS Direct 2022_2';
+      }});
+      check(testCall,{'FAP for this test call is Zoom': (c) => {
+        console.error(`Fap for this call is ${c.faps[0].id}`);
+        return c.faps[0].id === 11;
+      }});
     } else {
       testCall = (await call.createTestCall(
         (await template.createTemplate()).templateId
