@@ -1,4 +1,4 @@
-import { AsyncClientApi, GenericQueryResponse } from '../../utils/sharedType';
+import { AsyncClientApi } from '../../utils/sharedType';
 import {
   AssignProposalsToInstrumentsDocument,
   ChangeProposalsStatusDocument,
