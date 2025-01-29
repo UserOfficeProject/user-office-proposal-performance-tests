@@ -1,10 +1,10 @@
 import { check } from 'k6';
 import http from 'k6/http';
-import { getEnvironmentConfigurations } from '../support/configurations';
+import { getEnvironmentConfigurations } from '../../support/configurations';
 import exec from 'k6/execution';
-import { randomIntBetween } from '../utils/helperFunctions';
-import { generateBearerToken, getAsyncClientApi } from '../support/graphql';
-import { Proposal } from '../graphql/support/proposal';
+import { randomIntBetween } from '../../utils/helperFunctions';
+import { generateBearerToken, getAsyncClientApi } from '../../support/graphql';
+import { Proposal } from '../../graphql/support/proposal';
 import { Counter, Trend } from 'k6/metrics';
 
 const environmentConfig = getEnvironmentConfigurations();
