@@ -9,7 +9,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ['src/**/*.ts'] },
-  { ignores: ['**/*.js', '!**/eslint.config.js','src/graphql/generated'] },
+  { ignores: ['**/*.js', '!**/eslint.config.js', 'src/graphql/generated'] },
   { languageOptions: { globals: globals.es2016 } },
   {
     plugins: {
@@ -36,5 +36,5 @@ export default [
       'import/no-dynamic-require': 'warn',
     },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 ];
