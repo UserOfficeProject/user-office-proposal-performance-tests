@@ -87,6 +87,9 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         return status;
       },
     });
+    check(users,{'Is Users variable an array ?':(u) => {
+      return Array.isArray(u);
+    }})
 
     if (!users) {
       console.error(
@@ -177,6 +180,10 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
           },
         }
       );
+      check(res,{'Are users assigned role ?':(r) => {
+        const status = r.status === 200;
+        return status;
+      }})
       console.log(`response status ${res.status}`);
       if (testCall?.faps) {
         testFapId = testCall?.faps[0].id;
