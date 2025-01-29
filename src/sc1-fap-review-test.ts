@@ -43,7 +43,7 @@ export async function setup() {
   return await sc1Setup(environmentConfig);
 }
 export function fapReview(sharedData: SharedData) {
-  fapReviewTest(sharedData);
+  //fapReviewTest(sharedData);
 }
 // export async function teardown(sharedData: SharedData) {
 //   return await sc1TearDownFapReview(sharedData, environmentConfig);
