@@ -10,6 +10,7 @@ export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
 export BROWSER_BASE_URL=http://duo-reverse-proxy:80
 export GRAPHQL_URL=http://duo-reverse-proxy:80/graphql
+export PROPOSAL_LOOKUP_URL=http://localhost:4006/ProposalWebService/ProposalLookupWebService?wsdl
 export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-240800000
 export TEST_SETUP_CALL_ID=54
