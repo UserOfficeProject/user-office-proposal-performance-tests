@@ -4231,6 +4231,13 @@ export type GetProposalsQueryVariables = Exact<{
 
 export type GetProposalsQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, proposerId: number, abstract: string, status?: { __typename?: 'ProposalStatus', name: string } | null, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, users: Array<{ __typename?: 'BasicUserDetails', id: number }> }> } | null };
 
+export type GetProposalsWithCallInfoQueryVariables = Exact<{
+  filter?: InputMaybe<ProposalsFilter>;
+}>;
+
+
+export type GetProposalsWithCallInfoQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, call?: { __typename?: 'Call', shortCode: string, title?: string | null, id: number } | null }> } | null };
+
 export type QuestionaryQueryVariables = Exact<{
   questionaryId: Scalars['Int']['input'];
 }>;
@@ -4588,6 +4595,22 @@ export const GetProposalsDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetProposalsQuery, GetProposalsQueryVariables>;
+export const GetProposalsWithCallInfoDocument = new TypedDocumentString(`
+    query getProposalsWithCallInfo($filter: ProposalsFilter) {
+  proposals(filter: $filter) {
+    proposals {
+      primaryKey
+      proposalId
+      title
+      call {
+        shortCode
+        title
+        id
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<GetProposalsWithCallInfoQuery, GetProposalsWithCallInfoQueryVariables>;
 export const QuestionaryDocument = new TypedDocumentString(`
     query Questionary($questionaryId: Int!) {
   questionary(questionaryId: $questionaryId) {
