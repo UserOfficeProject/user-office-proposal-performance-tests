@@ -4236,7 +4236,7 @@ export type GetProposalsWithCallInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetProposalsWithCallInfoQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, call?: { __typename?: 'Call', shortCode: string, title?: string | null, id: number } | null }> } | null };
+export type GetProposalsWithCallInfoQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, call?: { __typename?: 'Call', shortCode: string, title?: string | null, id: number } | null }> } | null };
 
 export type QuestionaryQueryVariables = Exact<{
   questionaryId: Scalars['Int']['input'];
@@ -4602,6 +4602,9 @@ export const GetProposalsWithCallInfoDocument = new TypedDocumentString(`
       primaryKey
       proposalId
       title
+      proposer {
+        id
+      }
       call {
         shortCode
         title

@@ -14,8 +14,8 @@ const apiAsyncClient = getAsyncClientApi(
   environmentConfig.GRAPHQL_URL,
   environmentConfig.GRAPHQL_TOKEN
 );
-const proposalLookUpToken =__ENV.PROPOSAL_LOOKUP_TOKEN;
-const proposalLookUpUrl =__ENV.PROPOSAL_LOOKUP_URL;
+const proposalLookUpToken = __ENV.PROPOSAL_LOOKUP_TOKEN;
+const proposalLookUpUrl = __ENV.PROPOSAL_LOOKUP_URL;
 type TestData = {
   proposalsData: GetProposalsWithCallInfoQuery;
   facility: string;
@@ -24,7 +24,6 @@ export const options = {
   thresholds: {
     http_req_failed: [
       {
-        
         threshold: 'rate <= 0.95',
         abortOnFail: true,
       },
@@ -96,11 +95,11 @@ export default async function (sharedData: TestData) {
   const soapReqBody = `
 <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
     <Body>
-        <getExperimentSummaries xmlns="http://service.proposal/">
+        <getExperimentSummary xmlns="http://service.proposal/">
             <token xmlns="">${proposalLookUpToken}</token>
             <experimentNumber xmlns="">${proposal?.proposalId}</experimentNumber>
             <facility xmlns="">${sharedData.facility}</facility>
-        </getExperimentSummaries>
+        </getExperimentSummary>
     </Body>
 </Envelope>`;
   const res = await http.asyncRequest(

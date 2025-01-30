@@ -39,7 +39,7 @@ const documents = {
     "query ProposalById($proposalId: String!) {\n  proposalById(proposalId: $proposalId) {\n    proposalId\n    primaryKey\n    callId\n  }\n}": types.ProposalByIdDocument,
     "query ProposalStatus($proposalStatusId: Int!) {\n  proposalStatus(proposalStatusId: $proposalStatusId) {\n    id\n    isDefault\n    name\n    shortCode\n  }\n}": types.ProposalStatusDocument,
     "query getProposals($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      submitted\n      proposerId\n      abstract\n      status {\n        name\n      }\n      proposer {\n        id\n      }\n      users {\n        id\n      }\n    }\n  }\n}": types.GetProposalsDocument,
-    "query getProposalsWithCallInfo($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      call {\n        shortCode\n        title\n        id\n      }\n    }\n  }\n}": types.GetProposalsWithCallInfoDocument,
+    "query getProposalsWithCallInfo($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      proposer {\n        id\n      }\n      call {\n        shortCode\n        title\n        id\n      }\n    }\n  }\n}": types.GetProposalsWithCallInfoDocument,
     "query Questionary($questionaryId: Int!) {\n  questionary(questionaryId: $questionaryId) {\n    questionaryId\n    templateId\n    steps {\n      topic {\n        templateId\n        title\n        id\n      }\n    }\n  }\n}": types.QuestionaryDocument,
     "query Settings {\n  settings {\n    description\n    id\n  }\n}": types.SettingsDocument,
     "query Instrument($instrumentId: Int!) {\n  instrument(instrumentId: $instrumentId) {\n    id\n    name\n    managerUserId\n    shortCode\n  }\n}": types.InstrumentDocument,
@@ -146,7 +146,7 @@ export function graphql(source: "query getProposals($filter: ProposalsFilter) {\
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query getProposalsWithCallInfo($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      call {\n        shortCode\n        title\n        id\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsWithCallInfoDocument;
+export function graphql(source: "query getProposalsWithCallInfo($filter: ProposalsFilter) {\n  proposals(filter: $filter) {\n    proposals {\n      primaryKey\n      proposalId\n      title\n      proposer {\n        id\n      }\n      call {\n        shortCode\n        title\n        id\n      }\n    }\n  }\n}"): typeof import('./graphql').GetProposalsWithCallInfoDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

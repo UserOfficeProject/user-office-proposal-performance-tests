@@ -3,7 +3,6 @@ import { check } from 'k6';
 import { executeGraphqlQuery, getAsyncClientApi } from '../../support/graphql';
 import {
   GetProposalsWithCallInfoDocument,
-  GetProposalsWithCallInfoQuery,
 } from '../../graphql/generated/graphql';
 import { getEnvironmentConfigurations } from '../../support/configurations';
 import exec from 'k6/execution';
@@ -14,17 +13,17 @@ const apiAsyncClient = getAsyncClientApi(
   environmentConfig.GRAPHQL_URL,
   environmentConfig.GRAPHQL_TOKEN
 );
-const proposalLookUpToken =__ENV.PROPOSAL_LOOKUP_TOKEN;
-const proposalLookUpUrl =__ENV.PROPOSAL_LOOKUP_URL;
+const proposalLookUpToken = __ENV.PROPOSAL_LOOKUP_TOKEN;
+const proposalLookUpUrl = __ENV.PROPOSAL_LOOKUP_URL;
 type TestData = {
-  proposalsData: GetProposalsWithCallInfoQuery;
+  proposerIds: number[];
   facility: string;
 };
+
 export const options = {
   thresholds: {
     http_req_failed: [
       {
-        
         threshold: 'rate <= 0.95',
         abortOnFail: true,
       },
@@ -37,13 +36,14 @@ export const options = {
       rate: +__ENV.K6_RATE || 50,
       timeUnit: __ENV.K6_TIME_UNIT || '30s',
       duration: __ENV.K6_DURATION || '5m',
-      preAllocatedVUs: +__ENV.K6_PRE_ALLOCATED_VUS || 5,
+      preAllocatedVUs: +__ENV.K6_PRE_ALLOCATED_VUS || 10,
       maxVUs: +__ENV.K6_MAX_VUS || 100,
     },
   },
 };
 export async function setup() {
   let facility = '';
+  const proposerIds: number[] = [];
   if (!__ENV.TEST_SETUP_CALL_ID) {
     console.error('Test Call ID not set');
     exec.test.abort();
@@ -82,27 +82,31 @@ export async function setup() {
       exec.test.abort();
     }
   }
-  return { proposalsData, facility } as TestData;
+  proposalsData.proposals?.proposals.forEach((proposal) => {
+    if (proposal.proposer !== null && proposal.proposer?.id) {
+      proposerIds.push(proposal.proposer?.id);
+    }
+  });
+  if (proposerIds.length <= 0) {
+    console.error('Fail to get call proposals proposers');
+    exec.test.abort();
+  }
+  return { proposerIds, facility } as TestData;
 }
 
 export default async function (sharedData: TestData) {
-  const proposalIndex =
-    sharedData.proposalsData.proposals?.proposals.length || 0;
-  const proposal =
-    sharedData.proposalsData.proposals?.proposals[
-      randomIntBetween(0, proposalIndex)
-    ];
-
+  const proposalIndex = sharedData.proposerIds.length || 0;
+  const proposerId = sharedData.proposerIds[randomIntBetween(0, proposalIndex)];
   const soapReqBody = `
-<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+  <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
     <Body>
-        <getExperimentSummaries xmlns="http://service.proposal/">
+        <getExperimentsForUser xmlns="http://service.proposal/">
             <token xmlns="">${proposalLookUpToken}</token>
-            <experimentNumber xmlns="">${proposal?.proposalId}</experimentNumber>
+            <userNumber xmlns="">${proposerId}</userNumber>
             <facility xmlns="">${sharedData.facility}</facility>
-        </getExperimentSummaries>
+        </getExperimentsForUser>
     </Body>
-</Envelope>`;
+  </Envelope>`;
   const res = await http.asyncRequest(
     'POST',
     `${proposalLookUpUrl}`,
@@ -113,7 +117,7 @@ export default async function (sharedData: TestData) {
   );
   check(res, {
     'Status is 200': (r) => r.status === 200,
-    'Proposal id present': (r) =>
-      r.body?.toString().indexOf(`${proposal?.proposalId}`) !== -1,
+    'Proposer id present': (r) =>
+      r.body?.toString().indexOf(`${proposerId}`) !== -1,
   });
 }
