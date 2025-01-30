@@ -1,8 +1,9 @@
+import { AllocationTimeUnits, TemplateGroupId } from '../graphql/generated/graphql';
 import {
   randomString,
   randomAlphaNumericString,
 } from '../utils/helperFunctions';
-import { AllocationTimeUnits, InitData } from '../utils/sharedType';
+import { InitData } from '../utils/sharedType';
 
 export function getInitData(): InitData {
   const current = new Date();
@@ -24,7 +25,7 @@ export function getInitData(): InitData {
       startCycle: future,
       endCycle: future,
       templateId: 1,
-      allocationTimeUnit: AllocationTimeUnits.DAY,
+      allocationTimeUnit: AllocationTimeUnits.Day,
       cycleComment: `${randomString(20)}`,
       surveyComment: `${randomString(10)}`,
       proposalWorkflowId: 1,
@@ -38,7 +39,7 @@ export function getInitData(): InitData {
     template: {
       name: 'Performance test',
       description: 'Performance test template',
-      groupId: 'PROPOSAL',
+      groupId: TemplateGroupId.Proposal,
     },
     workflows: {
       defaultWorkflow: {

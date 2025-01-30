@@ -64,14 +64,11 @@ func New(params output.Params) (output.Output, error) {
 	if config.Password.Valid {
 		osConfig.Client.Password = config.Password.String
 	}
-
+    // Ensure TLS certificate verification can be enabled
 	osConfig.Client.Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: config.InsecureSkipVerify},
 	}
 
-	osConfig.Client.Transport = &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
 	osConfig.Client.EnableRetryOnTimeout=true;
 	osConfig.Client.MaxRetries=10;
 	osConfig.Client.RetryOnStatus=[]int{502,503, 504,403};

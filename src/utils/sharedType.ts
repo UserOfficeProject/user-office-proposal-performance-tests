@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { File as BrowserFile } from 'k6/browser';
 import { File as ExperimentalFsFile } from 'k6/experimental/fs';
-import { RefinedResponse } from 'k6/http';
+import { RefinedParams, RefinedResponse, RequestBody } from 'k6/http';
+import {
+  CreateCallInput,
+  Instrument,
+  TemplateGroupId,
+} from '../graphql/generated/graphql';
 
 export class FsFile extends ExperimentalFsFile {}
-export enum AllocationTimeUnits {
-  DAY = 'Day',
-  HOUR = 'Hour',
-}
-export type Instrument = {
-  id: number;
-  name: string;
-  shortCode: string;
-  description: string;
-  managerUserId: number;
-};
+
 export type Call = {
   id: number;
   shortCode: string;
   title: string;
   templateId: number;
-  instruments: [Instrument];
+  instruments: [
+    Pick<
+      Instrument,
+      'id' | 'managerUserId' | 'name' | 'shortCode' | 'description'
+    >,
+  ];
 };
 export type TemplateStep = {
   topic: {
@@ -69,9 +69,14 @@ export type ClientResponse = RefinedResponse<any>;
 export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 
 export type ClientApi = (body: string, userToken?: string) => ClientResponse;
+export type AsyncRequestOptions = {
+  params?: RefinedParams<any> | null, 
+  token?: string
+  };
 export type AsyncClientApi = (
-  body: string,
-  userToken?: string
+  method: string,
+  body: RequestBody | null,
+  options?: AsyncRequestOptions | undefined
 ) => AsyncClientResponse;
 export type CallQueryResponse = {
   data: { [name: string]: Call };
@@ -97,33 +102,7 @@ export type GenericQueryResponse = {
 };
 
 export type InitData = {
-  call: {
-    allocationTimeUnit: AllocationTimeUnits;
-    cycleComment: string;
-    description?: string;
-    endCall: Date;
-    endCallInternal?: Date;
-    endCycle: Date;
-    endFapReview?: Date;
-    endNotify: Date;
-    endReview: Date;
-    esiTemplateId?: number;
-    faps?: number;
-    pdfTemplateId?: number;
-    proposalSequence?: number;
-    proposalWorkflowId: number;
-    referenceNumberFormat?: string;
-    shortCode: string;
-    startCall: Date;
-    startCycle: Date;
-    startFapReview?: Date;
-    startNotify: Date;
-    startReview: Date;
-    submissionMessage?: string;
-    surveyComment: string;
-    templateId: number;
-    title?: string;
-  };
+  call: CreateCallInput;
   proposal: {
     id: number;
     title: string;
@@ -131,7 +110,7 @@ export type InitData = {
   template: {
     name: string;
     description: string;
-    groupId: string;
+    groupId: TemplateGroupId;
   };
   workflows: {
     defaultWorkflow: {
@@ -139,20 +118,10 @@ export type InitData = {
     };
     defaultDroppableGroup: string;
   };
-  instrument: Partial<Instrument>;
-};
-export type CallsFilter = {
-  fapIds?: number;
-  instrumentIds?: number;
-  isActive?: boolean;
-  isActiveInternal?: boolean;
-  isCallEndedByEvent?: boolean;
-  isEnded?: boolean;
-  isEndedInternal?: boolean;
-  isFapReviewEnded?: boolean;
-  isReviewEnded?: boolean;
-  pdfTemplateIds?: number;
-  templateIds?: number;
+  instrument: Pick<
+    Instrument,
+    'name' | 'shortCode' | 'shortCode' | 'description'
+  >;
 };
 
 export type UserLogin = { userId: number; sessionId: string; email: string };
@@ -170,3 +139,7 @@ export interface DatabaseClient {
 export type InputFileType = BrowserFile & {
   mimetype: string;
 };
+
+export interface HttpURL {
+  __brand: 'http-url';
+}

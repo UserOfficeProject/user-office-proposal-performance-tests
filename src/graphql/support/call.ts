@@ -1,263 +1,121 @@
-import { check, fail } from 'k6';
-import exec from 'k6/execution';
-
 import { getInitData } from '../../support/initData';
+import { AsyncClientApi } from '../../utils/sharedType';
+import { executeGraphqlQuery } from '../../support/graphql';
 import {
-  CallQueryResponse,
-  Call as CallType,
+  CreateCallDocument,
+  GetCallDocument,
+  GetCallsDocument,
   CallsFilter,
-  CallsQueryResponse,
-  AsyncClientApi,
-} from '../../utils/sharedType';
+  DeleteCallDocument,
+  AssignInstrumentsToCallDocument,
+  RemoveAssignedInstrumentFromCallDocument,
+} from '../generated/graphql';
 
 export class Call {
   private initData = getInitData();
   constructor(private apiAsyncClient: AsyncClientApi) {}
 
-  async createTestCall(templateId: number): Promise<CallType> {
-    const mutation = `
-    mutation CreateCall($createCallInput: CreateCallInput!) {
-      createCall(createCallInput: $createCallInput) {
-        id
-        shortCode
-        title
-        templateId
-        instruments {
-          id
-          description
-          managerUserId
-          name
-          shortCode
-        }
-      }
-    }`;
-
-    const variables = {
-      createCallInput: { ...this.initData?.call, templateId },
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    const responseData = response.json() as CallQueryResponse;
-    const checkValue = check(response, {
-      'Performance test call created': (r) =>
-        r.status === 200 && !!responseData.data?.createCall?.id,
-    }).valueOf();
-
-    if (!checkValue) {
-      fail(
-        'Performance test could not be created aborting test, Executing Call.createTestCall'
-      );
-    }
-
-    return responseData?.data?.createCall as CallType;
-  }
-
-  async deleteCall(deleteCallId: number): Promise<number> {
-    const mutation = `
-          mutation DeleteCall($deleteCallId: Int!) {
-            deleteCall(id: $deleteCallId) {
-              id
-              shortCode
-              title
-              templateId
-            }
-          }`;
-
-    const variables = {
-      deleteCallId: deleteCallId,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-
-    const responseData = response.json() as CallQueryResponse;
-
-    if (
-      !check(response, {
-        'Call deleted': (r) =>
-          r.status === 200 && !!responseData.data.deleteCall.id && true,
-      })
-    ) {
-      console.error('Fail to delete call', response.error);
-    }
-
-    return deleteCallId;
-  }
-
-  async getCall(callId: number): Promise<CallType> {
-    const query = `
-          query getCall($callId: Int!) {
-            call(callId: $callId) {
-              id
-              title
-              shortCode
-              templateId
-            }
-          }`;
-
-    const variables = {
-      callId: callId,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query, variables })
-    );
-    const responseData = response.json() as CallQueryResponse;
-    if (
-      !check(response, {
-        'Get call': (r) =>
-          r.status === 200 && !!responseData.data.call.id && true,
-      })
-    ) {
-      console.error('Call was not found', response.error);
-    }
-
-    return responseData.data?.call;
-  }
-
-  async getUserCalls(
-    userToken: string,
-    callsFilter: CallsFilter
-  ): Promise<[CallType]> {
-    const query = `
-            query Calls($filter: CallsFilter) {
-              calls(filter: $filter) {
-                id
-                title
-                shortCode
-                templateId
-                endCall
-                endCallInternal
-                allocationTimeUnit
-                cycleComment
-                isActive
-                isActiveInternal
-                shortCode
-                startCall
-                startCycle
-                pdfTemplateId
-              }
-            }`;
-
-    const variables = {
-      filter: callsFilter,
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query, variables }),
-      userToken
-    );
-
-    check(response, {
-      'GetUserCalls status is 200': (res) => res.status === 200,
+  async createTestCall(templateId: number) {
+    const createdCall = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      CreateCallDocument,
+      { createCallInput: { ...this.initData?.call, templateId } }
+    ).then((data) => {
+      return data.createCall;
     });
-
-    try {
-      const responseData = response.json() as CallsQueryResponse;
-      check(response, {
-        'Get user calls has data': () => responseData?.data?.calls?.length > 0,
-      });
-
-      return responseData?.data?.calls;
-    } catch (error) {
-      fail(`SCENARIO: ${exec.scenario.name} Executing class Call.getUserCalls VU_ID: ${exec.vu.idInTest}
-      Error response getUserCalls ${response.status} ${response?.body} ${response?.error} ${response?.error_code} ${error}`);
+    if (!createdCall) {
+      return null;
     }
+    return createdCall;
+  }
+  async deleteCall(deleteCallId: number): Promise<number> {
+    const deletedCall = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      DeleteCallDocument,
+      {
+        deleteCallId: deleteCallId,
+      }
+    ).then((data) => {
+      return data.deleteCall;
+    });
+    if (!deletedCall) {
+      throw new Error('No call was deleted');
+    }
+    return deletedCall.id;
   }
 
-  async assignInstrumentsToCall(
-    callId: number,
-    instrumentId: number
-  ): Promise<CallType> {
-    const mutation = `
-    mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {
-      assignInstrumentsToCall(assignInstrumentsToCallInput: $assignInstrumentsToCallInput) {
-        id
-        shortCode
-        title
-        templateId
-        instruments {
-          id
-          managerUserId
-          name
-          shortCode
-        }
+  async getCall(callId: number) {
+    const call = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      GetCallDocument,
+      {
+        callId: callId,
       }
-    }`;
-    const variables = {
-      assignInstrumentsToCallInput: {
-        callId,
-        instrumentFapIds: [{ instrumentId }],
-      },
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    const responseData = response.json() as CallQueryResponse;
-
-    if (
-      !check(response, {
-        'Instruments assigned to call': (r) =>
-          r.status === 200 &&
-          !!responseData.data.assignInstrumentsToCall.id &&
-          true,
-      })
-    ) {
-      console.error('Fail to assign instruments to call', response.error);
+    ).then((data) => {
+      
+      return data.call;
+    });
+    
+    if (!call) {
+      return null;
     }
-
-    return responseData.data?.assignInstrumentsToCall as CallType;
+    return call;
   }
 
-  async removeAssignedInstrumentFromCall(
-    callId: number,
-    instrumentId: number
-  ): Promise<CallType> {
-    const mutation = `
-    mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {
-      removeAssignedInstrumentFromCall(removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput) {
-        id
-        shortCode
-        title
-        templateId
-        instruments {
-          id
-          managerUserId
-          name
-          shortCode
-        }
-      }
-    }`;
-    const variables = {
-      removeAssignedInstrumentFromCallInput: {
-        callId,
-        instrumentId,
+  async getUserCalls(token: string, callsFilter: CallsFilter) {
+    const calls = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      GetCallsDocument,
+      {
+        filter: callsFilter,
       },
-    };
-
-    const response = await this.apiAsyncClient(
-      JSON.stringify({ query: mutation, variables })
-    );
-    const responseData = response.json() as CallQueryResponse;
-
-    if (
-      !check(response, {
-        'Instruments assigned to call removed': (r) =>
-          r.status === 200 &&
-          !!responseData.data.removeAssignedInstrumentFromCall.id &&
-          true,
-      })
-    ) {
-      console.error(
-        'Fail to remove instruments assigned to call',
-        response.error
-      );
+      {
+        token,
+      }
+    ).then((data) => {
+      return data.calls;
+    });
+    if (!calls) {
+      return null;
     }
+    return calls;
+  }
 
-    return responseData.data?.removeAssignedInstrumentFromCall as CallType;
+  async assignInstrumentsToCall(callId: number, instrumentId: number) {
+    const assignInstrumentsToCall = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      AssignInstrumentsToCallDocument,
+      {
+        assignInstrumentsToCallInput: {
+          callId,
+          instrumentFapIds: [{ instrumentId }],
+        },
+      }
+    ).then((data) => {
+      return data.assignInstrumentsToCall;
+    });
+    if (!assignInstrumentsToCall) {
+      throw new Error('Fail to assign instruments to call');
+    }
+    return assignInstrumentsToCall;
+  }
+
+  async removeAssignedInstrumentFromCall(callId: number, instrumentId: number) {
+    const removeAssignedInstrumentFromCall = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      RemoveAssignedInstrumentFromCallDocument,
+      {
+        removeAssignedInstrumentFromCallInput: {
+          callId,
+          instrumentId,
+        },
+      }
+    ).then(data => {
+      return data.removeAssignedInstrumentFromCall;
+    });
+    if (!removeAssignedInstrumentFromCall) {
+      throw new Error('Fail to assign instruments to call');
+    }
+    return removeAssignedInstrumentFromCall;
   }
 }

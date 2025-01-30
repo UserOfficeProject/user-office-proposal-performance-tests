@@ -1,0 +1,3 @@
+query PageContent($pageId: PageName!) {
+  pageContent(pageId: $pageId)
+}

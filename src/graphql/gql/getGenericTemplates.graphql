@@ -1,0 +1,6 @@
+query GenericTemplates($filter: GenericTemplatesFilter) {
+  genericTemplates(filter: $filter) {
+    id
+    title
+  }
+}
