@@ -167,6 +167,10 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     }
   }
   console.info(`what is SETUP_TEST_REVIEWERS ${environmentConfig.SETUP_TEST_REVIEWERS}`);
+  check(environmentConfig.SETUP_TEST_REVIEWERS,{'Set up test reviewers value is true': (v) =>{
+    return v === 'true';
+    }
+  })
   if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
     console.log('we landed here!!');
     if (Array.isArray(users)) {
