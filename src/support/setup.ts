@@ -166,7 +166,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       exec.test.abort();
     }
   }
-
+  console.info(`what is SETUP_TEST_REVIEWERS ${environmentConfig.SETUP_TEST_REVIEWERS}`);
   if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
     console.log('we landed here!!');
     if (Array.isArray(users)) {
