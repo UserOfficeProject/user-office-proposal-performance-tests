@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import { executeGraphqlQuery, getAsyncClientApi } from '../../support/graphql';
 import {
   GetProposalsWithCallInfoDocument,
@@ -85,8 +85,9 @@ export async function setup() {
 }
 
 export default async function (sharedData: TestData) {
-  const proposalIndex =
-    sharedData.proposalsData.proposals?.proposals.length || 0;
+  const proposalIndex = sharedData.proposalsData.proposals?.proposals
+    ? sharedData.proposalsData.proposals?.proposals.length - 1
+    : 0;
   const proposal =
     sharedData.proposalsData.proposals?.proposals[
       randomIntBetween(0, proposalIndex)
@@ -115,4 +116,5 @@ export default async function (sharedData: TestData) {
     'Proposal id present': (r) =>
       r.body?.toString().indexOf(`${proposal?.proposalId}`) !== -1,
   });
+  sleep(10);
 }

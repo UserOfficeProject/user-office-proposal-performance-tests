@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import { executeGraphqlQuery, getAsyncClientApi } from '../../support/graphql';
 import {
   GetProposalsWithCallInfoDocument,
@@ -14,8 +14,8 @@ const apiAsyncClient = getAsyncClientApi(
   environmentConfig.GRAPHQL_URL,
   environmentConfig.GRAPHQL_TOKEN
 );
-const proposalLookUpToken =__ENV.PROPOSAL_LOOKUP_TOKEN;
-const proposalLookUpUrl =__ENV.PROPOSAL_LOOKUP_URL;
+const proposalLookUpToken = __ENV.PROPOSAL_LOOKUP_TOKEN;
+const proposalLookUpUrl = __ENV.PROPOSAL_LOOKUP_URL;
 type TestData = {
   proposalsData: GetProposalsWithCallInfoQuery;
   facility: string;
@@ -24,7 +24,6 @@ export const options = {
   thresholds: {
     http_req_failed: [
       {
-        
         threshold: 'rate <= 0.95',
         abortOnFail: true,
       },
@@ -86,8 +85,9 @@ export async function setup() {
 }
 
 export default async function (sharedData: TestData) {
-  const proposalIndex =
-    sharedData.proposalsData.proposals?.proposals.length || 0;
+  const proposalIndex = sharedData.proposalsData.proposals?.proposals
+    ? sharedData.proposalsData.proposals?.proposals.length - 1
+    : 0;
   const proposal =
     sharedData.proposalsData.proposals?.proposals[
       randomIntBetween(0, proposalIndex)
@@ -116,4 +116,5 @@ export default async function (sharedData: TestData) {
     'Proposal id present': (r) =>
       r.body?.toString().indexOf(`${proposal?.proposalId}`) !== -1,
   });
+  sleep(10);
 }

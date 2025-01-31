@@ -1,9 +1,7 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import { executeGraphqlQuery, getAsyncClientApi } from '../../support/graphql';
-import {
-  GetProposalsWithCallInfoDocument,
-} from '../../graphql/generated/graphql';
+import { GetProposalsWithCallInfoDocument } from '../../graphql/generated/graphql';
 import { getEnvironmentConfigurations } from '../../support/configurations';
 import exec from 'k6/execution';
 import { randomIntBetween } from '../../utils/helperFunctions';
@@ -95,7 +93,9 @@ export async function setup() {
 }
 
 export default async function (sharedData: TestData) {
-  const proposalIndex = sharedData.proposerIds.length || 0;
+  const proposalIndex = sharedData.proposerIds
+    ? sharedData.proposerIds.length - 1
+    : 0;
   const proposerId = sharedData.proposerIds[randomIntBetween(0, proposalIndex)];
   const soapReqBody = `
   <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
@@ -120,4 +120,5 @@ export default async function (sharedData: TestData) {
     'Proposer id present': (r) =>
       r.body?.toString().indexOf(`${proposerId}`) !== -1,
   });
+  sleep(10);
 }
