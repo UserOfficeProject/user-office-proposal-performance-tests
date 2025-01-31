@@ -63,6 +63,22 @@ spec:
         value: "${IS_CLUSTER_TEST_RUN}"
       - name: INSTRUMENT_ID
         value: "${INSTRUMENT_ID}"
+      - name: SETUP_TEST_REVIEWERS
+        value: "${SETUP_TEST_REVIEWERS}"
+      - name: SETUP_TEST_REVIEWER_ROLE
+        value: "${SETUP_TEST_REVIEWER_ROLE}"
+      - name: SETUP_TOTAL_REVIEWERS
+        value: "${SETUP_TOTAL_REVIEWERS}"
+      - name: TEST_SET_UP_INSTRUMENT_ID
+        value: "${TEST_SET_UP_INSTRUMENT_ID}"
+      - name: FAP_PROPOSALS
+        value: "${FAP_PROPOSALS}"
+      - name: PROPOSALS_PER_REVIEWER
+        value: "${PROPOSALS_PER_REVIEWER}"
+      - name: FAP_REVIEW_STATUS_ID
+        value: "${FAP_REVIEW_STATUS_ID}"
+      - name: SUBMITTED_STATUS_ID
+        value: "${SUBMITTED_STATUS_ID}"
     envFrom:
       - secretRef:
           name: connection-secrets
