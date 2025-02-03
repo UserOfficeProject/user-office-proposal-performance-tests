@@ -24,7 +24,7 @@
     "build": "concurrently \"npm run build:test-setup\" \"npm run build:k6-test\"",
     "load-test": "npm run bundle && k6 run --no-usage-report - <./test/sc-load-test.js",
     "prepare": "husky",
-    "postinstall": "cd test-setup && npm install && husky init",
+    "postinstall": "cd test-setup && npm install",
     "generate-uop": "graphql-codegen --require dotenv/config --config codegen.ts",
     "generate:uows": "cd test-setup && npm run generate:uows"
   },
@@ -39,7 +39,7 @@
     "@graphql-codegen/typed-document-node": "^5.0.12",
     "@types/k6": "v0.54.2",
     "@types/webpack": "^5.28.5",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
     "babel-loader": "^9.1.3",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.57.1",

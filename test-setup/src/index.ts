@@ -18,15 +18,17 @@ import { createUserDataSource, UserDataSource } from './datasources/userDataSour
  */
 if (process.env.TEST_SETUP_DOTENV_PATH) {
   dotenv.config({
-    path: validate<string>(process.env.TEST_SETUP_DOTENV_PATH as string, 'USER_SETUP_DOTENV_PATH'),
+    path: validate<string>(process.env.TEST_SETUP_DOTENV_PATH as string, 'TEST_SETUP_DOTENV_PATH'),
   });
-} else {
-  dotenv.config();
+}{
+  dotenv.config({
+    path: `../.env`,
+  });
 }
 async function startServer() {
   try {
     const db = await database();
-    const port = process.env.PORT || 8000;
+    const port = process.env.PORT || 8100;
     const app = express();
     const connectionPool: oracledb.Pool = db.getConnectionPool();
     app.use(express.json());

@@ -6,7 +6,7 @@ import { UserLogin } from '../utils/sharedType';
 import { randomIntBetween } from '../utils/helperFunctions';
 import { generateBearerToken, getAsyncClientApi } from '../support/graphql';
 import { Proposal } from '../graphql/support/proposal';
-import { Counter } from 'k6/metrics';
+import { Counter, Trend } from 'k6/metrics';
 import { User } from '../graphql/support/user';
 
 const environmentConfig = getEnvironmentConfigurations();
@@ -17,6 +17,7 @@ const apiAsyncClient = getAsyncClientApi(
   environmentConfig.GRAPHQL_URL,
   environmentConfig.GRAPHQL_TOKEN
 );
+const downloadTrend = new Trend('downloaded_proposals_trend');
 
 const proposal = new Proposal(apiAsyncClient);
 type TestData = {
@@ -119,7 +120,11 @@ export default async function (sharedData: TestData) {
   //User download proposal by primary key
     const responsePk = await http.asyncRequest('GET', `${environmentConfig.BROWSER_BASE_URL}/download/pdf/proposal/${testData.proposal.primaryKey}`,null,{
       headers,
+      tags: {
+        downloaded_proposals_trend: "user-pdf-proposal-download-id",
+      },
     });
+    downloadTrend.add(responsePk.timings.connecting, { downloaded_proposals_trend: "user-pdf-proposal-download-id" });
     check(responsePk, {
       'Proposal pdf downloaded by primary key': (res) => {
         if(res.headers['Content-Type'] !== 'application/pdf'){

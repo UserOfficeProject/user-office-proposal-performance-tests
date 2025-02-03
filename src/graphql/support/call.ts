@@ -61,14 +61,16 @@ export class Call {
     return call;
   }
 
-  async getUserCalls(userToken: string, callsFilter: CallsFilter) {
+  async getUserCalls(token: string, callsFilter: CallsFilter) {
     const calls = await executeGraphqlQuery(
       this.apiAsyncClient,
       GetCallsDocument,
       {
         filter: callsFilter,
       },
-      userToken
+      {
+        token,
+      }
     ).then((data) => {
       return data.calls;
     });

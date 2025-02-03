@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { File as BrowserFile } from 'k6/browser';
 import { File as ExperimentalFsFile } from 'k6/experimental/fs';
-import { RefinedResponse } from 'k6/http';
-import {
+import { RefinedParams, RefinedResponse, RequestBody } from 'k6/http';
+import { 
   BasicUserDetails,
   CreateCallInput,
   Fap as FapFields,
   Instrument,
   Proposal as ProposalFields,
   ProposalStatus,
-  TemplateGroupId,
-} from '../graphql/generated/graphql';
+  TemplateGroupId, } from '../graphql/generated/graphql';
 
 export class FsFile extends ExperimentalFsFile {}
 
@@ -83,9 +82,14 @@ export type ClientResponse = RefinedResponse<any>;
 export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 
 export type ClientApi = (body: string, userToken?: string) => ClientResponse;
+export type AsyncRequestOptions = {
+  params?: RefinedParams<any> | null, 
+  token?: string
+  };
 export type AsyncClientApi = (
-  body: string,
-  userToken?: string
+  method: string,
+  body: RequestBody | null,
+  options?: AsyncRequestOptions | undefined
 ) => AsyncClientResponse;
 
 export type CallQueryResponse = {
@@ -151,3 +155,7 @@ export interface DatabaseClient {
 export type InputFileType = BrowserFile & {
   mimetype: string;
 };
+
+export interface HttpURL {
+  __brand: 'http-url';
+}

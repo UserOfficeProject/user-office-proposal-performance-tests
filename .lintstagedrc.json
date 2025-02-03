@@ -1,3 +1,4 @@
 {
-    "src/**/*.{js,ts,jsx,tsx}": ["npm run lint"]
-  }
+  "src/**/*.{js,ts,jsx,tsx}": ["npm run lint:tests"],
+  "test-setup/src/**/*.{js,ts,jsx,tsx}": ["npm run lint:test-setup"]
+}
