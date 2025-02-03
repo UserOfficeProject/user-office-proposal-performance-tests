@@ -3,3 +3,4 @@ test
 extensions
 test-setup
 src/graphql/generated
+cluster-cli/build
