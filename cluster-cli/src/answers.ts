@@ -1,7 +1,8 @@
-import getFiles from './getTestFiles';
+
 import { Answers, defaultAnswers } from './initValues';
 import { input, select, confirm } from '@inquirer/prompts';
 import { format } from 'date-fns';
+import getFiles from './files';
 export async function getUserPromptAnswer():Promise<Answers> {
   const answers: Answers = {
     ...defaultAnswers,
