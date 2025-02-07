@@ -3,7 +3,7 @@ import {
   Fap,
 } from '../../utils/sharedType';
 import { executeGraphqlQuery } from '../../support/graphql';
-import { AssignFapReviewersToProposalsDocument, AssignReviewersToFapDocument, RemoveMemberFromFapDocument, RemoveMemberFromFapProposalDocument, UserRole } from '../generated/graphql';
+import { AssignFapReviewersToProposalsDocument, AssignProposalsToFapsDocument, AssignReviewersToFapDocument, RemoveMemberFromFapDocument, RemoveMemberFromFapProposalDocument, UserRole } from '../generated/graphql';
 
 export class FAP {
   constructor(private apiAsyncClient: AsyncClientApi) {}
@@ -23,6 +23,28 @@ export class FAP {
       throw new Error('Fail to assign reviewers to FAP');
     }
     return assignReviewersToFap;
+  }
+  
+  async assignProposalsToFaps(proposalPks: number[], fapId: number, instrumentId: number): Promise<Boolean>{
+    const assignProposalsToFaps = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      AssignProposalsToFapsDocument,
+      {
+        proposalPks: proposalPks,
+        fapInstruments: [
+          {
+              fapId,
+              instrumentId
+          }
+        ] 
+      }
+    ).then((data) => {
+      return data.assignProposalsToFaps;
+    });
+    if(!assignProposalsToFaps){
+      throw new Error('Fail to assign proposals to FAP');
+    }
+    return assignProposalsToFaps;
   }
 
   async assignFapReviewersToProposals(

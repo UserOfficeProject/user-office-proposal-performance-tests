@@ -129,7 +129,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         return c.shortCode === 'ISIS Direct 2022_2';
       }});
       check(testCall,{'FAP for this test call is Zoom': (c) => {
-        return c.faps[0].id === 11;
+        return c.faps[0].id === 15;
       }});
     } else {
       testCall = (await call.createTestCall(
@@ -176,10 +176,11 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     if (Array.isArray(users)) {
       const userLogin = users as UserLogin[];
       const reviewerUsers = userLogin.slice(
-        0,
-        Number(__ENV.SETUP_TOTAL_REVIEWERS)
+        1,
+        (Number(__ENV.SETUP_TOTAL_REVIEWERS)+1)
       );
       const reviewerIds = reviewerUsers.map((users) => String(users.userId));
+      console.info(`the user ids going to be reviewers will be ${reviewerIds}`);
       const payLoad = JSON.stringify({
         ids: reviewerIds,
         roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
@@ -203,65 +204,66 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         testFapId = testCall?.faps[0].id;
         console.log(`FAP id from test call is ${testFapId}`);
         if (testFapId) {
-          reviewerUsers.map(async (r) => {
-            //login the user in the proposals system before assigning them to a FAP
-            const userToken = await user.getUserToken(`${r.sessionId}`);
-            if (userToken) {
-              testFap = await fap.assignReviewersToFap([r.userId], testFapId);
-              if (testFap) {
-                console.log(
-                  `assigned userid ${r.userId} to fap id ${testFapId}`
-                );
-              }
+          for(const index in reviewerUsers){
+            Promise.resolve(await user.getUserToken(`${reviewerUsers[index].sessionId}`))
+                    .then(async (value) => {
+                      console.log(`whats the value after getUserToken? ${value}`);
+                      Promise.resolve(await fap.assignReviewersToFap([reviewerUsers[index].userId],testFapId))
+                    .then((value) => console.log(`assigned reviewers to FAP id ${value.id}`));
+                    });
             }
-          });
         }
-
         testProposals = await proposal.getProposals(
           testCall?.id ? testCall?.id : 0
         );
         if (testProposals) {
-          let testFapProposals = testProposals.slice(
+          const testFapProposals = testProposals.slice(
             0,
             Number(__ENV.FAP_PROPOSALS)
           );
-          let testFapProposalKeys = testFapProposals.map((p) => p.primaryKey);
-          let proposalStatusChanged = await proposal.changeProposalsStatus(
+          const testFapProposalKeys = testFapProposals.map((p) => p.primaryKey);
+          const proposalStatusChanged = await proposal.changeProposalsStatus(
             testFapProposalKeys,
             Number(__ENV.FAP_REVIEW_STATUS_ID)
           );
           if (proposalStatusChanged) {
-            let instrumentsAssigned =
+            const instrumentsAssigned =
               await proposal.assignProposalsToInstruments(testFapProposalKeys, [
                 Number(__ENV.TEST_SET_UP_INSTRUMENT_ID),
               ]);
+
             if (instrumentsAssigned) {
-              const reviewerIterator = reviewerUsers.entries();
-              let j = 0;
-              for (let entry of reviewerIterator) {
-                const [index, userLogin] = entry;
-                let i = 0;
-                while (i < Number(__ENV.PROPOSALS_PER_REVIEWER)) {
-                  j = j >= testFapProposals.length ? 0 : j;
-                  let assignment = {
-                    memberId: userLogin.userId,
-                    proposalPk: testFapProposals[j].primaryKey,
-                    fapId: testFapId,
-                  };
-                  fapReviewAssignments.push(assignment);
-                  let reviewersAssigned =
-                    await fap.assignFapReviewersToProposals(
-                      userLogin.userId,
-                      testFapProposals[j].primaryKey,
-                      testFapId
-                    );
-                  if (reviewersAssigned) {
-                    console.log(
-                      `Fap reviewer ${userLogin.userId} assigned to proposal ${testFapProposals[j].proposalId}`
-                    );
+              console.log(`are the proposals assigned to instrument ?? ${instrumentsAssigned}`);
+              const proposalsAssignedToFap = await fap.assignProposalsToFaps(testFapProposalKeys, testFapId, Number(__ENV.TEST_SET_UP_INSTRUMENT_ID));
+              if(proposalsAssignedToFap){
+                console.log(`are the proposals assigned to the FAP ?? ${proposalsAssignedToFap}`);
+                const reviewerIterator = reviewerUsers.entries();
+                let j = 0;
+                for (let entry of reviewerIterator) {
+                  const [index, userLogin] = entry;
+                  let i = 0;
+                  while (i < Number(__ENV.PROPOSALS_PER_REVIEWER)) {
+                    j = j >= testFapProposals.length ? 0 : j;
+                    let assignment = {
+                      memberId: userLogin.userId,
+                      proposalPk: testFapProposals[j].primaryKey,
+                      fapId: testFapId,
+                    };
+                    fapReviewAssignments.push(assignment);
+                    let reviewersAssigned =
+                      await fap.assignFapReviewersToProposals(
+                        userLogin.userId,
+                        testFapProposals[j].primaryKey,
+                        testFapId
+                      );
+                    if (reviewersAssigned) {
+                      console.log(
+                        `Fap reviewer ${userLogin.userId} assigned to proposal ${testFapProposals[j].proposalId}`
+                      );
+                    }
+                    j++;
+                    i++;
                   }
-                  j++;
-                  i++;
                 }
               }
             }

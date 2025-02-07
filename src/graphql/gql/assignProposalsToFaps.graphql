@@ -1,0 +1,3 @@
+mutation AssignProposalsToFaps($proposalPks: [Int!]!, $fapInstruments: [FapInstrumentInput!]!) {
+  assignProposalsToFaps(proposalPks: $proposalPks, fapInstruments: $fapInstruments)
+}

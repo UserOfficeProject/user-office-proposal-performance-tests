@@ -79,6 +79,8 @@ spec:
         value: "${FAP_REVIEW_STATUS_ID}"
       - name: SUBMITTED_STATUS_ID
         value: "${SUBMITTED_STATUS_ID}"
+      - name: K6_OPENSEARCH_INSECURE_SKIP_VERIFY
+        value: "${K6_OPENSEARCH_INSECURE_SKIP_VERIFY}"
     envFrom:
       - secretRef:
           name: connection-secrets
