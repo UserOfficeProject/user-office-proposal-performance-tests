@@ -32,14 +32,28 @@ export const getQuestions = async () => {
     },
     {
       type: input,
-      key: 'K6_TEST_ID',
+      key: 'K6_TEST_NAME',
       dependencyAnswer: 'K6_TEST_FILE',
       defaultCallBack: (value: string) => {
-        console.log(value);
         if (!value) {
           return '';
         }
-        return `${value.toString().slice(0, -3)}-${format(new Date(), 'dd/MM/y:H:mm')}`;
+        return `${value.toString().slice(0, -3)}`;
+      },
+      options: {
+        message: 'K6 test name',
+        default: defaultAnswers.K6_TEST_FILE,
+      },
+    },
+    {
+      type: input,
+      key: 'K6_TEST_ID',
+      dependencyAnswer: 'K6_TEST_NAME',
+      defaultCallBack: (value: string) => {
+        if (!value) {
+          return '';
+        }
+        return `${value}-${format(new Date(), 'dd/MM/y:H:mm')}`;
       },
       options: {
         message: 'K6 test id',
