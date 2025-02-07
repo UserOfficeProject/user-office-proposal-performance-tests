@@ -1,4 +1,5 @@
-export type Answers = Record<
+export type Answers = Record<AnswerKey, string | number | boolean>;
+export type AnswerKey =
   | 'K6_VERSION_TAG'
   | 'TEST_SETUP_VERSION_TAG'
   | 'BROWSER_BASE_URL'
@@ -18,9 +19,11 @@ export type Answers = Record<
   | 'INSTRUMENT_ID'
   | 'K6_TEST_FILE'
   | 'K6_TEST_NAME'
-  | 'K6_TEST_ID',
-  string | number | boolean
->;
+  | 'IS_BROWSER_TEST'
+  | 'SETUP_K6_OPTIONS'
+  | 'SETUP_OPENSEARCH_CONFIGS'
+  | 'SETUP_TEST_INSTRUMENT'
+  | 'K6_TEST_ID';
 export const defaultAnswers: Answers = {
   K6_VERSION_TAG: '0.0.4',
   TEST_SETUP_VERSION_TAG: '0.0.4',
@@ -39,7 +42,11 @@ export const defaultAnswers: Answers = {
   K6_OPENSEARCH_FLUSH_PERIOD: '2m',
   IS_CLUSTER_TEST_RUN: true,
   INSTRUMENT_ID: '6',
+  IS_BROWSER_TEST: false,
   K6_TEST_FILE: 'test.js',
   K6_TEST_NAME: 'test',
   K6_TEST_ID: 'test-id',
+  SETUP_K6_OPTIONS: false,
+  SETUP_OPENSEARCH_CONFIGS: false,
+  SETUP_TEST_INSTRUMENT: false,
 };
