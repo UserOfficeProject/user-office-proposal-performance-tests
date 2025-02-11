@@ -18,7 +18,7 @@ export K6_OPENSEARCH_ADDRESS="https://devkubernetes.developers.facilities.rl.ac.
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
 export IS_CLUSTER_TEST_RUN="true"
 export INSTRUMENT_ID=6
-
+export FIRST_USER_ID=-220800000
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
