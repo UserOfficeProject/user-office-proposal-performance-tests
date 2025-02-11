@@ -54,9 +54,6 @@ export const options = {
 export default async function () {
   const round =
     testData.isis.rounds[randomIntBetween(0, testData.isis.rounds.length - 1)];
-  console.error('roundName', round.roundName);
-  console.error('round', round.instruments.join(','));
-  console.error('facility', testData.isis.facility);
   const soapReqBody = `
   <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
     <Body>
