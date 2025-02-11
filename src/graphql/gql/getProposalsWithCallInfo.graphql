@@ -1,19 +1,15 @@
-query getProposals($filter: ProposalsFilter) {
+query getProposalsWithCallInfo($filter: ProposalsFilter) {
   proposals(filter: $filter) {
     proposals {
       primaryKey
       proposalId
       title
-      submitted
-      proposerId
-      abstract
-      status {
-        name
-      }
       proposer {
         id
       }
-      users {
+      call {
+        shortCode
+        title
         id
       }
     }

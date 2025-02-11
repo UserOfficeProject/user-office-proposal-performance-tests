@@ -37,6 +37,8 @@ spec:
         value: ${BROWSER_BASE_URL}
       - name: GRAPHQL_URL
         value: ${GRAPHQL_URL}
+      - name: PROPOSAL_LOOKUP_URL
+        value: ${PROPOSAL_LOOKUP_URL}
       - name: TEST_SETUP_URL
         value: ${TEST_SETUP_URL}
       - name: K6_PS_VUS
