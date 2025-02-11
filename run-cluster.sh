@@ -1,5 +1,5 @@
 #!/bin/bash
-export K6_TEST_FILE=api-v1-get-exp-sum-from-oracle-test
+export K6_TEST_FILE=sc1-proposal-submission-test
 export K6_VERSION_TAG=0.0.4
 export TEST_SETUP_VERSION_TAG=0.0.4
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
@@ -9,7 +9,7 @@ export TEST_SETUP_URL=http://test-setup:8100
 export K6_PS_VUS=50
 export K6_PS_ITERATIONS=2
 export K6_SETUP_TOTAL_USERS=250
-export TEST_SETUP_CALL_ID=95
+export TEST_SETUP_CALL_ID=54
 export K6_TEST_PARALLELISM=2
 export K6_TEST_NAME="$K6_TEST_FILE-$(date +%s)"
 export SETUP_TEST_USERS="true"
