@@ -12,7 +12,7 @@ spec:
       name: test-scripts
       file: ${K6_TEST_FILE}.js
   separate: true
-  arguments: --out xk6-output-opensearch --no-usage-report -e ENVIRONMENT=develop
+  arguments: --out xk6-output-opensearch --no-summary --no-usage-report -e ENVIRONMENT=develop
   runner:
     image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
     imagePullPolicy: Always
@@ -37,8 +37,6 @@ spec:
         value: ${BROWSER_BASE_URL}
       - name: GRAPHQL_URL
         value: ${GRAPHQL_URL}
-      - name: PROPOSAL_LOOKUP_URL
-        value: ${PROPOSAL_LOOKUP_URL}
       - name: TEST_SETUP_URL
         value: ${TEST_SETUP_URL}
       - name: K6_PS_VUS
