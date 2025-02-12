@@ -24,6 +24,8 @@ spec:
           env:
             - name: PORT
               value: "8100"
+            - name: FIRST_USER_ID
+              value: "${FIRST_USER_ID}" 
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
