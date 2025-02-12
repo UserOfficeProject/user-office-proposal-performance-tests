@@ -45,6 +45,6 @@ export async function setup() {
 export function fapReview(sharedData: SharedData) {
   fapReviewTest(sharedData);
 }
-// export async function teardown(sharedData: SharedData) {
-//   return await sc1TearDownFapReview(sharedData, environmentConfig);
-// }
+export async function teardown(sharedData: SharedData) {
+  return await sc1TearDownFapReview(sharedData, environmentConfig);
+}
