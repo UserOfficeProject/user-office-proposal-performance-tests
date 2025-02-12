@@ -24,11 +24,10 @@ export default async function fapReviewTest(sharedData: SharedData) {
   const page = await browser.newPage();
   const context = page.context();
   const startTime = Date.now();
-  const fapReviewers = sharedData.users.slice(0, 6);
+  const fapReviewers = sharedData.users.slice(1, (Number(__ENV.SETUP_TOTAL_REVIEWERS)+1));
   const currentUser =
     fapReviewers[randomIntBetween(0, fapReviewers.length - 1)];
   context.setDefaultTimeout(360000);
-  const proposalTitle = randomString(5);
   try {
     await page.goto(
       `${sharedData.browserBaseUrl}/external-auth?token=${currentUser.sessionId}`
@@ -37,83 +36,116 @@ export default async function fapReviewTest(sharedData: SharedData) {
     await homePage.waitFor({
       state: 'visible',
     });
+    sleep(10);
+    await page.screenshot({
+      path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+    });
+    
+  const gradeIcons = await page.$$('//button[@aria-label="Grade proposal"]');
+  for (let i = 0; i < gradeIcons.length; i++) {
 
-    const proposalGradeIcon = page.locator(
-      '//button[@aria-label="Grade proposal"]'
-    );
-    await proposalGradeIcon.waitFor({
-      state: 'visible',
+    await gradeIcons[i].waitForElementState('visible');
+    
+    sleep(10);
+    await page.screenshot({
+      path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+    });
+    await gradeIcons[i].tap();
+
+    sleep(10);
+    await page.screenshot({
+      path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
     });
 
-    await proposalGradeIcon.tap();
+     // Get the iframe element
+     await page.locator('iframe[id="comment_ifr"]').click();
+     sleep(10);
+     await page.keyboard.type(randomWords(8, 5));
 
-    sleep(randomIntBetween(5, 20));
+     sleep(10);
+     await page.screenshot({
+        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+      });
+      
+     await page
+       .locator('input[id="grade-proposal"]')
+       .type(randomIntBetween(1, 10).toString());
+ 
+     sleep(10);
+     await page.screenshot({
+       path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+     });
+     const saveButtonVisible = await page
+       .locator('//button[contains(text(), "Save and continue")]')
+       .isVisible();
+       
+      sleep(10);
+      await page.screenshot({
+         path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+       });
+     
+     check(page, {
+       'Save and continue button visible ': () => saveButtonVisible,
+     });
+ 
+     await page
+       .locator('//button[contains(text(), "Save and continue")]')
+       .click();
+    
+       sleep(10);
+    
+     await page.screenshot({
+       path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+     });
+     await page
+       .waitForSelector('//button[contains(text(), "Submit")]')
+       .then((e) => e.click());
+     
+     sleep(10);
 
-    // Get the iframe element
-    await page.locator('iframe[id="comment_ifr"]').click();
-    sleep(randomIntBetween(5, 20));
-
-    await page.keyboard.type(randomWords(8, 5));
-    sleep(5);
-
-    await page
-      .locator('input[id="grade-proposal"]')
-      .type(randomIntBetween(1, 10).toString());
-
-    sleep(5);
-
-    const saveButtonVisible = await page
-      .locator('//button[contains(text(), "Save and continue")]')
-      .isVisible();
-
-    check(page, {
-      'Save and continue button visible ': () => saveButtonVisible,
-    });
-
-    await page
-      .locator('//button[contains(text(), "Save and continue")]')
-      .click();
-    sleep(randomIntBetween(5, 10));
-    await page
-      .waitForSelector('//button[contains(text(), "Submit")]')
-      .then((e) => e.click());
-    sleep(randomIntBetween(5, 20));
-    const submitConfirmBoxIsVisible = await page
-      .waitForSelector('//h2[contains(text(), "Please confirm")]')
-      .then((e) => e.isVisible());
-
-    check(page, {
-      'Proposal review confirmation box visible': () =>
-        submitConfirmBoxIsVisible,
-    });
-    if (submitConfirmBoxIsVisible) {
-      await page.locator('//button[@data-cy="confirm-ok"]').click();
-      reviewSubmitted.add(1);
-      reviewSubmissionDuration.add((Date.now() - startTime) / 1000);
-    }
-    sleep(randomIntBetween(5, 10));
-    const submissionMessageIsVisible = await page
-      .waitForSelector(
-        '//div[contains(text(), "Your review has been submitted successfully.")]'
-      )
-      .then((e) => e.isVisible());
-
-    check(page, {
-      'Reviewer was able to submit review': () => submissionMessageIsVisible,
-    });
-
-    if (!submissionMessageIsVisible) {
-      console.error(
-        'Failed to take screenshot:',
-        'Review was not submitted successfully'
-      );
-      if (!sharedData?.isClusterTestRun) {
-        await page.screenshot({
-          path: `screenshots/${proposalTitle + Date.now() + '_screenshot.png'}`,
-        });
-      }
-    }
-  } catch (error) {
+     await page.screenshot({
+       path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+     });
+     const submitConfirmBoxIsVisible = await page
+       .waitForSelector('//h2[contains(text(), "Please confirm")]')
+       .then((e) => e.isVisible());
+       await page.screenshot({
+         path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+       });
+     check(page, {
+       'Proposal review confirmation box visible': () =>
+         submitConfirmBoxIsVisible,
+     });
+     if (submitConfirmBoxIsVisible) {
+       await page.locator('//button[@data-cy="confirm-ok"]').click();
+       reviewSubmitted.add(1);
+       reviewSubmissionDuration.add((Date.now() - startTime) / 1000);
+     }
+     sleep(10);
+     const submissionMessageIsVisible = await page
+       .waitForSelector(
+         '//div[contains(text(), "Your review has been submitted successfully.")]'
+       )
+       .then((e) => e.isVisible());
+ 
+     check(page, {
+       'Reviewer was able to submit review': () => submissionMessageIsVisible,
+     });
+ 
+     if (!submissionMessageIsVisible) {
+       console.error(
+         'Failed to take screenshot:',
+         'Review was not submitted successfully'
+       );
+       if (!sharedData?.isClusterTestRun) {
+         await page.screenshot({
+           path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+         });
+       }
+     }   
+  }
+  
+} catch (error) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: review test VU_ID: ${exec.vu.idInTest}`;
     const message = `Reviewer could not submit review for a proposal`;
     console.error(scenario, message, error);
