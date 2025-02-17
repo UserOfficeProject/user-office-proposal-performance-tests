@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 
 import { logger } from '@user-office-software/duo-logger';
 import oracledb from 'oracledb';
+import { roles } from '../utils/roleMembership';
 
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 type UserResult = { sessionId: string; userId: number; email: string };
@@ -170,6 +171,54 @@ export class UserDataSource {
       }
     }
   }
+
+  async assignRoleToUsers(userIds: number[], roleName: string): Promise<{userId:number,groupId:number}[]>  {
+    let connection;
+    if (!userIds || !userIds.length) {
+      return [];
+    }
+    try {
+      connection = await this.pool.getConnection();
+      const groupId = roles[roleName].roleId;
+      const binds = userIds.map((userId) => {
+        return {
+          userId:+userId,
+          groupId,
+        };
+      });
+      const options = {
+        autoCommit: false,
+        bindDefs: {
+          groupId: { type: oracledb.NUMBER },
+          userId: { type: oracledb.NUMBER },
+        },
+      };
+      const { rowsAffected: RoleAssigned } = await connection.executeMany(
+        `MERGE INTO group_membership GM
+          USING ( 
+            SELECT :groupId AS group_id, :userId AS user_id FROM DUAL) S
+            ON (GM.user_id = S.user_id)
+          WHEN NOT MATCHED THEN
+            INSERT (group_id, user_id) VALUES (S.group_id, S.user_id)
+          WHEN MATCHED THEN  
+            UPDATE SET GM.group_id = :groupId `,
+        binds,
+        options
+      );
+      
+      await connection.commit();
+
+      if (!RoleAssigned) {
+        throw new Error('Fail to assign roles to users');
+      }
+      return binds;
+    } finally {
+      if (connection) {
+        await connection.close();
+      }
+    }
+  }
+
   async deleteUsersBetween(first: number, last: number) {
     if (first === undefined) {
       throw new Error('first undefined, will not clear down');
@@ -240,8 +289,8 @@ export class UserDataSource {
 
   async createLoggedInUsers(userIds: number[]): Promise<UserResult[]> {
     let connection;
-    if(!userIds || !userIds.length){
-       return []
+    if (!userIds || !userIds.length) {
+      return [];
     }
     try {
       connection = await this.pool.getConnection();

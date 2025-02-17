@@ -37,43 +37,25 @@ const router = express.Router();
 
 export default function (pool: oracledb.Pool) {
   router.post('/users/assignRole', async (req: Request, res: Response) => {
-    logger.logInfo('Inside assignRole endpoint', {});
-    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
-    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
-
     const reviewerIds = req.body.ids;
     const requestedRoleName = req.body.roleName;
-
+    const dataSource: UserDataSource = await createUserDataSource(pool);
     if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName) {
-      return res
-        .status(400)
-        .send({ message: 'Invalid query parameters, expected ids and roleName.' });
+      return res.sendStatus(400);
     }
 
-    const requestedGroup: PermissionUserGroupDTO[] = [
-      {
-        id: roles[requestedRoleName].roleId,
-        groupName: roles[requestedRoleName].roleName,
-      },
-    ];
-
-    const promisesArray = reviewerIds.map(async (id) => {
-      logger.logInfo(`***** Assigning user ${id} to group ${requestedRoleName}`, {});
-      return await UOWSClient.groupMemberships.addPersonToFapGroup({
-        userNumber: id,
-        groups: requestedGroup,
-      });
-    });
-    return Promise.all(promisesArray)
+    return await dataSource
+      .assignRoleToUsers(reviewerIds, requestedRoleName)
       .then((results) => {
-        results?.forEach((r) => {
-          logger.logInfo(`assignment result : ${r?.groups} and ${r?.userNumber}`, {});
+        logger.logInfo(`Users assigned to role result`, {
+          ...results,
+          roleName: requestedRoleName,
         });
-        return res.send(200);
+        return res.send(JSON.stringify(results))
       })
       .catch((error) => {
-        console.log(error);
-        return res.status(500).send({ message: 'Error assigning role for users', error });
+        logger.logInfo('Error assigning role for users',error);
+        return res.sendStatus(500)
       });
   });
 
