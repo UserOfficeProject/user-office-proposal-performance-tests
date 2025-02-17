@@ -44,7 +44,7 @@ export default function (pool: oracledb.Pool) {
     return await dataSource
       .assignRoleToUsers(reviewerIds, roleName)
       .then((results) => {
-        logger.logInfo(`Users assigned to role result`, {
+        logger.logInfo(`Users assigned to role ${roleName}`, {
           ...results,
           roleName,
         });
