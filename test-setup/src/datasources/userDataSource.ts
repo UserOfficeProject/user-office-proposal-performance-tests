@@ -269,6 +269,12 @@ export class UserDataSource {
         bind
       );
 
+      const { rowsAffected: rolesDeleted } = await connection.execute(
+        `DELETE FROM group_membership
+          WHERE user_id BETWEEN :min AND :max`,
+        bind
+      );
+      
       await connection.commit();
 
       logger.logInfo('Deleted logins, people, establishments and addresses', {
@@ -279,6 +285,7 @@ export class UserDataSource {
         peopleDeleted,
         establishmentsDeleted,
         addressesDeleted,
+        rolesDeleted,
       });
     } finally {
       if (connection) {

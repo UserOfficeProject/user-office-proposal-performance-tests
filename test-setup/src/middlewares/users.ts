@@ -2,9 +2,6 @@ import { logger } from '@user-office-software/duo-logger';
 import express, { Request, Response } from 'express';
 import oracledb from 'oracledb';
 import { createUserDataSource, UserDataSource } from '../datasources/userDataSource';
-import UOWSClient from '../client/UOWSClient';
-import { PermissionUserGroupDTO } from '../../generated/models/PermissionUserGroupDTO';
-import { roles } from '../utils/roleMembership';
 
 export const FIRST_USER_ID = -220800000;
 export const MAXIMUM_NUMBER_OF_USER_IDS = 1000;
@@ -38,20 +35,25 @@ const router = express.Router();
 export default function (pool: oracledb.Pool) {
   router.post('/users/assignRole', async (req: Request, res: Response) => {
     const reviewerIds = req.body.ids;
-    const requestedRoleName = req.body.roleName;
+    const roleName = req.body.roleName;
     const dataSource: UserDataSource = await createUserDataSource(pool);
-    if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName) {
+    if (!reviewerIds || !Array.isArray(reviewerIds) || !roleName) {
       return res.sendStatus(400);
     }
 
     return await dataSource
-      .assignRoleToUsers(reviewerIds, requestedRoleName)
+      .assignRoleToUsers(reviewerIds, roleName)
       .then((results) => {
         logger.logInfo(`Users assigned to role result`, {
           ...results,
-          roleName: requestedRoleName,
+          roleName,
         });
-        return res.send(JSON.stringify(results))
+        const assignedUsers=results.map(result=>{
+          return {
+            userId:result.userId,
+          roleName
+        }})
+        return res.send(assignedUsers)
       })
       .catch((error) => {
         logger.logInfo('Error assigning role for users',error);
@@ -137,36 +139,7 @@ export default function (pool: oracledb.Pool) {
       res.status(200).json(sessionIds);
     })
   );
-  router.delete('/users/removeRole', async (req: Request, res: Response) => {
-    logger.logInfo('Inside removeRole endpoint', {});
-    logger.logInfo(`request body ids >> :::: ${req.body.ids}`, {});
-    logger.logInfo(`request body rolename >> :::: ${req.body.roleName}`, {});
 
-    const reviewerIds = req.body.ids;
-    const requestedRoleName = req.body.roleName;
-
-    if (!reviewerIds || !Array.isArray(reviewerIds) || !requestedRoleName) {
-      return res
-        .status(400)
-        .send({ message: 'Invalid query parameters, expected ids and roleName.' });
-    }
-
-    const promisesArray = reviewerIds.map(async (id) => {
-      logger.logInfo(`***** Removing user ${id} from group ${requestedRoleName}`, {});
-      return await UOWSClient.groupMemberships.removePersonFromFapGroup(
-        id,
-        roles[requestedRoleName].roleName
-      );
-    });
-    return Promise.all(promisesArray)
-      .then(() => {
-        return res.send(200);
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.status(500).send({ message: 'Error removing role for users', error });
-      });
-  });
   router.delete(
     '/users/:sessionId',
     handleError(async (req: Request, res: Response) => {
