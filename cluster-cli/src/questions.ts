@@ -129,6 +129,15 @@ export const getQuestions = async () => {
       },
     },
     {
+      type: input,
+      key: 'FIRST_USER_ID',
+      dependencyPrompt: 'SETUP_TEST_USERS',
+      options: {
+        message: 'First user number',
+        default: defaultAnswers.FIRST_USER_ID,
+      },
+    },
+    {
       type: confirm,
       key: 'SETUP_K6_OPTIONS',
       options: {

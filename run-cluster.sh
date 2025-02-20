@@ -1,5 +1,6 @@
 #!/bin/bash
-export K6_TEST_FILE=sc1-proposal-submission-test
+export K6_TEST_NAME=sc1-proposal-submission-test
+export K6_TEST_FILE="$K6_TEST_FILE.js"
 export K6_VERSION_TAG=0.0.4
 export TEST_SETUP_VERSION_TAG=0.0.4
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
@@ -18,7 +19,7 @@ export K6_OPENSEARCH_ADDRESS="https://devkubernetes.developers.facilities.rl.ac.
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
 export IS_CLUSTER_TEST_RUN="true"
 export INSTRUMENT_ID=6
-export FIRST_USER_ID=-220800000
+export FIRST_USER_ID=-220806000
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)

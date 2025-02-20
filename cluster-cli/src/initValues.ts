@@ -23,7 +23,10 @@ export type AnswerKey =
   | 'SETUP_K6_OPTIONS'
   | 'SETUP_OPENSEARCH_CONFIGS'
   | 'SETUP_TEST_INSTRUMENT'
-  | 'K6_TEST_ID';
+  | 'K6_TEST_ID'
+  | 'FIRST_USER_ID'
+  | 'PROPOSAL_LOOKUP_URL'
+  | 'STOP_CURRENT_TESTS';
 export const defaultAnswers: Answers = {
   K6_VERSION_TAG: '0.0.4',
   TEST_SETUP_VERSION_TAG: '0.0.4',
@@ -38,7 +41,7 @@ export const defaultAnswers: Answers = {
   SETUP_TEST_USERS: true,
   SETUP_TEST_CALL: true,
   K6_OPENSEARCH_ADDRESS:
-    'https://devkubernetes.developers.facilities.rl.ac.uk/opensearch',
+    'https://devopensearch.developers.facilities.rl.ac.uk/opensearch',
   K6_OPENSEARCH_FLUSH_PERIOD: '2m',
   IS_CLUSTER_TEST_RUN: true,
   INSTRUMENT_ID: '6',
@@ -49,4 +52,7 @@ export const defaultAnswers: Answers = {
   SETUP_K6_OPTIONS: false,
   SETUP_OPENSEARCH_CONFIGS: false,
   SETUP_TEST_INSTRUMENT: false,
+  STOP_CURRENT_TESTS: false,
+  FIRST_USER_ID: -220800000,
+  PROPOSAL_LOOKUP_URL:'https://devapis.facilities.rl.ac.uk/ws/ProposalLookupWebService?wsdl'
 };
