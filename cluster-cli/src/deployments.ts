@@ -44,7 +44,9 @@ export async function deleteDeployment(
     labelSelector,
   });
   if (!podList.items.length) {
-    spinner.succeed(`Deployment "${name}" already deleted form "${namespace}"`);
+    spinner.succeed(
+      `Deployment "${name}" deleted from namespace "${namespace}"`
+    );
   }
   if (podList.items.length > 0) {
     let podsDeleted = false;
@@ -111,7 +113,7 @@ export async function createDeployment(
     if (podList.length > 0) {
       podsCreated = true;
       spinner.succeed(
-        `Deployment "${name}"created on namespace "${namespace}"`
+        `Deployment "${name}" created on namespace "${namespace}"`
       );
       break;
     }
@@ -191,7 +193,7 @@ export async function deletePods(namespace: string, appLabels: string[]) {
     return appLabels.includes(labels['app']);
   });
   if (!podList.length) {
-    spinner.succeed(`No pods to delete form "${namespace}"`);
+    spinner.succeed(`Deleted pods from namespace "${namespace}"`);
   }
   if (podList.length > 0) {
     let podsDeleted = false;

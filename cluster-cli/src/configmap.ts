@@ -18,11 +18,12 @@ export async function createConfigMapFromFile(
   filePath: string
 ) {
   const body = fs.readFileSync(`${filePath}`, 'utf8');
+
   const configMap = {
     apiVersion,
     kind,
     data: {
-      'test-script.js': body,
+      [name]: body,
     },
     metadata,
   } as V1ConfigMap;
