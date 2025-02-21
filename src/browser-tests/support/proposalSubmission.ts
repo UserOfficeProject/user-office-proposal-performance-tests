@@ -2,14 +2,10 @@ import { check, fail, sleep } from 'k6';
 import { browser } from 'k6/browser';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
+import { getRandomUser, randomIntBetween, randomString, randomWords } from '../../utils/helperFunctions';
+import { SharedData } from '../../utils/sharedType';
 
-import {
-  getRandomUser,
-  randomIntBetween,
-  randomString,
-  randomWords,
-} from '../utils/helperFunctions';
-import { SharedData } from '../utils/sharedType';
+
 const proposalSubmissionDuration = new Trend(
   'proposal_submission_duration',
   true
