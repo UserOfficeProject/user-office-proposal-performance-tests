@@ -1,6 +1,6 @@
 #!/bin/bash
 export K6_TEST_NAME=sc1-proposal-submission-test
-export K6_TEST_FILE="$K6_TEST_FILE.js"
+export K6_TEST_FILE="$K6_TEST_NAME.js"
 export K6_VERSION_TAG=0.0.4
 export TEST_SETUP_VERSION_TAG=0.0.4
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
@@ -10,15 +10,14 @@ export TEST_SETUP_URL=http://test-setup:8100
 export K6_PS_VUS=50
 export K6_PS_ITERATIONS=2
 export K6_SETUP_TOTAL_USERS=250
-export TEST_SETUP_CALL_ID=54
+export TEST_SETUP_CALL_ID=292
 export K6_TEST_PARALLELISM=2
-export K6_TEST_NAME="$K6_TEST_FILE-$(date +%s)"
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
-export K6_OPENSEARCH_ADDRESS="https://devkubernetes.developers.facilities.rl.ac.uk/opensearch"
+export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk/opensearch"
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
 export IS_CLUSTER_TEST_RUN="true"
-export INSTRUMENT_ID=6
+export INSTRUMENT_ID=9
 export FIRST_USER_ID=-220806000
 
 for arg in "$@"; do
@@ -31,7 +30,7 @@ for arg in "$@"; do
     fi
 done
 root_config_dir="$(dirname $(realpath $0))"
-export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
+export K6_TEST_ID="$K6_TEST_NAME-$(date +"%d/%m/%y:%H:%M")"
 echo "K6_TEST_ID: $K6_TEST_ID"
 
 echo "Removing previous test setup ..."
@@ -40,7 +39,7 @@ kubectl wait pods -l app=test-setup -n apps --timeout=-60s --for=delete &> /dev/
 
 sleep 5
 
-echo "Removing previous k6 test $K6_TEST_FILE ..."
+echo "Removing previous k6 test $K6_TEST_NAME ..."
 envsubst < $root_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
 kubectl delete configmap test-scripts -n apps --ignore-not-found
 kubectl delete configmap test-fixtures  -n apps --ignore-not-found
@@ -56,7 +55,7 @@ fi
 sleep 5
 
 echo "Add load test configmap ..."
-kubectl create configmap test-scripts -n apps  --from-file=$root_config_dir/test/$K6_TEST_FILE.js
+kubectl create configmap test-scripts -n apps  --from-file=$root_config_dir/test/$K6_TEST_FILE
 sleep 5
 
 echo "Add load test fixtures ..."

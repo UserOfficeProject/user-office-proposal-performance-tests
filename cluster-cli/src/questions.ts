@@ -192,7 +192,7 @@ export const getQuestions = async () => {
     {
       type: input,
       key: 'K6_OPENSEARCH_FLUSH_PERIOD',
-      dependencyPrompt: 'SETUP_K6_OPTIONS',
+      dependencyPrompt: 'SETUP_OPENSEARCH_CONFIGS',
       options: {
         message: 'Open search flush period',
         default: defaultAnswers.K6_OPENSEARCH_FLUSH_PERIOD,
@@ -209,7 +209,7 @@ export const getQuestions = async () => {
     {
       type: input,
       key: 'INSTRUMENT_ID',
-      dependencyPrompt: 'SETUP_INSTRUMENT',
+      dependencyPrompt: 'SETUP_TEST_INSTRUMENT',
       options: {
         message: 'Instrument id',
         default: defaultAnswers.INSTRUMENT_ID ,
