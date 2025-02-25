@@ -2,7 +2,7 @@
 apiVersion: k6.io/v1alpha1
 kind: TestRun
 metadata:
-  name: ${K6_TEST_FILE}-deployment
+  name: ${K6_TEST_NAME}-deployment
   labels:
     app: ${K6_TEST_NAME}
 spec:
@@ -10,7 +10,7 @@ spec:
   script:
     configMap:
       name: test-scripts
-      file: ${K6_TEST_FILE}.js
+      file: ${K6_TEST_NAME}.js
   separate: true
   arguments: --out xk6-output-opensearch --no-usage-report -e ENVIRONMENT=develop
   runner:

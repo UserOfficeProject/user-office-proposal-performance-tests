@@ -1,10 +1,11 @@
 import { Options } from 'k6/options';
+import { getEnvironmentConfigurations } from '../../support/configurations';
+import { sc1Setup } from '../../support/setup';
+import { SharedData } from '../../utils/sharedType';
+import userHomeTest from '../support/userHome';
+import { sc1TearDown } from '../../support/teardown';
 
-import userHomeTest from './browser/userHome';
-import { getEnvironmentConfigurations } from './support/configurations';
-import { sc1Setup } from './support/setup';
-import { sc1TearDown } from './support/teardown';
-import { SharedData } from './utils/sharedType';
+
 
 export const options: Options = {
   thresholds: {

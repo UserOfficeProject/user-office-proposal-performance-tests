@@ -48,6 +48,7 @@ export type AddTechnicalReviewInput = {
   instrumentId: Scalars['Int']['input'];
   proposalPk: Scalars['Int']['input'];
   publicComment?: InputMaybe<Scalars['String']['input']>;
+  questionaryId: Scalars['Int']['input'];
   reviewerId?: InputMaybe<Scalars['Int']['input']>;
   status?: InputMaybe<TechnicalReviewStatus>;
   submitted?: InputMaybe<Scalars['Boolean']['input']>;
@@ -181,6 +182,7 @@ export type Call = {
   startReview: Scalars['DateTime']['output'];
   submissionMessage?: Maybe<Scalars['String']['output']>;
   surveyComment: Scalars['String']['output'];
+  technicalReviewTemplateId?: Maybe<Scalars['Int']['output']>;
   template: Template;
   templateId: Scalars['Int']['output'];
   title?: Maybe<Scalars['String']['output']>;
@@ -201,6 +203,7 @@ export type CallsFilter = {
   pdfTemplateIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   proposalStatusShortCode?: InputMaybe<Scalars['String']['input']>;
   shortCode?: InputMaybe<Scalars['String']['input']>;
+  technicalReviewTemplateIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   templateIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
@@ -210,7 +213,8 @@ export type ChangeProposalsStatusInput = {
 };
 
 export type ClaimsInput = {
-  roleIds: Array<Scalars['Int']['input']>;
+  coProposerProposalPk?: InputMaybe<Scalars['Int']['input']>;
+  roleIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type CloneProposalsInput = {
@@ -279,6 +283,7 @@ export type CreateCallInput = {
   startReview: Scalars['DateTime']['input'];
   submissionMessage?: InputMaybe<Scalars['String']['input']>;
   surveyComment: Scalars['String']['input'];
+  technicalReviewTemplateId?: InputMaybe<Scalars['Int']['input']>;
   templateId: Scalars['Int']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -294,7 +299,7 @@ export type CreateInternalReviewInput = {
 export type CreateInviteInput = {
   claims: ClaimsInput;
   email: Scalars['String']['input'];
-  note: Scalars['String']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreatePredefinedMessageInput = {
@@ -335,6 +340,7 @@ export enum DataType {
   SampleEsiBasis = 'SAMPLE_ESI_BASIS',
   SelectionFromOptions = 'SELECTION_FROM_OPTIONS',
   ShipmentBasis = 'SHIPMENT_BASIS',
+  TechnicalReviewBasis = 'TECHNICAL_REVIEW_BASIS',
   TechniquePicker = 'TECHNIQUE_PICKER',
   TextInput = 'TEXT_INPUT',
   VisitBasis = 'VISIT_BASIS'
@@ -418,11 +424,13 @@ export type EmailStatusActionRecipient = {
 
 export enum EmailStatusActionRecipients {
   CoProposers = 'CO_PROPOSERS',
+  ExperimentSafetyReviewers = 'EXPERIMENT_SAFETY_REVIEWERS',
   FapChairAndSecretary = 'FAP_CHAIR_AND_SECRETARY',
   FapReviewers = 'FAP_REVIEWERS',
   InstrumentScientists = 'INSTRUMENT_SCIENTISTS',
   Other = 'OTHER',
   Pi = 'PI',
+  TechniqueScientists = 'TECHNIQUE_SCIENTISTS',
   UserOffice = 'USER_OFFICE'
 }
 
@@ -709,11 +717,11 @@ export enum FeatureId {
   ConflictOfInterestWarning = 'CONFLICT_OF_INTEREST_WARNING',
   EmailInvite = 'EMAIL_INVITE',
   EmailSearch = 'EMAIL_SEARCH',
+  ExperimentSafetyReview = 'EXPERIMENT_SAFETY_REVIEW',
   FapReview = 'FAP_REVIEW',
   InstrumentManagement = 'INSTRUMENT_MANAGEMENT',
   Oauth = 'OAUTH',
   RiskAssessment = 'RISK_ASSESSMENT',
-  SampleSafety = 'SAMPLE_SAFETY',
   Scheduler = 'SCHEDULER',
   Shipping = 'SHIPPING',
   StfcIdleTimer = 'STFC_IDLE_TIMER',
@@ -776,7 +784,7 @@ export type FieldConditionInput = {
   params: Scalars['String']['input'];
 };
 
-export type FieldConfig = BooleanConfig | DateConfig | DynamicMultipleChoiceConfig | EmbellishmentConfig | FapReviewBasisConfig | FeedbackBasisConfig | FileUploadConfig | GenericTemplateBasisConfig | InstrumentPickerConfig | IntervalConfig | NumberInputConfig | ProposalBasisConfig | ProposalEsiBasisConfig | RichTextInputConfig | SampleBasisConfig | SampleDeclarationConfig | SampleEsiBasisConfig | SelectionFromOptionsConfig | ShipmentBasisConfig | SubTemplateConfig | TechniquePickerConfig | TextInputConfig | VisitBasisConfig;
+export type FieldConfig = BooleanConfig | DateConfig | DynamicMultipleChoiceConfig | EmbellishmentConfig | FapReviewBasisConfig | FeedbackBasisConfig | FileUploadConfig | GenericTemplateBasisConfig | InstrumentPickerConfig | IntervalConfig | NumberInputConfig | ProposalBasisConfig | ProposalEsiBasisConfig | RichTextInputConfig | SampleBasisConfig | SampleDeclarationConfig | SampleEsiBasisConfig | SelectionFromOptionsConfig | ShipmentBasisConfig | SubTemplateConfig | TechnicalReviewBasisConfig | TechniquePickerConfig | TextInputConfig | VisitBasisConfig;
 
 export type FieldDependency = {
   __typename?: 'FieldDependency';
@@ -959,8 +967,8 @@ export type IntervalConfig = {
   units: Array<Unit>;
 };
 
-export type InviteCode = {
-  __typename?: 'InviteCode';
+export type Invite = {
+  __typename?: 'Invite';
   claimedAt?: Maybe<Scalars['DateTime']['output']>;
   claimedByUserId?: Maybe<Scalars['Int']['output']>;
   code: Scalars['String']['output'];
@@ -1023,7 +1031,7 @@ export type Mutation = {
   createGenericTemplateWithCopiedAnswers: Array<GenericTemplate>;
   createInstrument: Instrument;
   createInternalReview: InternalReview;
-  createInvite: InviteCode;
+  createInvite: Invite;
   createPdfTemplate: PdfTemplate;
   createPredefinedMessage: PredefinedMessage;
   createProposal: Proposal;
@@ -1121,7 +1129,7 @@ export type Mutation = {
   updateInstitution: Institution;
   updateInstrument: Instrument;
   updateInternalReview: InternalReview;
-  updateInvite: InviteCode;
+  updateInvite: Invite;
   updatePdfTemplate: PdfTemplate;
   updatePredefinedMessage: PredefinedMessage;
   updateProposal: Proposal;
@@ -2653,6 +2661,9 @@ export type Query = {
   shipments?: Maybe<Array<Shipment>>;
   statusActions?: Maybe<Array<ProposalStatusAction>>;
   statusActionsLogs?: Maybe<StatusActionsLogQueryResult>;
+  technicalReview?: Maybe<TechnicalReview>;
+  technicalReviewTemplates?: Maybe<Array<TechnicalReviewTemplate>>;
+  technicalReviews?: Maybe<TechnicalReviewsQueryResult>;
   technique?: Maybe<Technique>;
   techniqueScientistProposals?: Maybe<ProposalsViewResult>;
   techniques?: Maybe<TechniquesQueryResult>;
@@ -3080,6 +3091,23 @@ export type QueryStatusActionsLogsArgs = {
 };
 
 
+export type QueryTechnicalReviewArgs = {
+  technicalReviewId: Scalars['Int']['input'];
+};
+
+
+export type QueryTechnicalReviewTemplatesArgs = {
+  filter?: InputMaybe<TechnicalReviewTemplatesFilter>;
+};
+
+
+export type QueryTechnicalReviewsArgs = {
+  filter?: InputMaybe<TechnicalReviewsFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryTechniqueArgs = {
   techniqueId: Scalars['Int']['input'];
 };
@@ -3472,6 +3500,7 @@ export enum SettingsId {
   DefaultInstSciStatusFilter = 'DEFAULT_INST_SCI_STATUS_FILTER',
   DisplayFaqLink = 'DISPLAY_FAQ_LINK',
   DisplayPrivacyStatementLink = 'DISPLAY_PRIVACY_STATEMENT_LINK',
+  ExperimentSafetyReviewEmail = 'EXPERIMENT_SAFETY_REVIEW_EMAIL',
   ExternalAuthLoginUrl = 'EXTERNAL_AUTH_LOGIN_URL',
   ExternalAuthLogoutUrl = 'EXTERNAL_AUTH_LOGOUT_URL',
   FapSecsEditTechReviews = 'FAP_SECS_EDIT_TECH_REVIEWS',
@@ -3604,6 +3633,7 @@ export type SubmitTechnicalReviewInput = {
   instrumentId: Scalars['Int']['input'];
   proposalPk: Scalars['Int']['input'];
   publicComment?: InputMaybe<Scalars['String']['input']>;
+  questionaryId?: InputMaybe<Scalars['Int']['input']>;
   reviewerId: Scalars['Int']['input'];
   status?: InputMaybe<TechnicalReviewStatus>;
   submitted: Scalars['Boolean']['input'];
@@ -3623,6 +3653,8 @@ export type TechnicalReview = {
   proposal?: Maybe<Proposal>;
   proposalPk: Scalars['Int']['output'];
   publicComment?: Maybe<Scalars['String']['output']>;
+  questionary: Questionary;
+  questionaryId: Scalars['Int']['output'];
   reviewer?: Maybe<BasicUserDetails>;
   reviewerId: Scalars['Int']['output'];
   status?: Maybe<TechnicalReviewStatus>;
@@ -3632,11 +3664,56 @@ export type TechnicalReview = {
   timeAllocation?: Maybe<Scalars['Int']['output']>;
 };
 
+export type TechnicalReviewBasisConfig = {
+  __typename?: 'TechnicalReviewBasisConfig';
+  required: Scalars['Boolean']['output'];
+  small_label: Scalars['String']['output'];
+  tooltip: Scalars['String']['output'];
+};
+
 export enum TechnicalReviewStatus {
   Feasible = 'FEASIBLE',
   PartiallyFeasible = 'PARTIALLY_FEASIBLE',
   Unfeasible = 'UNFEASIBLE'
 }
+
+export type TechnicalReviewTemplate = {
+  __typename?: 'TechnicalReviewTemplate';
+  callCount: Scalars['Int']['output'];
+  complementaryQuestions: Array<Question>;
+  description?: Maybe<Scalars['String']['output']>;
+  group: TemplateGroup;
+  groupId: TemplateGroupId;
+  isArchived: Scalars['Boolean']['output'];
+  json: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  pdfCallCount?: Maybe<Scalars['Int']['output']>;
+  pdfTemplate?: Maybe<PdfTemplate>;
+  proposalESICallCount?: Maybe<Scalars['Int']['output']>;
+  questionaryCount: Scalars['Int']['output'];
+  steps: Array<TemplateStep>;
+  templateId: Scalars['Int']['output'];
+};
+
+export type TechnicalReviewTemplatesFilter = {
+  isArchived?: InputMaybe<Scalars['Boolean']['input']>;
+  templateIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type TechnicalReviewsFilter = {
+  callId?: InputMaybe<Scalars['Int']['input']>;
+  questionaryIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  reviewer?: InputMaybe<ReviewerFilter>;
+  shortCodes?: InputMaybe<Array<Scalars['String']['input']>>;
+  templateIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type TechnicalReviewsQueryResult = {
+  __typename?: 'TechnicalReviewsQueryResult';
+  technicalReviews: Array<TechnicalReview>;
+  totalCount: Scalars['Int']['output'];
+};
 
 export type Technique = {
   __typename?: 'Technique';
@@ -3707,6 +3784,7 @@ export enum TemplateCategoryId {
   ProposalQuestionary = 'PROPOSAL_QUESTIONARY',
   SampleDeclaration = 'SAMPLE_DECLARATION',
   ShipmentDeclaration = 'SHIPMENT_DECLARATION',
+  TechnicalReview = 'TECHNICAL_REVIEW',
   VisitRegistration = 'VISIT_REGISTRATION'
 }
 
@@ -3726,6 +3804,7 @@ export enum TemplateGroupId {
   Sample = 'SAMPLE',
   SampleEsi = 'SAMPLE_ESI',
   Shipment = 'SHIPMENT',
+  TechnicalReview = 'TECHNICAL_REVIEW',
   VisitRegistration = 'VISIT_REGISTRATION'
 }
 
@@ -3863,6 +3942,7 @@ export type UpdateCallInput = {
   startReview?: InputMaybe<Scalars['DateTime']['input']>;
   submissionMessage?: InputMaybe<Scalars['String']['input']>;
   surveyComment?: InputMaybe<Scalars['String']['input']>;
+  technicalReviewTemplateId?: InputMaybe<Scalars['Int']['input']>;
   templateId?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -3992,12 +4072,12 @@ export type UserQueryResult = {
 };
 
 export enum UserRole {
+  ExperimentSafetyReviewer = 'EXPERIMENT_SAFETY_REVIEWER',
   FapChair = 'FAP_CHAIR',
   FapReviewer = 'FAP_REVIEWER',
   FapSecretary = 'FAP_SECRETARY',
   InstrumentScientist = 'INSTRUMENT_SCIENTIST',
   InternalReviewer = 'INTERNAL_REVIEWER',
-  SampleSafetyReviewer = 'SAMPLE_SAFETY_REVIEWER',
   User = 'USER',
   UserOfficer = 'USER_OFFICER'
 }

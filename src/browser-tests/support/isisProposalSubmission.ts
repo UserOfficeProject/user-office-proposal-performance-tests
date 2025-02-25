@@ -3,14 +3,13 @@ import { browser } from 'k6/browser';
 import encoding from 'k6/encoding';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
-
+import { InputFileType, SharedData } from '../../utils/sharedType';
 import {
   getRandomUser,
   randomIntBetween,
   randomString,
   randomWords,
-} from '../utils/helperFunctions';
-import { InputFileType, SharedData } from '../utils/sharedType';
+} from '../../utils/helperFunctions';
 
 const proposalSubmissionDuration = new Trend(
   'proposal_submission_duration',
@@ -128,11 +127,16 @@ export default async function isisProposalSubmissionTest(
     const proposalBasicDetailsSavedMessageIsVisible =
       await proposalBasicDetailsSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal basics details saved': () =>
-        proposalBasicDetailsSavedMessageIsVisible,
-    });
-
+    check(
+      page,
+      {
+        'Proposal basics details saved': () =>
+          proposalBasicDetailsSavedMessageIsVisible,
+      },
+      {
+        proposalBasicDetails: 'proposalBasicDetailsSaved',
+      }
+    );
     /**
      * Populating proposal research support,
      */
@@ -246,14 +250,21 @@ export default async function isisProposalSubmissionTest(
     const researchSavedMessageIsVisible =
       await researchSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal research support details saved': () =>
-        researchSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal research support details saved': () =>
+          researchSavedMessageIsVisible,
+      },
+      {
+        proposalResearchDetails: 'proposalResearchDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal publications,
      */
+
     sleep(randomIntBetween(10, 20));
     await page.locator('button[data-cy="add-button"]').click();
     const articleRef = randomString(8);
@@ -264,6 +275,26 @@ export default async function isisProposalSubmissionTest(
       state: 'visible',
     });
     await articleRefTextarea.type(articleRef);
+
+    sleep(5);
+
+    await page
+      .locator('input[name="text_input_1655390649783"]')
+      .type(randomString(4));
+
+    sleep(5);
+
+    await page
+      .locator('input[name="text_input_1675850162355"]')
+      .type(randomString(8));
+
+    sleep(5);
+
+    await page
+      .locator('input[name="text_input_1654783355036"]')
+      .type(randomString(8));
+
+    sleep(5);
 
     await page
       .locator(
@@ -298,9 +329,15 @@ export default async function isisProposalSubmissionTest(
     const publicationSavedMessageIsVisible =
       await publicationSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal publication saved': () => publicationSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal publication saved': () => publicationSavedMessageIsVisible,
+      },
+      {
+        proposalPublicationDetails: 'proposalPublicationDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal experiment,
@@ -476,9 +513,15 @@ export default async function isisProposalSubmissionTest(
     const experimentSavedMessageIsVisible =
       await experimentSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal experiment saved': () => experimentSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal experiment saved': () => experimentSavedMessageIsVisible,
+      },
+      {
+        proposalExperimentDetails: 'proposalExperimentDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal samples,
@@ -560,8 +603,9 @@ export default async function isisProposalSubmissionTest(
 
     sleep(5);
 
+
     await page
-      .locator('textarea[name="text_input_1651586215535"]')
+      .locator('input[name="text_input_1651586215535"]')
       .type(randomString(8));
 
     await page
@@ -577,7 +621,7 @@ export default async function isisProposalSubmissionTest(
       .click();
 
     await page
-      .locator('textarea[name="text_input_1651586303909"]')
+      .locator('input[name="text_input_1651586303909"]')
       .type(randomString(8));
 
     sleep(5);
@@ -589,10 +633,10 @@ export default async function isisProposalSubmissionTest(
       .click();
 
     sleep(randomIntBetween(5, 10));
-
     const samplesSaveButton = page.locator(
       'button[data-cy="save-and-continue-button"]'
     );
+
     await samplesSaveButton.waitFor({
       state: 'visible',
     });
@@ -606,9 +650,15 @@ export default async function isisProposalSubmissionTest(
     });
     const samplesSavedMessageIsVisible = await samplesSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal samples saved': () => samplesSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal samples saved': () => samplesSavedMessageIsVisible,
+      },
+      {
+        proposalSamplesDetails: 'proposalSamplesDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal hazards,
@@ -699,14 +749,21 @@ export default async function isisProposalSubmissionTest(
     });
     const hazardsSavedMessageIsVisible = await hazardsSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal hazards saved': () => hazardsSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal hazards saved': () => hazardsSavedMessageIsVisible,
+      },
+      {
+        proposalHazardsDetails: 'proposalHazardsDetailsSaved',
+      }
+    );
 
     /**
-     * Populating proposal hazards,
+     * Populating other facilities
      */
     sleep(randomIntBetween(10, 20));
+
     await page
       .locator(
         'input[value="No"][type="radio"][name="selection_from_options_1655201240850"]'
@@ -715,22 +772,15 @@ export default async function isisProposalSubmissionTest(
 
     await page
       .locator(
-        'input[value="Yes"][type="radio"][name="selection_from_options_1655201516441"]'
-      )
-      .click();
-    await page
-      .locator('input[name="text_input_1655201561263"]')
-      .type(randomString(8));
-    await page
-      .locator('textarea[name="text_input_1655201610917"]')
-      .type(randomString(8));
-
-    await page
-      .locator(
-        'input[value="No"][type="radio"][name="selection_from_options_1651238284594"]'
+        'input[value="Yes"][type="radio"][name="selection_from_options_1651238284594"]'
       )
       .click();
 
+    sleep(5);
+
+    await page
+      .locator('textarea[name="text_input_1655200434194"]')
+      .type(randomString(8));
     sleep(5);
 
     await page
@@ -756,10 +806,16 @@ export default async function isisProposalSubmissionTest(
     const otherFacilitiesSavedMessageIsVisible =
       await otherFacilitiesSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal other facilities saved': () =>
-        otherFacilitiesSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal other facilities saved': () =>
+          otherFacilitiesSavedMessageIsVisible,
+      },
+      {
+        proposalOtherFacilitiesDetails: 'proposalOtherFacilitiesDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal science case upload.
@@ -798,10 +854,16 @@ export default async function isisProposalSubmissionTest(
     const scienceCaseUploadSavedMessageIsVisible =
       await scienceCaseUploadSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal science case upload saved': () =>
-        scienceCaseUploadSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal science case upload saved': () =>
+          scienceCaseUploadSavedMessageIsVisible,
+      },
+      {
+        proposalScienceCaseDetails: 'proposalScienceCaseDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal final.
@@ -828,9 +890,15 @@ export default async function isisProposalSubmissionTest(
     });
     const finalSavedMessageIsVisible = await finalSavedMessage.isVisible();
 
-    check(page, {
-      'Proposal final saved': () => finalSavedMessageIsVisible,
-    });
+    check(
+      page,
+      {
+        'Proposal final saved': () => finalSavedMessageIsVisible,
+      },
+      {
+        proposalFinalDetails: 'proposalFinalDetailsSaved',
+      }
+    );
 
     /**
      * Populating proposal review.
@@ -855,14 +923,26 @@ export default async function isisProposalSubmissionTest(
 
     await page.locator('//button[@data-cy="confirm-ok"]').click();
 
-    const submissionMessageIsVisible = page.locator(
+    const submissionMessage = page.locator(
       '//div[contains(text(), "Your proposal has been submitted successfully. You will receive a confirmation email soon.")]'
     );
-    await submissionMessageIsVisible.waitFor({
+    await submissionMessage.waitFor({
       state: 'visible',
     });
-    proposalsSubmitted.add(1);
-    proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+    const submissionMessageIsVisible = await submissionMessage.isVisible();
+    if (submissionMessageIsVisible) {
+      proposalsSubmitted.add(1);
+      proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
+    }
+    check(
+      page,
+      {
+        'Proposal submitted': () => submissionMessageIsVisible,
+      },
+      {
+        proposalSubmitted: 'proposalSubmitted',
+      }
+    );
 
     //This is to wait for status actions to execute
     sleep(50);
