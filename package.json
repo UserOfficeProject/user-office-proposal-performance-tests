@@ -26,7 +26,7 @@
     "postinstall": "cd test-setup && npm install",
     "generate-uop": "graphql-codegen --require dotenv/config --config codegen.ts",
     "cluster-cli:build": "eslint && rm -rf ./cluster-cli/build && node esbuild.cli.config.mjs",
-    "cluster-cli:start": "npm run cluster-cli:build && node ./cluster-cli/build/index.cjs"
+    "cluster-cli:start": "npm run build && npm run cluster-cli:build && node ./cluster-cli/build/index.cjs"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
