@@ -26,7 +26,7 @@ This directory contains the test setup server used to provide user logins during
 1.  **Clone the Repository:**
 
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/UserOfficeProject/user-office-proposal-performance-tests
     cd user-office-proposal-performance-tests/test-setup
     ```
 
