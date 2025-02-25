@@ -64,7 +64,7 @@ pipeline {
     string(
       name: 'TEST_SETUP_CALL_ID',
       description: 'The call id in develop',
-      defaultValue: '54',
+      defaultValue: '292',
       trim: true
     )
     string(
@@ -76,7 +76,7 @@ pipeline {
     string(
       name: 'FIRST_USER_ID',
       description: 'User id of first user',
-      defaultValue: '-220800000',
+      defaultValue: '-220806000',
       trim: true
     )
     string(
