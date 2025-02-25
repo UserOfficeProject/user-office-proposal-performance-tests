@@ -15,18 +15,33 @@ export async function createConfigMapFromFile(
   },
   apiVersion: string,
   kind: string,
-  filePath: string
+  filePath: string,
+  useBinaryData: boolean = false
 ) {
-  const body = fs.readFileSync(`${filePath}`, 'utf8');
+  let configMap = {};
+  if (useBinaryData) {
+    const binaryData = fs.readFileSync(filePath, 'base64');
+    configMap = {
+      apiVersion,
+      kind,
+      binaryData: {
+        [name]: binaryData,
+      },
+      metadata,
+    } as V1ConfigMap;
+  } else {
+    const body = fs.readFileSync(`${filePath}`, 'utf8');
 
-  const configMap = {
-    apiVersion,
-    kind,
-    data: {
-      [name]: body,
-    },
-    metadata,
-  } as V1ConfigMap;
+    configMap = {
+      apiVersion,
+      kind,
+      data: {
+        [name]: body,
+      },
+      metadata,
+    } as V1ConfigMap;
+  }
+
   return await coreV1Api
     .createNamespacedConfigMap({
       namespace: metadata.namespace,

@@ -83,7 +83,8 @@ async function setUpTest(answers: Answers) {
       { name: config.names.fixturesConfigMap, namespace: config.namespace },
       'v1',
       'ConfigMap',
-      `./fixtures/test.pdf` //Can be configurable
+      `./fixtures/test.pdf`, //Can be configurable
+      true
     );
 
     await createDeployment(

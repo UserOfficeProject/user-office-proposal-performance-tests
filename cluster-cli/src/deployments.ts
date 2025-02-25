@@ -108,7 +108,7 @@ export async function createDeployment(
       labelSelector,
     });
     const podList = pods.items.filter((pod) => {
-      return pod.status?.phase === 'Running';
+      return pod.status?.containerStatuses?.every(status=>status.ready);
     });
     if (podList.length > 0) {
       podsCreated = true;

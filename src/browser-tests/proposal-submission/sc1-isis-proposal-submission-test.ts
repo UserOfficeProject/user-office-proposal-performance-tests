@@ -29,7 +29,7 @@ export const options: Options = {
     'checks{proposalSamplesDetails:proposalSamplesDetailsSaved}': ['rate>0.90'],
     'checks{proposalHazardsDetails:proposalHazardsDetailsSaved}': ['rate>0.90'],
     'checks{proposalOtherFacilitiesDetails:proposalOtherFacilitiesDetailsSaved}': ['rate>0.90'],
-    'checks{propo salScienceCaseDetails:proposalScienceCaseDetailsSaved}': ['rate>0.90'],
+    'checks{proposalScienceCaseDetails:proposalScienceCaseDetailsSaved}': ['rate>0.90'],
     'checks{proposalFinalDetails:proposalFinalDetailsSaved}': ['rate>0.90'],
     'checks{proposalSubmitted:proposalSubmitted}': ['rate>0.90'],
   },
