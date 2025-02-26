@@ -1,3 +1,8 @@
+---
+title: Test Setup Server readme
+tags:
+ - markdown
+---
 # Test Setup Server
 
 This directory contains the test setup server used to provide user logins during load testing.
@@ -50,9 +55,9 @@ This directory contains the test setup server used to provide user logins during
     node index.js # or node <script_name>.js
     ```
 
-2.  **Access Endpoints:**
+2.  **Accessing Endpoints:**
 
-    * Access the server's endpoints using `http://localhost:<PORT>/<endpoint>`, where `<PORT>` is the port number (default: 8100) and `<endpoint>` is the specific endpoint path.
+    * Server's endpoints can be accessed on `http://localhost:<PORT>/<endpoint>`, where `<PORT>` is the port number (default: 8100) and `<endpoint>` is the specific endpoint path.
     * The `/health` endpoint is available for checking the server's status.
     * The server is designed to provide endpoints for load testing.
 
