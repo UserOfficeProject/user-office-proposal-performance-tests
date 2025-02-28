@@ -29,7 +29,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let proposalHealthCheck = false;
   let users = null;
   let testCall: CallType | null = null;
-  let testFap: Fap | null = null;
   let testProposals: ProposalType[];
   let testFapId: number;
   let fapReviewAssignments: FapReviewAssignment[] = new Array();
@@ -87,9 +86,11 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         return status;
       },
     });
-    check(users,{'Users variable is an array':(u) => {
-      return Array.isArray(u);
-    }})
+    check(users, {
+      'Users variable is an array': (u) => {
+        return Array.isArray(u);
+      },
+    });
 
     if (!users) {
       console.error(
@@ -117,20 +118,9 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       } `
     );
   }
-  console.info(`Users variable is an array ?? ${Array.isArray(users)}`);
-  console.info(`what is the SETUP_TEST_CALL ?? ${environmentConfig.SETUP_TEST_CALL}`);
-  console.info(`what is the TEST_SETUP_CALL_ID ?? ${__ENV.TEST_SETUP_CALL_ID}`);
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
       testCall = (await call.getCall(+__ENV.TEST_SETUP_CALL_ID)) as CallType;
-      console.error(`test call short code is ${testCall.shortCode}`);
-      console.error(`Fap for this call is ${testCall.faps[0].id}`);
-      check(testCall,{'This test call short code is ISIS Direct 2022_2': (c) => {
-        return c.shortCode === 'ISIS Direct 2022_2';
-      }});
-      check(testCall,{'FAP for this test call is Zoom': (c) => {
-        return c.faps[0].id === 15;
-      }});
     } else {
       testCall = (await call.createTestCall(
         (await template.createTemplate()).templateId
@@ -166,18 +156,13 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       exec.test.abort();
     }
   }
-  console.info(`what is SETUP_TEST_REVIEWERS ${environmentConfig.SETUP_TEST_REVIEWERS}`);
-  check(environmentConfig.SETUP_TEST_REVIEWERS,{'Set up test reviewers value is true': (v) =>{
-    return v === 'true';
-    }
-  })
+
   if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
-    console.log('we landed here!!');
     if (Array.isArray(users)) {
       const userLogin = users as UserLogin[];
       const reviewerUsers = userLogin.slice(
-        1,
-        (Number(__ENV.SETUP_TOTAL_REVIEWERS)+1)
+        0,
+        Number(__ENV.SETUP_TOTAL_REVIEWERS)
       );
       const reviewerIds = reviewerUsers.map((users) => String(users.userId));
       console.info(`the user ids going to be reviewers will be ${reviewerIds}`);
@@ -195,23 +180,26 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
           },
         }
       );
-      check(res,{'Are users assigned role ?':(r) => {
-        const status = r.status === 200;
-        return status;
-      }})
       console.log(`response status ${res.status}`);
+
       if (testCall?.faps) {
         testFapId = testCall?.faps[0].id;
-        console.log(`FAP id from test call is ${testFapId}`);
         if (testFapId) {
-          for(const index in reviewerUsers){
-            Promise.resolve(await user.getUserToken(`${reviewerUsers[index].sessionId}`))
-                    .then(async (value) => {
-                      console.log(`whats the value after getUserToken? ${value}`);
-                      Promise.resolve(await fap.assignReviewersToFap([reviewerUsers[index].userId],testFapId))
-                    .then((value) => console.log(`assigned reviewers to FAP id ${value.id}`));
-                    });
-            }
+          for (const index in reviewerUsers) {
+            Promise.resolve(
+              await user.getUserToken(`${reviewerUsers[index].sessionId}`)
+            ).then(async (value) => {
+              console.log(`whats the value after getUserToken? ${value}`);
+              Promise.resolve(
+                await fap.assignReviewersToFap(
+                  [reviewerUsers[index].userId],
+                  testFapId
+                )
+              ).then((value) =>
+                console.log(`assigned reviewers to FAP id ${value.id}`)
+              );
+            });
+          }
         }
         testProposals = await proposal.getProposals(
           testCall?.id ? testCall?.id : 0
@@ -233,10 +221,18 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
               ]);
 
             if (instrumentsAssigned) {
-              console.log(`are the proposals assigned to instrument ?? ${instrumentsAssigned}`);
-              const proposalsAssignedToFap = await fap.assignProposalsToFaps(testFapProposalKeys, testFapId, Number(__ENV.TEST_SET_UP_INSTRUMENT_ID));
-              if(proposalsAssignedToFap){
-                console.log(`are the proposals assigned to the FAP ?? ${proposalsAssignedToFap}`);
+              console.log(
+                `are the proposals assigned to instrument ?? ${instrumentsAssigned}`
+              );
+              const proposalsAssignedToFap = await fap.assignProposalsToFaps(
+                testFapProposalKeys,
+                testFapId,
+                Number(__ENV.TEST_SET_UP_INSTRUMENT_ID)
+              );
+              if (proposalsAssignedToFap) {
+                console.log(
+                  `are the proposals assigned to the FAP ?? ${proposalsAssignedToFap}`
+                );
                 const reviewerIterator = reviewerUsers.entries();
                 let j = 0;
                 for (let entry of reviewerIterator) {

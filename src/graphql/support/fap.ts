@@ -1,31 +1,58 @@
-import {
-  AsyncClientApi,
-  Fap,
-} from '../../utils/sharedType';
+import { AsyncClientApi, Fap } from '../../utils/sharedType';
 import { executeGraphqlQuery } from '../../support/graphql';
-import { AssignFapReviewersToProposalsDocument, AssignProposalsToFapsDocument, AssignReviewersToFapDocument, RemoveMemberFromFapDocument, RemoveMemberFromFapProposalDocument, UserRole } from '../generated/graphql';
+import {
+  AssignFapReviewersToProposalsDocument,
+  AssignProposalsToFapsDocument,
+  AssignReviewersToFapDocument,
+  GetFapMembersDocument,
+  RemoveMemberFromFapDocument,
+  RemoveMemberFromFapProposalDocument,
+  UserRole,
+} from '../generated/graphql';
 
 export class FAP {
   constructor(private apiAsyncClient: AsyncClientApi) {}
 
   async assignReviewersToFap(memberIds: number[], fapId: number): Promise<Fap> {
-    const assignReviewersToFap = await executeGraphqlQuery(
-      this.apiAsyncClient, 
-      AssignReviewersToFapDocument,
+    const response = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      GetFapMembersDocument,
       {
-        memberIds: memberIds,
         fapId: fapId,
       }
-    ).then((data) => {
-      return data.assignReviewersToFap;
-    });
-    if(!assignReviewersToFap){
-      throw new Error('Fail to assign reviewers to FAP');
+    );
+    if (!response) {
+      throw new Error('Fail to get FAP members');
     }
-    return assignReviewersToFap;
+    const fapMembers = response.fapMembers;
+    if (fapMembers?.find((fapMember) => fapMember.userId === memberIds[0])) {
+      var toReturn: Fap = {
+        id: fapMembers[0].fapId,
+      };
+      console.error(`FAP already has member ${memberIds[0]}`);
+      return toReturn;
+    } else {
+      console.error(`FAP has no member ${memberIds[0]}`);
+      const response = await executeGraphqlQuery(
+        this.apiAsyncClient,
+        AssignReviewersToFapDocument,
+        {
+          memberIds: memberIds,
+          fapId: fapId,
+        }
+      );
+      if (!response) {
+        throw new Error('Fail to assign reviewers to FAP');
+      }
+      return response.assignReviewersToFap;
+    }
   }
-  
-  async assignProposalsToFaps(proposalPks: number[], fapId: number, instrumentId: number): Promise<Boolean>{
+
+  async assignProposalsToFaps(
+    proposalPks: number[],
+    fapId: number,
+    instrumentId: number
+  ): Promise<Boolean> {
     const assignProposalsToFaps = await executeGraphqlQuery(
       this.apiAsyncClient,
       AssignProposalsToFapsDocument,
@@ -33,15 +60,15 @@ export class FAP {
         proposalPks: proposalPks,
         fapInstruments: [
           {
-              fapId,
-              instrumentId
-          }
-        ] 
+            fapId,
+            instrumentId,
+          },
+        ],
       }
     ).then((data) => {
       return data.assignProposalsToFaps;
     });
-    if(!assignProposalsToFaps){
+    if (!assignProposalsToFaps) {
       throw new Error('Fail to assign proposals to FAP');
     }
     return assignProposalsToFaps;
@@ -65,9 +92,9 @@ export class FAP {
         fapId: fapId,
       }
     ).then((data) => {
-      return data.assignFapReviewersToProposals
+      return data.assignFapReviewersToProposals;
     });
-    if(!assignFapReviewersToProposals){
+    if (!assignFapReviewersToProposals) {
       throw new Error('Fail to assign fap reviewers to proposals');
     }
     return assignFapReviewersToProposals;
@@ -89,7 +116,7 @@ export class FAP {
     ).then((data) => {
       return data.removeMemberFromFapProposal;
     });
-    if(!removeMemberFromFapProposal){
+    if (!removeMemberFromFapProposal) {
       throw new Error('Fail to remove fap reviewer from proposal');
     }
     return removeMemberFromFapProposal;
@@ -111,8 +138,8 @@ export class FAP {
     ).then((data) => {
       return data.removeMemberFromFap;
     });
-    if(!removeMemberFromFap){
-      throw new Error ('Failed to remove reviewer from FAP');
+    if (!removeMemberFromFap) {
+      throw new Error('Failed to remove reviewer from FAP');
     }
     return removeMemberFromFap;
   }

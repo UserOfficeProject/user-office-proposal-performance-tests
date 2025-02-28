@@ -20,7 +20,8 @@ if (process.env.TEST_SETUP_DOTENV_PATH) {
   dotenv.config({
     path: validate<string>(process.env.TEST_SETUP_DOTENV_PATH as string, 'TEST_SETUP_DOTENV_PATH'),
   });
-}{
+}
+{
   dotenv.config({
     path: `../.env`,
   });
@@ -61,6 +62,10 @@ async function startServer() {
       }
     }
     const sessionIds = await userDataSource.createLoggedInUsers(userIds);
+    const reviewerUserIds = userIds.slice(0, 100);
+    console.log(`trying to assign roles to users from test-setup`);
+    console.info(`the user ids going to be reviewers will be ${reviewerUserIds}`);
+    await userDataSource.assignRoleToUsers(reviewerUserIds, 'fapMember');
     if (sessionIds.length > 0) {
       logger.logInfo('Created pre start up users', {
         number: sessionIds.length,

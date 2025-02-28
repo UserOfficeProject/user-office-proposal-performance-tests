@@ -7,6 +7,7 @@ import fapReviewTest from './browser/fapReview';
 import { sc1TearDownFapReview } from './support/teardownFapReview';
 
 export const options: Options = {
+  setupTimeout: '240s',
   thresholds: {
     browser_http_req_failed: [
       {
@@ -21,6 +22,7 @@ export const options: Options = {
       },
     ],
     checks: ['rate>0.90'],
+    'checks{reviewSubmission:reviewSubmissionSaved}': ['rate>0.90'],
   },
   scenarios: {
     fapReview: {

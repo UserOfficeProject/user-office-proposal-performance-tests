@@ -48,16 +48,17 @@ export default function (pool: oracledb.Pool) {
           ...results,
           roleName,
         });
-        const assignedUsers=results.map(result=>{
+        const assignedUsers = results.map((result) => {
           return {
-            userId:result.userId,
-          roleName
-        }})
-        return res.send(assignedUsers)
+            userId: result.userId,
+            roleName,
+          };
+        });
+        return res.send(assignedUsers);
       })
       .catch((error) => {
-        logger.logInfo('Error assigning role for users',error);
-        return res.sendStatus(500)
+        logger.logInfo('Error assigning role for users', error);
+        return res.sendStatus(500);
       });
   });
 
