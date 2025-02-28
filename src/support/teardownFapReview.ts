@@ -23,12 +23,11 @@ export async function sc1TearDownFapReview(
   if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
     if (sharedData.fapReviewAssignments) {
       let memberRemoved;
-      let reviewerRemoved;
       sharedData.fapReviewAssignments.forEach(async (a) => {
         console.log(
           `Going to remove reviewer ${a.memberId} from proposal ${a.proposalPk} in fap ${a.fapId}`
         );
-        reviewerRemoved = await fap.removeMemberFromFapProposal(
+        await fap.removeMemberFromFapProposal(
           a.memberId,
           a.fapId,
           a.proposalPk

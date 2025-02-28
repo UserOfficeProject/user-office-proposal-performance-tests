@@ -40,11 +40,6 @@ export type Template = {
   description: string;
   steps: [TemplateStep];
 };
-type Questionary = {
-  steps: [TemplateStep];
-  questionaryId: number;
-  templateId: number;
-};
 export type Proposal = Pick<
   ProposalFields,
   | 'primaryKey'

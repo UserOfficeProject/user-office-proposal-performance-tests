@@ -15,7 +15,6 @@ import {
   UserLogin,
   Call as CallType,
   Proposal as ProposalType,
-  Fap,
   FapReviewAssignment,
 } from '../utils/sharedType';
 
@@ -32,8 +31,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let testProposals: ProposalType[];
   let testFapId: number;
   let fapReviewAssignments: FapReviewAssignment[] = new Array();
-  const browserBaseUrl = __ENV.BROWSER_BASE_URL || 'http://localhost:8081';
-  const graphqlUrl = __ENV.GRAPHQL_URL || 'http://localhost:8081/grapgql';
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
   const apiAsyncClient = getAsyncClientApi(
     environmentConfig.GRAPHQL_URL,
@@ -236,7 +233,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
                 const reviewerIterator = reviewerUsers.entries();
                 let j = 0;
                 for (let entry of reviewerIterator) {
-                  const [index, userLogin] = entry;
+                  const [, userLogin] = entry;
                   let i = 0;
                   while (i < Number(__ENV.PROPOSALS_PER_REVIEWER)) {
                     j = j >= testFapProposals.length ? 0 : j;
