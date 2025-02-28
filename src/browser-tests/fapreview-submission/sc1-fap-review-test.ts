@@ -3,7 +3,7 @@ import { Options } from 'k6/options';
 import { getEnvironmentConfigurations } from '../../support/configurations';
 import { sc1Setup } from '../../support/setup';
 import { SharedData } from '../../utils/sharedType';
-import fapReviewTest from '../../browser/fapReview';
+import fapReviewTest from '../../browser-tests/support/fapReview';
 import { sc1TearDownFapReview } from '../../support/teardownFapReview';
 
 export const options: Options = {
