@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import oracledb from 'oracledb';
 import { createUserDataSource, UserDataSource } from '../datasources/userDataSource';
 
-export const FIRST_USER_ID = -220800000;
+export const FIRST_USER_ID = process.env.FIRST_USER_ID ? +process.env.FIRST_USER_ID : -220800000;
 export const MAXIMUM_NUMBER_OF_USER_IDS = 1000;
 const LAST_USER_ID = FIRST_USER_ID - MAXIMUM_NUMBER_OF_USER_IDS;
 
@@ -66,9 +66,8 @@ export default function (pool: oracledb.Pool) {
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
       const { firstId, lastId } = req.params;
-      const firstUserId = Math.max(+firstId, +lastId);
-      const lastUserId = Math.min(+firstId, +lastId);
-
+      const firstUserId = Math.min(+firstId, +lastId);
+      const lastUserId = Math.max(+firstId, +lastId);
       const totalLength = Math.abs(firstUserId - lastUserId);
       if (totalLength > MAXIMUM_NUMBER_OF_USER_IDS) {
         logger.logException('Attempt to create users greater than the maximum', {

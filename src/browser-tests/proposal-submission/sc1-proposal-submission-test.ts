@@ -1,10 +1,10 @@
 import { Options } from 'k6/options';
+import { getEnvironmentConfigurations } from '../../support/configurations';
+import { sc1Setup } from '../../support/setup';
+import proposalSubmissionTest from '../support/proposalSubmission';
+import { SharedData } from '../../utils/sharedType';
+import { sc1TearDown } from '../../support/teardown';
 
-import proposalSubmissionTest from './browser/proposalSubmission';
-import { getEnvironmentConfigurations } from './support/configurations';
-import { sc1Setup } from './support/setup';
-import { sc1TearDown } from './support/teardown';
-import { SharedData } from './utils/sharedType';
 
 export const options: Options = {
   thresholds: {

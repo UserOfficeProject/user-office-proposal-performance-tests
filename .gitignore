@@ -3,3 +3,4 @@ node_modules
 screenshots
 test
 .env
+cluster-cli/build

@@ -2,7 +2,7 @@
 apiVersion: k6.io/v1alpha1
 kind: TestRun
 metadata:
-  name: ${K6_TEST_FILE}-deployment
+  name: ${K6_TEST_NAME}-deployment
   labels:
     app: ${K6_TEST_NAME}
 spec:
@@ -10,7 +10,7 @@ spec:
   script:
     configMap:
       name: test-scripts
-      file: ${K6_TEST_FILE}.js
+      file: ${K6_TEST_NAME}.js
   separate: true
   arguments: --out xk6-output-opensearch --no-usage-report -e ENVIRONMENT=develop
   runner:
@@ -25,9 +25,10 @@ spec:
         co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
         co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
         co.elastic.logs/processors.add_fields.fields.application.tier: "service"
-        co.elastic.logs/processors.dissect.tokenizer: "%{?log_message}"
+        co.elastic.logs/processors.dissect.tokenizer: "time=\"%{@timestamp}\" level=%{log_level} msg=\"%{?log_message}\" source=%{?log_source}"
         co.elastic.logs/processors.dissect.ignore_failure: "true"
         co.elastic.logs/processors.dissect.target_prefix: ""
+        co.elastic.logs/processors.dissect.overwrite_keys: "true"
     resources:
       requests:
         cpu: "20000m"
@@ -37,6 +38,8 @@ spec:
         value: ${BROWSER_BASE_URL}
       - name: GRAPHQL_URL
         value: ${GRAPHQL_URL}
+      - name: PROPOSAL_LOOKUP_URL
+        value: ${PROPOSAL_LOOKUP_URL}
       - name: TEST_SETUP_URL
         value: ${TEST_SETUP_URL}
       - name: K6_PS_VUS

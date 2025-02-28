@@ -1,9 +1,11 @@
 #!/bin/bash
-export K6_TEST_FILE=sc1-fap-review-test
+export K6_TEST_NAME=sc1-fap-review-test
+export K6_TEST_FILE="$K6_TEST_NAME.js"
 export K6_VERSION_TAG=1.2.9
 export TEST_SETUP_VERSION_TAG=1.2.9
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
+export PROPOSAL_LOOKUP_URL=https://devapis.facilities.rl.ac.uk/ws/ProposalLookupWebService?wsdl
 export TEST_SETUP_URL=http://test-setup:8100
 export SETUP_TEST_REVIEWERS="true"
 export SETUP_TEST_REVIEWER_ROLE="fapMember"
@@ -27,8 +29,8 @@ export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
 export K6_OPENSEARCH_INSECURE_SKIP_VERIFY="true"
 export IS_CLUSTER_TEST_RUN="true"
-export INSTRUMENT_ID=6
-
+export INSTRUMENT_ID=9
+export FIRST_USER_ID=-220800000
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)
@@ -40,7 +42,7 @@ for arg in "$@"; do
     fi
 done
 root_config_dir="$(dirname $(realpath $0))"
-export K6_TEST_ID="$K6_TEST_FILE-$(date +"%d/%m/%y:%H:%M")"
+export K6_TEST_ID="$K6_TEST_NAME-$(date +"%d/%m/%y:%H:%M")"
 echo "K6_TEST_ID: $K6_TEST_ID"
 
 echo "Removing previous test setup ..."
@@ -49,7 +51,7 @@ kubectl wait pods -l app=test-setup -n apps --timeout=-60s --for=delete &> /dev/
 
 sleep 5
 
-echo "Removing previous k6 test $K6_TEST_FILE ..."
+echo "Removing previous k6 test $K6_TEST_NAME ..."
 envsubst < $root_config_dir/resources/basic-test.yaml | kubectl delete -f - -n apps --ignore-not-found 1> /dev/null
 kubectl delete configmap test-scripts -n apps --ignore-not-found
 kubectl delete configmap test-fixtures  -n apps --ignore-not-found
@@ -65,7 +67,7 @@ fi
 sleep 5
 
 echo "Add load test configmap ..."
-kubectl create configmap test-scripts -n apps  --from-file=$root_config_dir/test/$K6_TEST_FILE.js
+kubectl create configmap test-scripts -n apps  --from-file=$root_config_dir/test/$K6_TEST_FILE
 sleep 5
 
 echo "Add load test fixtures ..."
