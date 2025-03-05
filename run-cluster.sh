@@ -22,7 +22,6 @@ export PROPOSALS_PER_REVIEWER=3
 export FAP_REVIEW_STATUS_ID=5
 export SUBMITTED_STATUS_ID=15
 export K6_TEST_PARALLELISM=1
-export K6_TEST_NAME="$K6_TEST_FILE-$(date +%s)"
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk/opensearch"
