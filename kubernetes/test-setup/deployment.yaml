@@ -25,7 +25,7 @@ spec:
             - name: PORT
               value: "8100"
             - name: FIRST_USER_ID
-              value: "${FIRST_USER_ID}" 
+              value: "${FIRST_USER_ID}"
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -44,6 +44,10 @@ spec:
                   name: connection-secrets
                   key: USER_DB_CONNECTION_STRING
                   optional: false
+            - name: SETUP_TEST_REVIEWERS
+              value: "${SETUP_TEST_REVIEWERS}"
+            - name: SETUP_TOTAL_REVIEWERS
+              value: "${SETUP_TOTAL_REVIEWERS}"
           resources:
             limits:
               cpu: "500m"
