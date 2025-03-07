@@ -32,7 +32,7 @@ export async function sc1SetupFapReview(
   let testCall: CallType | null = null;
   let testProposals: ProposalType[];
   let testFapId: number;
-  let fapReviewAssignments: FapReviewAssignment[] = new Array();
+  const fapReviewAssignments: FapReviewAssignment[] = [];
   const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
   const apiAsyncClient = getAsyncClientApi(
     environmentConfig.GRAPHQL_URL,
@@ -83,11 +83,6 @@ export async function sc1SetupFapReview(
         }
 
         return status;
-      },
-    });
-    check(users, {
-      'Users variable is an array': (u) => {
-        return Array.isArray(u);
       },
     });
 
@@ -227,18 +222,18 @@ export async function sc1SetupFapReview(
               if (proposalsAssignedToFap) {
                 const reviewerIterator = reviewerUsers.entries();
                 let j = 0;
-                for (let entry of reviewerIterator) {
+                for (const entry of reviewerIterator) {
                   const [, userLogin] = entry;
                   let i = 0;
                   while (i < Number(__ENV.PROPOSALS_PER_REVIEWER)) {
                     j = j >= testFapProposals.length ? 0 : j;
-                    let assignment = {
+                    const assignment = {
                       memberId: userLogin.userId,
                       proposalPk: testFapProposals[j].primaryKey,
                       fapId: testFapId,
                     };
                     fapReviewAssignments.push(assignment);
-                    let reviewersAssigned =
+                    const reviewersAssigned =
                       await fap.assignFapReviewersToProposals(
                         userLogin.userId,
                         testFapProposals[j].primaryKey,

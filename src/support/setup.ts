@@ -10,7 +10,6 @@ import { Template } from '../graphql/support/template';
 import {
   SharedData,
   Call as CallType,
-  FapReviewAssignment,
 } from '../utils/sharedType';
 
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
@@ -23,7 +22,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let proposalHealthCheck = false;
   let users = null;
   let testCall: CallType | null = null;
-  let fapReviewAssignments: FapReviewAssignment[] = new Array();
   const apiAsyncClient = getAsyncClientApi(
     environmentConfig.GRAPHQL_URL,
     environmentConfig.GRAPHQL_TOKEN
@@ -70,11 +68,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
         }
 
         return status;
-      },
-    });
-    check(users, {
-      'Users variable is an array': (u) => {
-        return Array.isArray(u);
       },
     });
 
@@ -150,6 +143,5 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     testSetupBaseUrl: environmentConfig.TEST_SETUP_URL,
     isClusterTestRun: environmentConfig.IS_CLUSTER_TEST_RUN === 'true' || false,
     instrumentId: environmentConfig.INSTRUMENT_ID,
-    fapReviewAssignments,
   } as SharedData;
 }
