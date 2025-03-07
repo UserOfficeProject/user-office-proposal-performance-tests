@@ -5,16 +5,11 @@ import http from 'k6/http';
 import { EnvironmentConfigurations } from './configurations';
 import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
-import { FAP } from '../graphql/support/fap';
 import { Instrument } from '../graphql/support/instrument';
-import { Proposal } from '../graphql/support/proposal';
 import { Template } from '../graphql/support/template';
-import { User } from '../graphql/support/user';
 import {
   SharedData,
-  UserLogin,
   Call as CallType,
-  Proposal as ProposalType,
   FapReviewAssignment,
 } from '../utils/sharedType';
 
@@ -28,19 +23,13 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let proposalHealthCheck = false;
   let users = null;
   let testCall: CallType | null = null;
-  let testProposals: ProposalType[];
-  let testFapId: number;
   let fapReviewAssignments: FapReviewAssignment[] = new Array();
-  const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
   const apiAsyncClient = getAsyncClientApi(
     environmentConfig.GRAPHQL_URL,
     environmentConfig.GRAPHQL_TOKEN
   );
   const call = new Call(apiAsyncClient);
   const template = new Template(apiAsyncClient);
-  const fap = new FAP(apiAsyncClient);
-  const user = new User(apiAsyncClient);
-  const proposal = new Proposal(apiAsyncClient);
 
   console.log(`Attempting setup ${environmentConfig.SETUP_RETRIES} times`);
   while (!proposalHealthCheck && retryCount < environmentConfig.SETUP_RETRIES) {
