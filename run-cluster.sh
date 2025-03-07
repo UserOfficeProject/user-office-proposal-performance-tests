@@ -1,8 +1,8 @@
 #!/bin/bash
-export K6_TEST_NAME=sc1-fap-review-test
+export K6_TEST_NAME=sc1-fap-review-submission-test
 export K6_TEST_FILE="$K6_TEST_NAME.js"
-export K6_VERSION_TAG=1.2.9
-export TEST_SETUP_VERSION_TAG=1.2.9
+export K6_VERSION_TAG=0.0.5
+export TEST_SETUP_VERSION_TAG=0.0.5
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
 export PROPOSAL_LOOKUP_URL=https://devapis.facilities.rl.ac.uk/ws/ProposalLookupWebService?wsdl

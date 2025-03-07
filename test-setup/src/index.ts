@@ -62,10 +62,13 @@ async function startServer() {
       }
     }
     const sessionIds = await userDataSource.createLoggedInUsers(userIds);
-    const reviewerUserIds = userIds.slice(0, 100);
-    console.log(`trying to assign roles to users from test-setup`);
-    console.info(`the user ids going to be reviewers will be ${reviewerUserIds}`);
-    await userDataSource.assignRoleToUsers(reviewerUserIds, 'fapMember');
+    console.log(`flag set test reviewers : ${process.env.SETUP_TEST_REVIEWERS}`);
+    if (process.env.SETUP_TEST_REVIEWERS === 'true') {
+      const reviewerUserIds = userIds.slice(0, Number(process.env.SETUP_TOTAL_REVIEWERS));
+      console.info(`the user ids going to be reviewers will be ${reviewerUserIds}`);
+      await userDataSource.assignRoleToUsers(reviewerUserIds, 'fapMember');
+    }
+
     if (sessionIds.length > 0) {
       logger.logInfo('Created pre start up users', {
         number: sessionIds.length,

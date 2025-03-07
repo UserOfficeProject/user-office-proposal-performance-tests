@@ -8,7 +8,7 @@ import { SharedData } from '../../utils/sharedType';
 const reviewSubmissionDuration = new Trend('review_submission_duration', true);
 
 const reviewSubmitted = new Counter('review_submitted', false);
-export default async function fapReviewTest(sharedData: SharedData) {
+export default async function fapReviewSubmissionTest(sharedData: SharedData) {
   if (!sharedData.users) {
     fail(`User not set`);
   }

@@ -18,7 +18,9 @@ import {
   FapReviewAssignment,
 } from '../utils/sharedType';
 
-export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
+export async function sc1SetupFapReview(
+  environmentConfig: EnvironmentConfigurations
+) {
   /************
       Check if the system under test and user setup server are available.
       Abort load testing if the system is not available.
@@ -153,6 +155,112 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       exec.test.abort();
     }
   }
+
+  if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
+    if (Array.isArray(users)) {
+      const userLogin = users as UserLogin[];
+      const reviewerUsers = userLogin.slice(
+        0,
+        Number(__ENV.SETUP_TOTAL_REVIEWERS)
+      );
+      const reviewerIds = reviewerUsers.map((users) => String(users.userId));
+      console.info(`the user ids going to be reviewers will be ${reviewerIds}`);
+      const payLoad = JSON.stringify({
+        ids: reviewerIds,
+        roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
+      });
+      const res = await http.asyncRequest(
+        'POST',
+        `${testSetupBaseUrl}/users/assignRole`,
+        payLoad,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log(`response status ${res.status}`);
+
+      if (testCall?.faps) {
+        testFapId = testCall?.faps[0].id;
+        if (testFapId) {
+          for (const index in reviewerUsers) {
+            Promise.resolve(
+              await user.getUserToken(`${reviewerUsers[index].sessionId}`)
+            ).then(async () => {
+              Promise.resolve(
+                await fap.assignReviewersToFap(
+                  [reviewerUsers[index].userId],
+                  testFapId
+                )
+              ).then((value) =>
+                console.log(`assigned reviewers to FAP id ${value.id}`)
+              );
+            });
+          }
+        }
+        testProposals = await proposal.getProposals(
+          testCall?.id ? testCall?.id : 0
+        );
+        if (testProposals) {
+          const testFapProposals = testProposals.slice(
+            0,
+            Number(__ENV.FAP_PROPOSALS)
+          );
+          const testFapProposalKeys = testFapProposals.map((p) => p.primaryKey);
+          const proposalStatusChanged = await proposal.changeProposalsStatus(
+            testFapProposalKeys,
+            Number(__ENV.FAP_REVIEW_STATUS_ID)
+          );
+          if (proposalStatusChanged) {
+            const instrumentsAssigned =
+              await proposal.assignProposalsToInstruments(testFapProposalKeys, [
+                Number(__ENV.TEST_SET_UP_INSTRUMENT_ID),
+              ]);
+
+            if (instrumentsAssigned) {
+              const proposalsAssignedToFap = await fap.assignProposalsToFaps(
+                testFapProposalKeys,
+                testFapId,
+                Number(__ENV.TEST_SET_UP_INSTRUMENT_ID)
+              );
+              if (proposalsAssignedToFap) {
+                const reviewerIterator = reviewerUsers.entries();
+                let j = 0;
+                for (let entry of reviewerIterator) {
+                  const [, userLogin] = entry;
+                  let i = 0;
+                  while (i < Number(__ENV.PROPOSALS_PER_REVIEWER)) {
+                    j = j >= testFapProposals.length ? 0 : j;
+                    let assignment = {
+                      memberId: userLogin.userId,
+                      proposalPk: testFapProposals[j].primaryKey,
+                      fapId: testFapId,
+                    };
+                    fapReviewAssignments.push(assignment);
+                    let reviewersAssigned =
+                      await fap.assignFapReviewersToProposals(
+                        userLogin.userId,
+                        testFapProposals[j].primaryKey,
+                        testFapId
+                      );
+                    if (reviewersAssigned) {
+                      console.log(
+                        `Fap reviewer ${userLogin.userId} assigned to proposal ${testFapProposals[j].proposalId}`
+                      );
+                    }
+                    j++;
+                    i++;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   return {
     users,
     browserBaseUrl: environmentConfig.BROWSER_BASE_URL,

@@ -1,10 +1,10 @@
 import { Options } from 'k6/options';
 
 import { getEnvironmentConfigurations } from '../../support/configurations';
-import { sc1Setup } from '../../support/setup';
 import { SharedData } from '../../utils/sharedType';
-import fapReviewTest from '../../browser-tests/support/fapReview';
+import fapReviewSubmissionTest from '../support/fapReviewSubmission';
 import { sc1TearDownFapReview } from '../../support/teardownFapReview';
+import { sc1SetupFapReview } from '../../support/setupFapReview';
 
 export const options: Options = {
   setupTimeout: '240s',
@@ -25,8 +25,8 @@ export const options: Options = {
     'checks{reviewSubmission:reviewSubmissionSaved}': ['rate>0.90'],
   },
   scenarios: {
-    fapReview: {
-      exec: 'fapReview',
+    fapReviewSubmission: {
+      exec: 'fapReviewSubmission',
       executor: 'per-vu-iterations',
       vus: +__ENV.K6_PS_VUS || 5,
       iterations: +__ENV.K6_PS_ITERATIONS || 2,
@@ -42,10 +42,10 @@ export const options: Options = {
 const environmentConfig = getEnvironmentConfigurations();
 
 export async function setup() {
-  return await sc1Setup(environmentConfig);
+  return await sc1SetupFapReview(environmentConfig);
 }
-export function fapReview(sharedData: SharedData) {
-  fapReviewTest(sharedData);
+export function fapReviewSubmission(sharedData: SharedData) {
+  fapReviewSubmissionTest(sharedData);
 }
 export async function teardown(sharedData: SharedData) {
   return await sc1TearDownFapReview(sharedData, environmentConfig);
