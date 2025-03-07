@@ -26,13 +26,11 @@ export class FAP {
     }
     const fapMembers = response.fapMembers;
     if (fapMembers?.find((fapMember) => fapMember.userId === memberIds[0])) {
-      var toReturn: Fap = {
+      const toReturn: Fap = {
         id: fapMembers[0].fapId,
       };
-      console.error(`FAP already has member ${memberIds[0]}`);
       return toReturn;
     } else {
-      console.error(`FAP has no member ${memberIds[0]}`);
       const response = await executeGraphqlQuery(
         this.apiAsyncClient,
         AssignReviewersToFapDocument,
@@ -52,7 +50,7 @@ export class FAP {
     proposalPks: number[],
     fapId: number,
     instrumentId: number
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     const assignProposalsToFaps = await executeGraphqlQuery(
       this.apiAsyncClient,
       AssignProposalsToFapsDocument,

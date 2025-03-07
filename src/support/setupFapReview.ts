@@ -189,7 +189,9 @@ export async function sc1SetupFapReview(
                   testFapId
                 )
               ).then((value) =>
-                console.log(`assigned reviewers to FAP id ${value.id}`)
+                console.log(
+                  `assigned ${[reviewerUsers[index].userId]} to FAP id ${value.id}`
+                )
               );
             });
           }
@@ -241,7 +243,7 @@ export async function sc1SetupFapReview(
                       );
                     if (reviewersAssigned) {
                       console.log(
-                        `Fap reviewer ${userLogin.userId} assigned to proposal ${testFapProposals[j].proposalId}`
+                        `Reviewer ${userLogin.userId} assigned to proposal ${testFapProposals[j].proposalId}`
                       );
                     }
                     j++;

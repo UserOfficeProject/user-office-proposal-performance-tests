@@ -1,12 +1,13 @@
 import { check, fail, sleep } from 'k6';
 import { browser } from 'k6/browser';
-import { Trend } from 'k6/metrics';
+import { Counter, Trend } from 'k6/metrics';
 
 import { randomIntBetween } from '../../utils/helperFunctions';
 import { SharedData } from '../../utils/sharedType';
 import { vu } from 'k6/execution';
 const viewProposalResponseTime = new Trend('view_proposal_response_time', true);
 
+const proposalsViewed = new Counter('proposals_viewed', false);
 export default async function fapReviewViewProposalTest(
   sharedData: SharedData
 ) {
@@ -122,16 +123,19 @@ export default async function fapReviewViewProposalTest(
         'Reviewer can see final ': () => finalIsVisible,
       });
 
-      console.error(
+      console.info(
         `Reviewer ${currentUser.userId} can see proposal information`
       );
 
       await page.locator('//button[@data-cy="close-modal"]').click();
       sleep(20);
+      proposalsViewed.add(1);
       viewProposalResponseTime.add((Date.now() - startTime) / 1000);
     }
   } catch (error) {
-    console.error(`Error while submitting Review : ${currentUser.userId}`);
+    console.error(
+      `Error while viewing proposal information : ${currentUser.userId}, error is ${error}`
+    );
   } finally {
     await page.close();
     if (page.isClosed()) {
