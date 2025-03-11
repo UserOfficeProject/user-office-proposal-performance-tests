@@ -4,7 +4,7 @@
 try() {
     "$@" || return 1
 }
-export K6_TEST_FILE=sc1-fap-review-view-proposal-test
+export K6_TEST_FILE=sc1-fap-review-submission-test
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
@@ -13,22 +13,19 @@ export GRAPHQL_URL=http://duo-reverse-proxy:80/graphql
 export PROPOSAL_LOOKUP_URL=http://localhost:4006/ProposalWebService/ProposalLookupWebService?wsdl
 export SETUP_TOTAL_USERS=50
 export USER_STARTING_ID=-220800000
-export SETUP_TOTAL_REVIEWERS=50
-export REVIEWER_STARTING_IDS=-220800000
 export TEST_SETUP_CALL_ID=145
 export K6_PS_ITERATIONS=1
-export K6_PS_VUS=50
-export TEST_SETUP_FAP_ID=1
-export TEST_SET_UP_PROPOSAL_PKS=1
+export K6_PS_VUS=1
 export TEST_SET_UP_INSTRUMENT_ID=37
-export FAP_PROPOSALS=250
-export PROPOSALS_PER_REVIEWER=5
-export FAP_REVIEW_STATUS_ID=5
-export SUBMITTED_STATUS_ID=15
 export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
-export SETUP_TEST_REVIEWERS="true"
-export SETUP_TEST_REVIEWER_ROLE="fapMember"
+export FAP_PROCESS_LOAD_TEST="true"
+export TOTAL_FAP_MEMBERS=1
+export FAP_MEMBER_ROLE="fapChair"
+export FAP_PROPOSALS=1
+export PROPOSALS_PER_REVIEWER=1
+export FAP_REVIEW_STATUS_ID=5
+export SUBMITTED_STATUS_ID=15
 export K6_OPENSEARCH_PASSWORD="password"
 export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
@@ -84,8 +81,3 @@ fi
 sleep 10
 
 k6 run --no-usage-report --out dashboard - < <(cat ./test/${K6_TEST_FILE}.js)
-
-if [ "$SETUP_TEST_USERS" = "true" ]; then
-    echo "Clean up created user data"
-    curl -X DELETE http://localhost:8100/users/$USER_STARTING_ID/$(expr $USER_STARTING_ID + $SETUP_TOTAL_USERS)
-fi

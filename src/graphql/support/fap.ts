@@ -1,6 +1,7 @@
 import { AsyncClientApi, Fap } from '../../utils/sharedType';
 import { executeGraphqlQuery } from '../../support/graphql';
 import {
+  AssignChairOrSecretaryDocument,
   AssignFapReviewersToProposalsDocument,
   AssignProposalsToFapsDocument,
   AssignReviewersToFapDocument,
@@ -12,6 +13,28 @@ import {
 
 export class FAP {
   constructor(private apiAsyncClient: AsyncClientApi) {}
+
+  async assignChairOrSecretary(
+    fapId: number,
+    roleId: UserRole,
+    userId: number
+  ): Promise<Fap> {
+    const response = await executeGraphqlQuery(
+      this.apiAsyncClient,
+      AssignChairOrSecretaryDocument,
+      {
+        assignChairOrSecretaryToFapInput: {
+          fapId: fapId,
+          roleId: roleId,
+          userId: userId,
+        },
+      }
+    );
+    if (!response) {
+      throw new Error('Fail to assign chair or secretary to FAP ${');
+    }
+    return response.assignChairOrSecretary;
+  }
 
   async assignReviewersToFap(memberIds: number[], fapId: number): Promise<Fap> {
     const response = await executeGraphqlQuery(
@@ -77,7 +100,7 @@ export class FAP {
     proposalPk: number,
     fapId: number
   ): Promise<Fap> {
-    const assignFapReviewersToProposals = await executeGraphqlQuery(
+    const response = await executeGraphqlQuery(
       this.apiAsyncClient,
       AssignFapReviewersToProposalsDocument,
       {
@@ -89,13 +112,11 @@ export class FAP {
         ],
         fapId: fapId,
       }
-    ).then((data) => {
-      return data.assignFapReviewersToProposals;
-    });
-    if (!assignFapReviewersToProposals) {
+    );
+    if (!response) {
       throw new Error('Fail to assign fap reviewers to proposals');
     }
-    return assignFapReviewersToProposals;
+    return response.assignFapReviewersToProposals;
   }
 
   async removeMemberFromFapProposal(
@@ -103,7 +124,7 @@ export class FAP {
     fapId: number,
     proposalPk: number
   ): Promise<Fap> {
-    const removeMemberFromFapProposal = await executeGraphqlQuery(
+    const response = await executeGraphqlQuery(
       this.apiAsyncClient,
       RemoveMemberFromFapProposalDocument,
       {
@@ -111,13 +132,11 @@ export class FAP {
         fapId: fapId,
         proposalPk: proposalPk,
       }
-    ).then((data) => {
-      return data.removeMemberFromFapProposal;
-    });
-    if (!removeMemberFromFapProposal) {
+    );
+    if (!response) {
       throw new Error('Fail to remove fap reviewer from proposal');
     }
-    return removeMemberFromFapProposal;
+    return response.removeMemberFromFapProposal;
   }
 
   async removeMemberFromFap(
@@ -125,7 +144,7 @@ export class FAP {
     fapId: number,
     roleId: UserRole
   ): Promise<Fap> {
-    const removeMemberFromFap = await executeGraphqlQuery(
+    const response = await executeGraphqlQuery(
       this.apiAsyncClient,
       RemoveMemberFromFapDocument,
       {
@@ -133,12 +152,10 @@ export class FAP {
         fapId: fapId,
         roleId: roleId,
       }
-    ).then((data) => {
-      return data.removeMemberFromFap;
-    });
-    if (!removeMemberFromFap) {
+    );
+    if (!response) {
       throw new Error('Failed to remove reviewer from FAP');
     }
-    return removeMemberFromFap;
+    return response.removeMemberFromFap;
   }
 }

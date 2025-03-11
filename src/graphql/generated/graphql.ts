@@ -2,23 +2,36 @@
 import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
-  DateTime: { input: any; output: any; }
-  IntStringDateBoolArray: { input: any; output: any; }
-  _Any: { input: any; output: any; }
-  _FieldSet: { input: any; output: any; }
+  DateTime: { input: any; output: any };
+  IntStringDateBoolArray: { input: any; output: any };
+  _Any: { input: any; output: any };
+  _FieldSet: { input: any; output: any };
 };
 
 export type AddConnectionStatusActionsInput = {
@@ -70,7 +83,7 @@ export type AllQuestionsQueryResult = {
 export enum AllocationTimeUnits {
   Day = 'Day',
   Hour = 'Hour',
-  Week = 'Week'
+  Week = 'Week',
 }
 
 export type Answer = {
@@ -230,7 +243,7 @@ export type ConflictResolution = {
 export enum ConflictResolutionStrategy {
   Unresolved = 'UNRESOLVED',
   UseExisting = 'USE_EXISTING',
-  UseNew = 'USE_NEW'
+  UseNew = 'USE_NEW',
 }
 
 export type ConnectionHasActionsInput = {
@@ -343,7 +356,7 @@ export enum DataType {
   TechnicalReviewBasis = 'TECHNICAL_REVIEW_BASIS',
   TechniquePicker = 'TECHNIQUE_PICKER',
   TextInput = 'TEXT_INPUT',
-  VisitBasis = 'VISIT_BASIS'
+  VisitBasis = 'VISIT_BASIS',
 }
 
 export type DateConfig = {
@@ -383,7 +396,7 @@ export type DeleteProposalWorkflowStatusInput = {
 
 export enum DependenciesLogicOperator {
   And = 'AND',
-  Or = 'OR'
+  Or = 'OR',
 }
 
 export type DynamicMultipleChoiceConfig = {
@@ -431,7 +444,7 @@ export enum EmailStatusActionRecipients {
   Pi = 'PI',
   SampleSafety = 'SAMPLE_SAFETY',
   TechniqueScientists = 'TECHNIQUE_SCIENTISTS',
-  UserOffice = 'USER_OFFICE'
+  UserOffice = 'USER_OFFICE',
 }
 
 export type EmailStatusActionRecipientsWithTemplate = {
@@ -457,7 +470,7 @@ export type Entry = {
 
 export enum EvaluatorOperator {
   Eq = 'eq',
-  Neq = 'neq'
+  Neq = 'neq',
 }
 
 export enum Event {
@@ -539,7 +552,7 @@ export enum Event {
   UserDeleted = 'USER_DELETED',
   UserPasswordResetEmail = 'USER_PASSWORD_RESET_EMAIL',
   UserRoleUpdated = 'USER_ROLE_UPDATED',
-  UserUpdated = 'USER_UPDATED'
+  UserUpdated = 'USER_UPDATED',
 }
 
 export type EventLog = {
@@ -729,12 +742,12 @@ export enum FeatureId {
   TechnicalReview = 'TECHNICAL_REVIEW',
   UserManagement = 'USER_MANAGEMENT',
   UserSearchFilter = 'USER_SEARCH_FILTER',
-  VisitManagement = 'VISIT_MANAGEMENT'
+  VisitManagement = 'VISIT_MANAGEMENT',
 }
 
 export enum FeatureUpdateAction {
   Disable = 'DISABLE',
-  Enable = 'ENABLE'
+  Enable = 'ENABLE',
 }
 
 export type Feedback = {
@@ -765,7 +778,7 @@ export type FeedbackRequest = {
 
 export enum FeedbackStatus {
   Draft = 'DRAFT',
-  Submitted = 'SUBMITTED'
+  Submitted = 'SUBMITTED',
 }
 
 export type FeedbacksFilter = {
@@ -784,7 +797,31 @@ export type FieldConditionInput = {
   params: Scalars['String']['input'];
 };
 
-export type FieldConfig = BooleanConfig | DateConfig | DynamicMultipleChoiceConfig | EmbellishmentConfig | FapReviewBasisConfig | FeedbackBasisConfig | FileUploadConfig | GenericTemplateBasisConfig | InstrumentPickerConfig | IntervalConfig | NumberInputConfig | ProposalBasisConfig | ProposalEsiBasisConfig | RichTextInputConfig | SampleBasisConfig | SampleDeclarationConfig | SampleEsiBasisConfig | SelectionFromOptionsConfig | ShipmentBasisConfig | SubTemplateConfig | TechnicalReviewBasisConfig | TechniquePickerConfig | TextInputConfig | VisitBasisConfig;
+export type FieldConfig =
+  | BooleanConfig
+  | DateConfig
+  | DynamicMultipleChoiceConfig
+  | EmbellishmentConfig
+  | FapReviewBasisConfig
+  | FeedbackBasisConfig
+  | FileUploadConfig
+  | GenericTemplateBasisConfig
+  | InstrumentPickerConfig
+  | IntervalConfig
+  | NumberInputConfig
+  | ProposalBasisConfig
+  | ProposalEsiBasisConfig
+  | RichTextInputConfig
+  | SampleBasisConfig
+  | SampleDeclarationConfig
+  | SampleEsiBasisConfig
+  | SelectionFromOptionsConfig
+  | ShipmentBasisConfig
+  | SubTemplateConfig
+  | TechnicalReviewBasisConfig
+  | TechniquePickerConfig
+  | TextInputConfig
+  | VisitBasisConfig;
 
 export type FieldDependency = {
   __typename?: 'FieldDependency';
@@ -1156,42 +1193,34 @@ export type Mutation = {
   validateUnitsImport: UnitsImportWithValidation;
 };
 
-
 export type MutationAcceptInviteArgs = {
   code: Scalars['String']['input'];
 };
-
 
 export type MutationAddClientLogArgs = {
   error: Scalars['String']['input'];
 };
 
-
 export type MutationAddConnectionStatusActionsArgs = {
   newConnectionStatusActionsInput: AddConnectionStatusActionsInput;
 };
 
-
 export type MutationAddProposalWorkflowStatusArgs = {
   newProposalWorkflowStatusInput: AddProposalWorkflowStatusInput;
 };
-
 
 export type MutationAddSamplesToShipmentArgs = {
   sampleIds: Array<Scalars['Int']['input']>;
   shipmentId: Scalars['Int']['input'];
 };
 
-
 export type MutationAddStatusChangingEventsToConnectionArgs = {
   addStatusChangingEventsToConnectionInput: AddStatusChangingEventsToConnectionInput;
 };
 
-
 export type MutationAddTechnicalReviewArgs = {
   addTechnicalReviewInput: AddTechnicalReviewInput;
 };
-
 
 export type MutationAddUserForReviewArgs = {
   fapID: Scalars['Int']['input'];
@@ -1199,12 +1228,10 @@ export type MutationAddUserForReviewArgs = {
   userID: Scalars['Int']['input'];
 };
 
-
 export type MutationAddUserRoleArgs = {
   roleID: Scalars['Int']['input'];
   userID: Scalars['Int']['input'];
 };
-
 
 export type MutationAdministrationProposalArgs = {
   commentForManagement?: InputMaybe<Scalars['String']['input']>;
@@ -1215,7 +1242,6 @@ export type MutationAdministrationProposalArgs = {
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationAnswerTopicArgs = {
   answers: Array<AnswerInput>;
   isPartialSave?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1223,91 +1249,75 @@ export type MutationAnswerTopicArgs = {
   topicId: Scalars['Int']['input'];
 };
 
-
 export type MutationAssignChairOrSecretaryArgs = {
   assignChairOrSecretaryToFapInput: AssignChairOrSecretaryToFapInput;
 };
-
 
 export type MutationAssignFapReviewersToProposalsArgs = {
   assignments: Array<FapReviewAssignmentInput>;
   fapId: Scalars['Int']['input'];
 };
 
-
 export type MutationAssignInstrumentsToCallArgs = {
   assignInstrumentsToCallInput: AssignInstrumentsToCallInput;
 };
-
 
 export type MutationAssignInstrumentsToTechniqueArgs = {
   instrumentIds: Array<Scalars['Int']['input']>;
   techniqueId: Scalars['Int']['input'];
 };
 
-
 export type MutationAssignProposalToTechniquesArgs = {
   proposalPk: Scalars['Int']['input'];
   techniqueIds: Array<Scalars['Int']['input']>;
 };
-
 
 export type MutationAssignProposalsToFapsArgs = {
   fapInstruments: Array<FapInstrumentInput>;
   proposalPks: Array<Scalars['Int']['input']>;
 };
 
-
 export type MutationAssignProposalsToInstrumentsArgs = {
   instrumentIds: Array<Scalars['Int']['input']>;
   proposalPks: Array<Scalars['Int']['input']>;
 };
-
 
 export type MutationAssignReviewersToFapArgs = {
   fapId: Scalars['Int']['input'];
   memberIds: Array<Scalars['Int']['input']>;
 };
 
-
 export type MutationAssignScientistsToInstrumentArgs = {
   instrumentId: Scalars['Int']['input'];
   scientistIds: Array<Scalars['Int']['input']>;
 };
-
 
 export type MutationAssignScientistsToTechniqueArgs = {
   scientistIds: Array<Scalars['Int']['input']>;
   techniqueId: Scalars['Int']['input'];
 };
 
-
 export type MutationAssignXpressProposalsToInstrumentsArgs = {
   instrumentIds: Array<Scalars['Int']['input']>;
   proposalPks: Array<Scalars['Int']['input']>;
 };
 
-
 export type MutationChangeProposalsStatusArgs = {
   changeProposalsStatusInput: ChangeProposalsStatusInput;
 };
 
-
 export type MutationChangeXpressProposalsStatusArgs = {
   changeProposalsStatusInput: ChangeProposalsStatusInput;
 };
-
 
 export type MutationCloneGenericTemplateArgs = {
   genericTemplateId: Scalars['Int']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationCloneProposalsArgs = {
   cloneProposalsInput: CloneProposalsInput;
 };
-
 
 export type MutationCloneSampleArgs = {
   isPostProposalSubmission?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1315,33 +1325,27 @@ export type MutationCloneSampleArgs = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationCloneSampleEsiArgs = {
   esiId: Scalars['Int']['input'];
   newSampleTitle?: InputMaybe<Scalars['String']['input']>;
   sampleId: Scalars['Int']['input'];
 };
 
-
 export type MutationCloneTemplateArgs = {
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateApiAccessTokenArgs = {
   createApiAccessTokenInput: CreateApiAccessTokenInput;
 };
 
-
 export type MutationCreateCallArgs = {
   createCallInput: CreateCallInput;
 };
 
-
 export type MutationCreateEsiArgs = {
   scheduledEventId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateFapArgs = {
   active: Scalars['Boolean']['input'];
@@ -1352,11 +1356,9 @@ export type MutationCreateFapArgs = {
   numberRatingsRequired?: Scalars['Int']['input'];
 };
 
-
 export type MutationCreateFeedbackArgs = {
   scheduledEventId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateGenericTemplateArgs = {
   proposalPk: Scalars['Int']['input'];
@@ -1365,14 +1367,12 @@ export type MutationCreateGenericTemplateArgs = {
   title: Scalars['String']['input'];
 };
 
-
 export type MutationCreateGenericTemplateWithCopiedAnswersArgs = {
   copyAnswersInput: Array<CopyAnswerInput>;
   proposalPk: Scalars['Int']['input'];
   questionId: Scalars['String']['input'];
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateInstrumentArgs = {
   description: Scalars['String']['input'];
@@ -1381,16 +1381,13 @@ export type MutationCreateInstrumentArgs = {
   shortCode: Scalars['String']['input'];
 };
 
-
 export type MutationCreateInternalReviewArgs = {
   createInternalReviewInput: CreateInternalReviewInput;
 };
 
-
 export type MutationCreateInviteArgs = {
   input: CreateInviteInput;
 };
-
 
 export type MutationCreatePdfTemplateArgs = {
   dummyData: Scalars['String']['input'];
@@ -1401,38 +1398,31 @@ export type MutationCreatePdfTemplateArgs = {
   templateSampleDeclaration: Scalars['String']['input'];
 };
 
-
 export type MutationCreatePredefinedMessageArgs = {
   createPredefinedMessageInput: CreatePredefinedMessageInput;
 };
 
-
 export type MutationCreateProposalArgs = {
   callId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateProposalScientistCommentArgs = {
   comment: Scalars['String']['input'];
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationCreateProposalStatusArgs = {
   newProposalStatusInput: CreateProposalStatusInput;
 };
-
 
 export type MutationCreateProposalWorkflowArgs = {
   newProposalWorkflowInput: CreateProposalWorkflowInput;
 };
 
-
 export type MutationCreateQuestionArgs = {
   categoryId: TemplateCategoryId;
   dataType: DataType;
 };
-
 
 export type MutationCreateQuestionTemplateRelationArgs = {
   questionId: Scalars['String']['input'];
@@ -1441,11 +1431,9 @@ export type MutationCreateQuestionTemplateRelationArgs = {
   topicId: Scalars['Int']['input'];
 };
 
-
 export type MutationCreateQuestionaryArgs = {
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateSampleArgs = {
   isPostProposalSubmission?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1455,12 +1443,10 @@ export type MutationCreateSampleArgs = {
   title: Scalars['String']['input'];
 };
 
-
 export type MutationCreateSampleEsiArgs = {
   esiId: Scalars['Int']['input'];
   sampleId: Scalars['Int']['input'];
 };
-
 
 export type MutationCreateShipmentArgs = {
   proposalPk: Scalars['Int']['input'];
@@ -1468,13 +1454,11 @@ export type MutationCreateShipmentArgs = {
   title: Scalars['String']['input'];
 };
 
-
 export type MutationCreateTechniqueArgs = {
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
   shortCode: Scalars['String']['input'];
 };
-
 
 export type MutationCreateTemplateArgs = {
   description?: InputMaybe<Scalars['String']['input']>;
@@ -1482,13 +1466,11 @@ export type MutationCreateTemplateArgs = {
   name: Scalars['String']['input'];
 };
 
-
 export type MutationCreateTopicArgs = {
   sortOrder?: InputMaybe<Scalars['Int']['input']>;
   templateId: Scalars['Int']['input'];
   title?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type MutationCreateUnitArgs = {
   id: Scalars['String']['input'];
@@ -1498,7 +1480,6 @@ export type MutationCreateUnitArgs = {
   unit: Scalars['String']['input'];
 };
 
-
 export type MutationCreateUserByEmailInviteArgs = {
   email: Scalars['String']['input'];
   firstname: Scalars['String']['input'];
@@ -1506,150 +1487,121 @@ export type MutationCreateUserByEmailInviteArgs = {
   userRole: UserRole;
 };
 
-
 export type MutationCreateVisitArgs = {
   scheduledEventId: Scalars['Int']['input'];
   team: Array<Scalars['Int']['input']>;
   teamLeadUserId: Scalars['Int']['input'];
 };
 
-
 export type MutationCreateVisitRegistrationArgs = {
   visitId: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteApiAccessTokenArgs = {
   deleteApiAccessTokenInput: DeleteApiAccessTokenInput;
 };
 
-
 export type MutationDeleteCallArgs = {
   id: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteFapArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteFeedbackArgs = {
   feedbackId: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteGenericTemplateArgs = {
   genericTemplateId: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteInstitutionArgs = {
   id: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteInstrumentArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteInternalReviewArgs = {
   deleteInternalReviewInput: DeleteInternalReviewInput;
 };
-
 
 export type MutationDeletePdfTemplateArgs = {
   pdfTemplateId: Scalars['Int']['input'];
 };
 
-
 export type MutationDeletePredefinedMessageArgs = {
   deletePredefinedMessageInput: DeletePredefinedMessageInput;
 };
-
 
 export type MutationDeleteProposalArgs = {
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteProposalScientistCommentArgs = {
   commentId: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteProposalStatusArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteProposalWorkflowArgs = {
   id: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteProposalWorkflowStatusArgs = {
   deleteProposalWorkflowStatusInput: DeleteProposalWorkflowStatusInput;
 };
 
-
 export type MutationDeleteQuestionArgs = {
   questionId: Scalars['String']['input'];
 };
-
 
 export type MutationDeleteQuestionTemplateRelationArgs = {
   questionId: Scalars['String']['input'];
   templateId: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteSampleArgs = {
   sampleId: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteSampleEsiArgs = {
   esiId: Scalars['Int']['input'];
   sampleId: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteShipmentArgs = {
   shipmentId: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteTechniqueArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteTemplateArgs = {
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationDeleteTopicArgs = {
   topicId: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteUnitArgs = {
   id: Scalars['String']['input'];
 };
-
 
 export type MutationDeleteUserArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type MutationDeleteVisitArgs = {
   visitId: Scalars['Int']['input'];
 };
-
 
 export type MutationExternalTokenLoginArgs = {
   externalToken: Scalars['String']['input'];
@@ -1657,11 +1609,9 @@ export type MutationExternalTokenLoginArgs = {
   redirectUri: Scalars['String']['input'];
 };
 
-
 export type MutationGetTokenForUserArgs = {
   userId: Scalars['Int']['input'];
 };
-
 
 export type MutationImportProposalArgs = {
   abstract?: InputMaybe<Scalars['String']['input']>;
@@ -1677,24 +1627,20 @@ export type MutationImportProposalArgs = {
   users?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
-
 export type MutationImportTemplateArgs = {
   conflictResolutions: Array<ConflictResolution>;
   subTemplatesConflictResolutions: Array<Array<ConflictResolution>>;
   templateAsJson: Scalars['String']['input'];
 };
 
-
 export type MutationImportUnitsArgs = {
   conflictResolutions: Array<ConflictResolution>;
   json: Scalars['String']['input'];
 };
 
-
 export type MutationLogoutArgs = {
   token: Scalars['String']['input'];
 };
-
 
 export type MutationMergeInstitutionsArgs = {
   institutionIdFrom: Scalars['Int']['input'];
@@ -1702,37 +1648,30 @@ export type MutationMergeInstitutionsArgs = {
   newTitle: Scalars['String']['input'];
 };
 
-
 export type MutationMoveProposalWorkflowStatusArgs = {
   moveProposalWorkflowStatusInput: MoveProposalWorkflowStatusInput;
 };
-
 
 export type MutationNotifyProposalArgs = {
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationPrepareDbArgs = {
   includeSeeds?: InputMaybe<Scalars['Boolean']['input']>;
 };
-
 
 export type MutationRedeemCodeArgs = {
   code: Scalars['String']['input'];
 };
 
-
 export type MutationRemoveAssignedInstrumentFromCallArgs = {
   removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput;
 };
-
 
 export type MutationRemoveInstrumentsFromTechniqueArgs = {
   instrumentIds: Array<Scalars['Int']['input']>;
   techniqueId: Scalars['Int']['input'];
 };
-
 
 export type MutationRemoveMemberFromFapArgs = {
   fapId: Scalars['Int']['input'];
@@ -1740,62 +1679,51 @@ export type MutationRemoveMemberFromFapArgs = {
   roleId: UserRole;
 };
 
-
 export type MutationRemoveMemberFromFapProposalArgs = {
   fapId: Scalars['Int']['input'];
   memberId: Scalars['Int']['input'];
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationRemoveProposalsFromFapsArgs = {
   fapIds: Array<Scalars['Int']['input']>;
   proposalPks: Array<Scalars['Int']['input']>;
 };
 
-
 export type MutationRemoveProposalsFromInstrumentArgs = {
   proposalPks: Array<Scalars['Int']['input']>;
 };
-
 
 export type MutationRemoveScientistFromInstrumentArgs = {
   instrumentId: Scalars['Int']['input'];
   scientistId: Scalars['Int']['input'];
 };
 
-
 export type MutationRemoveScientistFromTechniqueArgs = {
   scientistId: Scalars['Int']['input'];
   techniqueId: Scalars['Int']['input'];
 };
-
 
 export type MutationRemoveUserForReviewArgs = {
   fapId: Scalars['Int']['input'];
   reviewId: Scalars['Int']['input'];
 };
 
-
 export type MutationReorderFapMeetingDecisionProposalsArgs = {
   reorderFapMeetingDecisionProposalsInput: ReorderFapMeetingDecisionProposalsInput;
 };
-
 
 export type MutationReplayStatusActionsLogArgs = {
   statusActionsLogId: Scalars['Int']['input'];
 };
 
-
 export type MutationRequestFeedbackArgs = {
   scheduledEventId: Scalars['Int']['input'];
 };
 
-
 export type MutationSaveFapMeetingDecisionArgs = {
   saveFapMeetingDecisionInput: SaveFapMeetingDecisionInput;
 };
-
 
 export type MutationSaveReviewerRankArgs = {
   proposalPk: Scalars['Int']['input'];
@@ -1803,18 +1731,15 @@ export type MutationSaveReviewerRankArgs = {
   reviewerId: Scalars['Int']['input'];
 };
 
-
 export type MutationSelectRoleArgs = {
   selectedRoleId?: InputMaybe<Scalars['Int']['input']>;
   token: Scalars['String']['input'];
 };
 
-
 export type MutationSetActiveTemplateArgs = {
   templateGroupId: TemplateGroupId;
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationSetInstrumentAvailabilityTimeArgs = {
   availabilityTime: Scalars['Int']['input'];
@@ -1822,22 +1747,18 @@ export type MutationSetInstrumentAvailabilityTimeArgs = {
   instrumentId: Scalars['Int']['input'];
 };
 
-
 export type MutationSetPageContentArgs = {
   id: PageName;
   text: Scalars['String']['input'];
 };
 
-
 export type MutationSetUserNotPlaceholderArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type MutationSubmitFapMeetingDecisionsArgs = {
   SubmitFapMeetingDecisionsInput: SubmitFapMeetingDecisionsInput;
 };
-
 
 export type MutationSubmitInstrumentInFapArgs = {
   callId: Scalars['Int']['input'];
@@ -1845,16 +1766,13 @@ export type MutationSubmitInstrumentInFapArgs = {
   instrumentId: Scalars['Int']['input'];
 };
 
-
 export type MutationSubmitProposalArgs = {
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationSubmitProposalsReviewArgs = {
   submitProposalsReviewInput: SubmitProposalsReviewInput;
 };
-
 
 export type MutationSubmitSampleReviewArgs = {
   safetyComment?: InputMaybe<Scalars['String']['input']>;
@@ -1862,21 +1780,17 @@ export type MutationSubmitSampleReviewArgs = {
   sampleId: Scalars['Int']['input'];
 };
 
-
 export type MutationSubmitShipmentArgs = {
   shipmentId: Scalars['Int']['input'];
 };
-
 
 export type MutationSubmitTechnicalReviewsArgs = {
   submitTechnicalReviewsInput: SubmitTechnicalReviewsInput;
 };
 
-
 export type MutationTokenArgs = {
   token: Scalars['String']['input'];
 };
-
 
 export type MutationUnsubmitInstrumentInFapArgs = {
   callId: Scalars['Int']['input'];
@@ -1884,28 +1798,23 @@ export type MutationUnsubmitInstrumentInFapArgs = {
   instrumentId: Scalars['Int']['input'];
 };
 
-
 export type MutationUpdateAnswerArgs = {
   answer: AnswerInput;
   questionaryId: Scalars['Int']['input'];
 };
 
-
 export type MutationUpdateApiAccessTokenArgs = {
   updateApiAccessTokenInput: UpdateApiAccessTokenInput;
 };
-
 
 export type MutationUpdateCallArgs = {
   updateCallInput: UpdateCallInput;
 };
 
-
 export type MutationUpdateEsiArgs = {
   esiId: Scalars['Int']['input'];
   isSubmitted?: InputMaybe<Scalars['Boolean']['input']>;
 };
-
 
 export type MutationUpdateFapArgs = {
   active: Scalars['Boolean']['input'];
@@ -1918,7 +1827,6 @@ export type MutationUpdateFapArgs = {
   numberRatingsRequired?: Scalars['Int']['input'];
 };
 
-
 export type MutationUpdateFapTimeAllocationArgs = {
   fapId: Scalars['Int']['input'];
   fapTimeAllocation?: InputMaybe<Scalars['Int']['input']>;
@@ -1926,22 +1834,18 @@ export type MutationUpdateFapTimeAllocationArgs = {
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type MutationUpdateFapToCallInstrumentArgs = {
   updateFapToCallInstrumentInput: UpdateFapToCallInstrumentInput;
 };
-
 
 export type MutationUpdateFeaturesArgs = {
   updatedFeaturesInput: UpdateFeaturesInput;
 };
 
-
 export type MutationUpdateFeedbackArgs = {
   feedbackId: Scalars['Int']['input'];
   status?: InputMaybe<FeedbackStatus>;
 };
-
 
 export type MutationUpdateGenericTemplateArgs = {
   genericTemplateId: Scalars['Int']['input'];
@@ -1949,14 +1853,12 @@ export type MutationUpdateGenericTemplateArgs = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationUpdateInstitutionArgs = {
   country: Scalars['Int']['input'];
   id: Scalars['Int']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   rorId?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 export type MutationUpdateInstrumentArgs = {
   description: Scalars['String']['input'];
@@ -1966,16 +1868,13 @@ export type MutationUpdateInstrumentArgs = {
   shortCode: Scalars['String']['input'];
 };
 
-
 export type MutationUpdateInternalReviewArgs = {
   updateInternalReviewInput: UpdateInternalReviewInput;
 };
 
-
 export type MutationUpdateInviteArgs = {
   input: UpdateInviteInput;
 };
-
 
 export type MutationUpdatePdfTemplateArgs = {
   dummyData?: InputMaybe<Scalars['String']['input']>;
@@ -1986,11 +1885,9 @@ export type MutationUpdatePdfTemplateArgs = {
   templateSampleDeclaration?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationUpdatePredefinedMessageArgs = {
   updatePredefinedMessageInput: UpdatePredefinedMessageInput;
 };
-
 
 export type MutationUpdateProposalArgs = {
   abstract?: InputMaybe<Scalars['String']['input']>;
@@ -2001,22 +1898,18 @@ export type MutationUpdateProposalArgs = {
   users?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
-
 export type MutationUpdateProposalScientistCommentArgs = {
   comment: Scalars['String']['input'];
   commentId: Scalars['Int']['input'];
 };
 
-
 export type MutationUpdateProposalStatusArgs = {
   updatedProposalStatusInput: UpdateProposalStatusInput;
 };
 
-
 export type MutationUpdateProposalWorkflowArgs = {
   updatedProposalWorkflowInput: UpdateProposalWorkflowInput;
 };
-
 
 export type MutationUpdateQuestionArgs = {
   config?: InputMaybe<Scalars['String']['input']>;
@@ -2024,7 +1917,6 @@ export type MutationUpdateQuestionArgs = {
   naturalKey?: InputMaybe<Scalars['String']['input']>;
   question?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 export type MutationUpdateQuestionTemplateRelationArgs = {
   config?: InputMaybe<Scalars['String']['input']>;
@@ -2034,7 +1926,6 @@ export type MutationUpdateQuestionTemplateRelationArgs = {
   topicId?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type MutationUpdateQuestionTemplateRelationSettingsArgs = {
   config?: InputMaybe<Scalars['String']['input']>;
   dependencies: Array<FieldDependencyInput>;
@@ -2042,7 +1933,6 @@ export type MutationUpdateQuestionTemplateRelationSettingsArgs = {
   questionId: Scalars['String']['input'];
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationUpdateReviewArgs = {
   comment: Scalars['String']['input'];
@@ -2053,12 +1943,10 @@ export type MutationUpdateReviewArgs = {
   status: ReviewStatus;
 };
 
-
 export type MutationUpdateSampleArgs = {
   sampleId: Scalars['Int']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 export type MutationUpdateSampleEsiArgs = {
   esiId: Scalars['Int']['input'];
@@ -2066,11 +1954,9 @@ export type MutationUpdateSampleEsiArgs = {
   sampleId: Scalars['Int']['input'];
 };
 
-
 export type MutationUpdateSettingsArgs = {
   updatedSettingsInput: UpdateSettingsInput;
 };
-
 
 export type MutationUpdateShipmentArgs = {
   externalRef?: InputMaybe<Scalars['String']['input']>;
@@ -2080,13 +1966,11 @@ export type MutationUpdateShipmentArgs = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationUpdateTechnicalReviewAssigneeArgs = {
   instrumentId: Scalars['Int']['input'];
   proposalPks: Array<Scalars['Int']['input']>;
   userId: Scalars['Int']['input'];
 };
-
 
 export type MutationUpdateTechniqueArgs = {
   description: Scalars['String']['input'];
@@ -2095,14 +1979,12 @@ export type MutationUpdateTechniqueArgs = {
   shortCode: Scalars['String']['input'];
 };
 
-
 export type MutationUpdateTemplateArgs = {
   description?: InputMaybe<Scalars['String']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   templateId: Scalars['Int']['input'];
 };
-
 
 export type MutationUpdateTopicArgs = {
   id: Scalars['Int']['input'];
@@ -2111,7 +1993,6 @@ export type MutationUpdateTopicArgs = {
   templateId?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 export type MutationUpdateUserArgs = {
   birthdate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -2134,12 +2015,10 @@ export type MutationUpdateUserArgs = {
   username?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationUpdateUserRolesArgs = {
   id: Scalars['Int']['input'];
   roles?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
-
 
 export type MutationUpdateVisitArgs = {
   status?: InputMaybe<VisitStatus>;
@@ -2147,7 +2026,6 @@ export type MutationUpdateVisitArgs = {
   teamLeadUserId?: InputMaybe<Scalars['Int']['input']>;
   visitId: Scalars['Int']['input'];
 };
-
 
 export type MutationUpdateVisitRegistrationArgs = {
   endsAt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -2157,11 +2035,9 @@ export type MutationUpdateVisitRegistrationArgs = {
   visitId: Scalars['Int']['input'];
 };
 
-
 export type MutationValidateTemplateImportArgs = {
   templateAsJson: Scalars['String']['input'];
 };
-
 
 export type MutationValidateUnitsImportArgs = {
   unitsAsJson: Scalars['String']['input'];
@@ -2181,7 +2057,7 @@ export enum NumberValueConstraint {
   OnlyNegative = 'ONLY_NEGATIVE',
   OnlyNegativeInteger = 'ONLY_NEGATIVE_INTEGER',
   OnlyPositive = 'ONLY_POSITIVE',
-  OnlyPositiveInteger = 'ONLY_POSITIVE_INTEGER'
+  OnlyPositiveInteger = 'ONLY_POSITIVE_INTEGER',
 }
 
 export type Page = {
@@ -2199,7 +2075,7 @@ export enum PageName {
   Loginhelppage = 'LOGINHELPPAGE',
   Privacypage = 'PRIVACYPAGE',
   Reviewpage = 'REVIEWPAGE',
-  Xpressmanagementpage = 'XPRESSMANAGEMENTPAGE'
+  Xpressmanagementpage = 'XPRESSMANAGEMENTPAGE',
 }
 
 export type PdfTemplate = {
@@ -2285,16 +2161,13 @@ export type Proposal = {
   visits?: Maybe<Array<Visit>>;
 };
 
-
 export type ProposalFapMeetingDecisionsArgs = {
   fapId?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type ProposalProposalBookingsCoreArgs = {
   filter?: InputMaybe<ProposalBookingFilter>;
 };
-
 
 export type ProposalReviewsArgs = {
   fapId?: InputMaybe<Scalars['Int']['input']>;
@@ -2319,7 +2192,7 @@ export type ProposalBookingScheduledEventFilterCore = {
 export enum ProposalBookingStatusCore {
   Active = 'ACTIVE',
   Completed = 'COMPLETED',
-  Draft = 'DRAFT'
+  Draft = 'DRAFT',
 }
 
 export type ProposalBookingsCore = {
@@ -2327,7 +2200,6 @@ export type ProposalBookingsCore = {
   ids: Array<Scalars['Int']['output']>;
   scheduledEvents: Array<ScheduledEventCore>;
 };
-
 
 export type ProposalBookingsCoreScheduledEventsArgs = {
   filter: ProposalBookingScheduledEventFilterCore;
@@ -2337,7 +2209,7 @@ export enum ProposalEndStatus {
   Accepted = 'ACCEPTED',
   Rejected = 'REJECTED',
   Reserved = 'RESERVED',
-  Unset = 'UNSET'
+  Unset = 'UNSET',
 }
 
 export type ProposalEsiBasisConfig = {
@@ -2369,7 +2241,7 @@ export enum ProposalPublicStatus {
   Rejected = 'rejected',
   Reserved = 'reserved',
   Submitted = 'submitted',
-  Unknown = 'unknown'
+  Unknown = 'unknown',
 }
 
 export type ProposalScientistComment = {
@@ -2397,13 +2269,17 @@ export type ProposalStatusAction = {
   type: ProposalStatusActionType;
 };
 
-export type ProposalStatusActionConfig = EmailActionConfig | RabbitMqActionConfig;
+export type ProposalStatusActionConfig =
+  | EmailActionConfig
+  | RabbitMqActionConfig;
 
-export type ProposalStatusActionDefaultConfig = EmailActionDefaultConfig | RabbitMqActionDefaultConfig;
+export type ProposalStatusActionDefaultConfig =
+  | EmailActionDefaultConfig
+  | RabbitMqActionDefaultConfig;
 
 export enum ProposalStatusActionType {
   Email = 'EMAIL',
-  Rabbitmq = 'RABBITMQ'
+  Rabbitmq = 'RABBITMQ',
 }
 
 export type ProposalTemplate = {
@@ -2685,21 +2561,17 @@ export type Query = {
   visits: Array<Visit>;
 };
 
-
 export type Query_EntitiesArgs = {
   representations: Array<Scalars['_Any']['input']>;
 };
-
 
 export type QueryAccessTokenAndPermissionsArgs = {
   accessTokenId: Scalars['String']['input'];
 };
 
-
 export type QueryActiveTemplateIdArgs = {
   templateGroupId: TemplateGroupId;
 };
-
 
 export type QueryAllQuestionsArgs = {
   filter?: InputMaybe<AllQuestionsFilter>;
@@ -2710,95 +2582,77 @@ export type QueryAllQuestionsArgs = {
   sortField?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type QueryBasicUserDetailsArgs = {
   userId: Scalars['Int']['input'];
 };
-
 
 export type QueryBasicUserDetailsByEmailArgs = {
   email: Scalars['String']['input'];
   role?: InputMaybe<UserRole>;
 };
 
-
 export type QueryBlankQuestionaryArgs = {
   templateId: Scalars['Int']['input'];
 };
-
 
 export type QueryBlankQuestionaryStepsArgs = {
   templateId: Scalars['Int']['input'];
 };
 
-
 export type QueryBlankQuestionaryStepsByCallIdArgs = {
   callId: Scalars['Int']['input'];
 };
-
 
 export type QueryCallArgs = {
   callId: Scalars['Int']['input'];
 };
 
-
 export type QueryCallsArgs = {
   filter?: InputMaybe<CallsFilter>;
 };
-
 
 export type QueryCallsByInstrumentScientistArgs = {
   scientistId: Scalars['Int']['input'];
 };
 
-
 export type QueryCheckEmailExistArgs = {
   email: Scalars['String']['input'];
 };
-
 
 export type QueryCheckExternalTokenArgs = {
   token: Scalars['String']['input'];
 };
 
-
 export type QueryCheckTokenArgs = {
   token: Scalars['String']['input'];
 };
 
-
 export type QueryEsiArgs = {
   esiId: Scalars['Int']['input'];
 };
-
 
 export type QueryEventLogsArgs = {
   changedObjectId: Scalars['String']['input'];
   eventType: Scalars['String']['input'];
 };
 
-
 export type QueryFapArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type QueryFapMembersArgs = {
   fapId: Scalars['Int']['input'];
 };
-
 
 export type QueryFapProposalArgs = {
   fapId: Scalars['Int']['input'];
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type QueryFapProposalsArgs = {
   callId?: InputMaybe<Scalars['Int']['input']>;
   fapId: Scalars['Int']['input'];
 };
-
 
 export type QueryFapProposalsByInstrumentArgs = {
   callId: Scalars['Int']['input'];
@@ -2806,82 +2660,66 @@ export type QueryFapProposalsByInstrumentArgs = {
   instrumentId: Scalars['Int']['input'];
 };
 
-
 export type QueryFapReviewTemplatesArgs = {
   filter?: InputMaybe<FapReviewTemplatesFilter>;
 };
-
 
 export type QueryFapReviewersArgs = {
   fapId: Scalars['Int']['input'];
 };
 
-
 export type QueryFapsArgs = {
   filter?: InputMaybe<FapsFilter>;
 };
-
 
 export type QueryFeedbackArgs = {
   feedbackId: Scalars['Int']['input'];
 };
 
-
 export type QueryFeedbacksArgs = {
   filter?: InputMaybe<FeedbacksFilter>;
 };
-
 
 export type QueryFileMetadataArgs = {
   fileId: Scalars['String']['input'];
 };
 
-
 export type QueryFilesMetadataArgs = {
   filter: FilesMetadataFilter;
 };
-
 
 export type QueryGenericTemplateArgs = {
   genericTemplateId: Scalars['Int']['input'];
 };
 
-
 export type QueryGenericTemplatesArgs = {
   filter?: InputMaybe<GenericTemplatesFilter>;
 };
-
 
 export type QueryGetCallByAnswerIdArgs = {
   answerId: Scalars['Int']['input'];
 };
 
-
 export type QueryGetDynamicMultipleChoiceOptionsArgs = {
   questionId: Scalars['String']['input'];
 };
-
 
 export type QueryInstitutionsArgs = {
   filter?: InputMaybe<InstitutionsFilter>;
 };
 
-
 export type QueryInstrumentArgs = {
   instrumentId: Scalars['Int']['input'];
 };
-
 
 export type QueryInstrumentScientistHasAccessArgs = {
   instrumentId: Scalars['Int']['input'];
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type QueryInstrumentScientistHasInstrumentArgs = {
   instrumentId: Scalars['Int']['input'];
 };
-
 
 export type QueryInstrumentScientistProposalsArgs = {
   filter?: InputMaybe<ProposalsFilter>;
@@ -2889,62 +2727,50 @@ export type QueryInstrumentScientistProposalsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type QueryInstrumentsArgs = {
   callIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
-
 
 export type QueryInstrumentsByFapArgs = {
   callId: Scalars['Int']['input'];
   fapId: Scalars['Int']['input'];
 };
 
-
 export type QueryInstrumentsByIdsArgs = {
   instrumentIds: Array<Scalars['Int']['input']>;
 };
-
 
 export type QueryInternalReviewArgs = {
   internalReviewId: Scalars['Int']['input'];
 };
 
-
 export type QueryInternalReviewsArgs = {
   filter?: InputMaybe<InternalReviewsFilter>;
 };
-
 
 export type QueryIsNaturalKeyPresentArgs = {
   naturalKey: Scalars['String']['input'];
 };
 
-
 export type QueryPageContentArgs = {
   pageId: PageName;
 };
-
 
 export type QueryPdfTemplateArgs = {
   pdfTemplateId: Scalars['Int']['input'];
 };
 
-
 export type QueryPdfTemplatesArgs = {
   filter?: InputMaybe<PdfTemplatesFilter>;
 };
-
 
 export type QueryPredefinedMessageArgs = {
   predefinedMessageId: Scalars['Int']['input'];
 };
 
-
 export type QueryPredefinedMessagesArgs = {
   filter?: InputMaybe<PredefinedMessagesFilter>;
 };
-
 
 export type QueryPreviousCollaboratorsArgs = {
   filter?: InputMaybe<Scalars['String']['input']>;
@@ -2957,49 +2783,40 @@ export type QueryPreviousCollaboratorsArgs = {
   userRole?: InputMaybe<UserRole>;
 };
 
-
 export type QueryProposalArgs = {
   primaryKey: Scalars['Int']['input'];
 };
 
-
 export type QueryProposalByIdArgs = {
   proposalId: Scalars['String']['input'];
 };
-
 
 export type QueryProposalReviewsArgs = {
   fapId?: InputMaybe<Scalars['Int']['input']>;
   proposalPk: Scalars['Int']['input'];
 };
 
-
 export type QueryProposalScientistCommentArgs = {
   proposalPk: Scalars['Int']['input'];
 };
-
 
 export type QueryProposalStatusArgs = {
   proposalStatusId: Scalars['Int']['input'];
 };
 
-
 export type QueryProposalTemplatesArgs = {
   filter?: InputMaybe<ProposalTemplatesFilter>;
 };
 
-
 export type QueryProposalWorkflowArgs = {
   proposalWorkflowId: Scalars['Int']['input'];
 };
-
 
 export type QueryProposalsArgs = {
   filter?: InputMaybe<ProposalsFilter>;
   first?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type QueryProposalsViewArgs = {
   filter?: InputMaybe<ProposalsFilter>;
@@ -3010,26 +2827,21 @@ export type QueryProposalsViewArgs = {
   sortField?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type QueryQuestionByNaturalKeyArgs = {
   naturalKey: Scalars['String']['input'];
 };
-
 
 export type QueryQuestionaryArgs = {
   questionaryId: Scalars['Int']['input'];
 };
 
-
 export type QueryQuestionsArgs = {
   filter?: InputMaybe<QuestionsFilter>;
 };
 
-
 export type QueryReviewArgs = {
   reviewId: Scalars['Int']['input'];
 };
-
 
 export type QueryReviewsArgs = {
   filter?: InputMaybe<ReviewsFilter>;
@@ -3037,32 +2849,26 @@ export type QueryReviewsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type QuerySampleArgs = {
   sampleId: Scalars['Int']['input'];
 };
-
 
 export type QuerySampleEsiArgs = {
   esiId: Scalars['Int']['input'];
   sampleId: Scalars['Int']['input'];
 };
 
-
 export type QuerySamplesArgs = {
   filter?: InputMaybe<SamplesFilter>;
 };
-
 
 export type QuerySamplesByCallIdArgs = {
   callId: Scalars['Int']['input'];
 };
 
-
 export type QueryScheduledEventCoreArgs = {
   scheduledEventId: Scalars['Int']['input'];
 };
-
 
 export type QueryScheduledEventsCoreArgs = {
   filter?: InputMaybe<ScheduledEventsCoreFilter>;
@@ -3070,16 +2876,13 @@ export type QueryScheduledEventsCoreArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type QueryShipmentArgs = {
   shipmentId: Scalars['Int']['input'];
 };
 
-
 export type QueryShipmentsArgs = {
   filter?: InputMaybe<ShipmentsFilter>;
 };
-
 
 export type QueryStatusActionsLogsArgs = {
   filter?: InputMaybe<StatusActionsLogsFilter>;
@@ -3090,16 +2893,13 @@ export type QueryStatusActionsLogsArgs = {
   sortField?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type QueryTechnicalReviewArgs = {
   technicalReviewId: Scalars['Int']['input'];
 };
 
-
 export type QueryTechnicalReviewTemplatesArgs = {
   filter?: InputMaybe<TechnicalReviewTemplatesFilter>;
 };
-
 
 export type QueryTechnicalReviewsArgs = {
   filter?: InputMaybe<TechnicalReviewsFilter>;
@@ -3107,11 +2907,9 @@ export type QueryTechnicalReviewsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type QueryTechniqueArgs = {
   techniqueId: Scalars['Int']['input'];
 };
-
 
 export type QueryTechniqueScientistProposalsArgs = {
   filter?: InputMaybe<ProposalsFilter>;
@@ -3122,41 +2920,33 @@ export type QueryTechniqueScientistProposalsArgs = {
   sortField?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type QueryTechniquesByIdsArgs = {
   techniqueIds: Array<Scalars['Int']['input']>;
 };
-
 
 export type QueryTechniquesByScientistArgs = {
   userNumber: Scalars['Int']['input'];
 };
 
-
 export type QueryTemplateArgs = {
   templateId: Scalars['Int']['input'];
 };
-
 
 export type QueryTemplatesArgs = {
   filter?: InputMaybe<TemplatesFilter>;
 };
 
-
 export type QueryUserArgs = {
   userId: Scalars['Int']['input'];
 };
-
 
 export type QueryUserByOidcSubArgs = {
   oidcSub: Scalars['String']['input'];
 };
 
-
 export type QueryUserHasAccessToProposalArgs = {
   proposalPk: Scalars['Int']['input'];
 };
-
 
 export type QueryUsersArgs = {
   filter?: InputMaybe<Scalars['String']['input']>;
@@ -3168,16 +2958,13 @@ export type QueryUsersArgs = {
   userRole?: InputMaybe<UserRole>;
 };
 
-
 export type QueryVisitArgs = {
   visitId: Scalars['Int']['input'];
 };
 
-
 export type QueryVisitRegistrationArgs = {
   visitId: Scalars['Int']['input'];
 };
-
 
 export type QueryVisitsArgs = {
   filter?: InputMaybe<VisitsFilter>;
@@ -3191,7 +2978,7 @@ export type QueryMutationAndServicesGroup = {
 
 export enum QueryMutationAndServicesGroups {
   Core = 'CORE',
-  Scheduler = 'SCHEDULER'
+  Scheduler = 'SCHEDULER',
 }
 
 export type Question = {
@@ -3215,7 +3002,7 @@ export type QuestionComparison = {
 export enum QuestionComparisonStatus {
   Different = 'DIFFERENT',
   New = 'NEW',
-  Same = 'SAME'
+  Same = 'SAME',
 }
 
 export enum QuestionFilterCompareOperator {
@@ -3223,7 +3010,7 @@ export enum QuestionFilterCompareOperator {
   Exists = 'EXISTS',
   GreaterThan = 'GREATER_THAN',
   Includes = 'INCLUDES',
-  LessThan = 'LESS_THAN'
+  LessThan = 'LESS_THAN',
 }
 
 export type QuestionFilterInput = {
@@ -3323,12 +3110,12 @@ export type Review = {
 
 export enum ReviewStatus {
   Draft = 'DRAFT',
-  Submitted = 'SUBMITTED'
+  Submitted = 'SUBMITTED',
 }
 
 export enum ReviewerFilter {
   All = 'ALL',
-  Me = 'ME'
+  Me = 'ME',
 }
 
 export type ReviewsFilter = {
@@ -3414,7 +3201,7 @@ export enum SampleStatus {
   ElevatedRisk = 'ELEVATED_RISK',
   HighRisk = 'HIGH_RISK',
   LowRisk = 'LOW_RISK',
-  PendingEvaluation = 'PENDING_EVALUATION'
+  PendingEvaluation = 'PENDING_EVALUATION',
 }
 
 export type SamplesFilter = {
@@ -3443,7 +3230,7 @@ export enum ScheduledEventBookingType {
   Equipment = 'EQUIPMENT',
   Maintenance = 'MAINTENANCE',
   Shutdown = 'SHUTDOWN',
-  UserOperations = 'USER_OPERATIONS'
+  UserOperations = 'USER_OPERATIONS',
 }
 
 export type ScheduledEventCore = {
@@ -3527,7 +3314,7 @@ export enum SettingsId {
   SmtpBccEmail = 'SMTP_BCC_EMAIL',
   TechReviewOptionalWorkflowStatus = 'TECH_REVIEW_OPTIONAL_WORKFLOW_STATUS',
   Timezone = 'TIMEZONE',
-  UserOfficeEmail = 'USER_OFFICE_EMAIL'
+  UserOfficeEmail = 'USER_OFFICE_EMAIL',
 }
 
 export type Shipment = {
@@ -3555,7 +3342,7 @@ export type ShipmentBasisConfig = {
 
 export enum ShipmentStatus {
   Draft = 'DRAFT',
-  Submitted = 'SUBMITTED'
+  Submitted = 'SUBMITTED',
 }
 
 export type ShipmentsFilter = {
@@ -3674,7 +3461,7 @@ export type TechnicalReviewBasisConfig = {
 export enum TechnicalReviewStatus {
   Feasible = 'FEASIBLE',
   PartiallyFeasible = 'PARTIALLY_FEASIBLE',
-  Unfeasible = 'UNFEASIBLE'
+  Unfeasible = 'UNFEASIBLE',
 }
 
 export type TechnicalReviewTemplate = {
@@ -3785,7 +3572,7 @@ export enum TemplateCategoryId {
   SampleDeclaration = 'SAMPLE_DECLARATION',
   ShipmentDeclaration = 'SHIPMENT_DECLARATION',
   TechnicalReview = 'TECHNICAL_REVIEW',
-  VisitRegistration = 'VISIT_REGISTRATION'
+  VisitRegistration = 'VISIT_REGISTRATION',
 }
 
 export type TemplateGroup = {
@@ -3805,7 +3592,7 @@ export enum TemplateGroupId {
   SampleEsi = 'SAMPLE_ESI',
   Shipment = 'SHIPMENT',
   TechnicalReview = 'TECHNICAL_REVIEW',
-  VisitRegistration = 'VISIT_REGISTRATION'
+  VisitRegistration = 'VISIT_REGISTRATION',
 }
 
 export type TemplateStep = {
@@ -3875,7 +3662,7 @@ export type Topic = {
 export enum TrainingStatus {
   Active = 'ACTIVE',
   Expired = 'EXPIRED',
-  None = 'NONE'
+  None = 'NONE',
 }
 
 export type Unit = {
@@ -4032,11 +3819,9 @@ export type User = {
   username: Scalars['String']['output'];
 };
 
-
 export type UserProposalsArgs = {
   filter?: InputMaybe<UserProposalsFilter>;
 };
-
 
 export type UserReviewsArgs = {
   callId?: InputMaybe<Scalars['Int']['input']>;
@@ -4079,7 +3864,7 @@ export enum UserRole {
   InternalReviewer = 'INTERNAL_REVIEWER',
   SampleSafetyReviewer = 'SAMPLE_SAFETY_REVIEWER',
   User = 'USER',
-  UserOfficer = 'USER_OFFICER'
+  UserOfficer = 'USER_OFFICER',
 }
 
 export type Visit = {
@@ -4120,7 +3905,7 @@ export type VisitRegistration = {
 export enum VisitStatus {
   Accepted = 'ACCEPTED',
   Draft = 'DRAFT',
-  Submitted = 'SUBMITTED'
+  Submitted = 'SUBMITTED',
 }
 
 export type VisitsFilter = {
@@ -4129,7 +3914,14 @@ export type VisitsFilter = {
   scheduledEventId?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type _Entity = BasicUserDetails | Call | Instrument | Proposal | StatusActionsLog | Technique | User;
+export type _Entity =
+  | BasicUserDetails
+  | Call
+  | Instrument
+  | Proposal
+  | StatusActionsLog
+  | Technique
+  | User;
 
 export type _Service = {
   __typename?: '_Service';
@@ -4143,61 +3935,119 @@ export type AnswerTopicMutationVariables = Exact<{
   isPartialSave?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
+export type AnswerTopicMutation = {
+  __typename?: 'Mutation';
+  answerTopic: Array<{
+    __typename?: 'AnswerBasic';
+    questionId: string;
+    answer: any;
+    answerId?: number | null;
+  }>;
+};
 
-export type AnswerTopicMutation = { __typename?: 'Mutation', answerTopic: Array<{ __typename?: 'AnswerBasic', questionId: string, answer: any, answerId?: number | null }> };
+export type AssignChairOrSecretaryMutationVariables = Exact<{
+  assignChairOrSecretaryToFapInput: AssignChairOrSecretaryToFapInput;
+}>;
+
+export type AssignChairOrSecretaryMutation = {
+  __typename?: 'Mutation';
+  assignChairOrSecretary: { __typename?: 'Fap'; id: number };
+};
 
 export type AssignFapReviewersToProposalsMutationVariables = Exact<{
   assignments: Array<FapReviewAssignmentInput> | FapReviewAssignmentInput;
   fapId: Scalars['Int']['input'];
 }>;
 
-
-export type AssignFapReviewersToProposalsMutation = { __typename?: 'Mutation', assignFapReviewersToProposals: { __typename?: 'Fap', id: number } };
+export type AssignFapReviewersToProposalsMutation = {
+  __typename?: 'Mutation';
+  assignFapReviewersToProposals: { __typename?: 'Fap'; id: number };
+};
 
 export type AssignInstrumentsToCallMutationVariables = Exact<{
   assignInstrumentsToCallInput: AssignInstrumentsToCallInput;
 }>;
 
-
-export type AssignInstrumentsToCallMutation = { __typename?: 'Mutation', assignInstrumentsToCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, managerUserId: number, name: string, shortCode: string, description: string }> } };
+export type AssignInstrumentsToCallMutation = {
+  __typename?: 'Mutation';
+  assignInstrumentsToCall: {
+    __typename?: 'Call';
+    id: number;
+    shortCode: string;
+    title?: string | null;
+    templateId: number;
+    instruments: Array<{
+      __typename?: 'InstrumentWithAvailabilityTime';
+      id: number;
+      managerUserId: number;
+      name: string;
+      shortCode: string;
+      description: string;
+    }>;
+  };
+};
 
 export type AssignProposalsToFapsMutationVariables = Exact<{
   proposalPks: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
   fapInstruments: Array<FapInstrumentInput> | FapInstrumentInput;
 }>;
 
-
-export type AssignProposalsToFapsMutation = { __typename?: 'Mutation', assignProposalsToFaps: boolean };
+export type AssignProposalsToFapsMutation = {
+  __typename?: 'Mutation';
+  assignProposalsToFaps: boolean;
+};
 
 export type AssignProposalsToInstrumentsMutationVariables = Exact<{
   proposalPks: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
   instrumentIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
 }>;
 
-
-export type AssignProposalsToInstrumentsMutation = { __typename?: 'Mutation', assignProposalsToInstruments: boolean };
+export type AssignProposalsToInstrumentsMutation = {
+  __typename?: 'Mutation';
+  assignProposalsToInstruments: boolean;
+};
 
 export type AssignReviewersToFapMutationVariables = Exact<{
   memberIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
   fapId: Scalars['Int']['input'];
 }>;
 
-
-export type AssignReviewersToFapMutation = { __typename?: 'Mutation', assignReviewersToFap: { __typename?: 'Fap', id: number } };
+export type AssignReviewersToFapMutation = {
+  __typename?: 'Mutation';
+  assignReviewersToFap: { __typename?: 'Fap'; id: number };
+};
 
 export type ChangeProposalsStatusMutationVariables = Exact<{
   changeProposalsStatusInput: ChangeProposalsStatusInput;
 }>;
 
-
-export type ChangeProposalsStatusMutation = { __typename?: 'Mutation', changeProposalsStatus: boolean };
+export type ChangeProposalsStatusMutation = {
+  __typename?: 'Mutation';
+  changeProposalsStatus: boolean;
+};
 
 export type CreateCallMutationVariables = Exact<{
   createCallInput: CreateCallInput;
 }>;
 
-
-export type CreateCallMutation = { __typename?: 'Mutation', createCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, description: string, managerUserId: number, name: string, shortCode: string }> } };
+export type CreateCallMutation = {
+  __typename?: 'Mutation';
+  createCall: {
+    __typename?: 'Call';
+    id: number;
+    shortCode: string;
+    title?: string | null;
+    templateId: number;
+    instruments: Array<{
+      __typename?: 'InstrumentWithAvailabilityTime';
+      id: number;
+      description: string;
+      managerUserId: number;
+      name: string;
+      shortCode: string;
+    }>;
+  };
+};
 
 export type CreateInstrumentMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -4206,15 +4056,46 @@ export type CreateInstrumentMutationVariables = Exact<{
   managerUserId: Scalars['Int']['input'];
 }>;
 
-
-export type CreateInstrumentMutation = { __typename?: 'Mutation', createInstrument: { __typename?: 'Instrument', id: number, description: string, managerUserId: number, name: string, shortCode: string } };
+export type CreateInstrumentMutation = {
+  __typename?: 'Mutation';
+  createInstrument: {
+    __typename?: 'Instrument';
+    id: number;
+    description: string;
+    managerUserId: number;
+    name: string;
+    shortCode: string;
+  };
+};
 
 export type CreateProposalMutationVariables = Exact<{
   callId: Scalars['Int']['input'];
 }>;
 
-
-export type CreateProposalMutation = { __typename?: 'Mutation', createProposal: { __typename?: 'Proposal', primaryKey: number, proposalId: string, callId: number, status?: { __typename?: 'ProposalStatus', id: number, name: string, shortCode: string } | null, questionary: { __typename?: 'Questionary', questionaryId: number, templateId: number, steps: Array<{ __typename?: 'QuestionaryStep', topic: { __typename?: 'Topic', id: number, templateId: number } }> } } };
+export type CreateProposalMutation = {
+  __typename?: 'Mutation';
+  createProposal: {
+    __typename?: 'Proposal';
+    primaryKey: number;
+    proposalId: string;
+    callId: number;
+    status?: {
+      __typename?: 'ProposalStatus';
+      id: number;
+      name: string;
+      shortCode: string;
+    } | null;
+    questionary: {
+      __typename?: 'Questionary';
+      questionaryId: number;
+      templateId: number;
+      steps: Array<{
+        __typename?: 'QuestionaryStep';
+        topic: { __typename?: 'Topic'; id: number; templateId: number };
+      }>;
+    };
+  };
+};
 
 export type CreateTemplateMutationVariables = Exact<{
   groupId: TemplateGroupId;
@@ -4222,166 +4103,396 @@ export type CreateTemplateMutationVariables = Exact<{
   description?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-
-export type CreateTemplateMutation = { __typename?: 'Mutation', createTemplate: { __typename?: 'Template', templateId: number, name: string, description?: string | null } };
+export type CreateTemplateMutation = {
+  __typename?: 'Mutation';
+  createTemplate: {
+    __typename?: 'Template';
+    templateId: number;
+    name: string;
+    description?: string | null;
+  };
+};
 
 export type DeleteCallMutationVariables = Exact<{
   deleteCallId: Scalars['Int']['input'];
 }>;
 
-
-export type DeleteCallMutation = { __typename?: 'Mutation', deleteCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number } };
+export type DeleteCallMutation = {
+  __typename?: 'Mutation';
+  deleteCall: {
+    __typename?: 'Call';
+    id: number;
+    shortCode: string;
+    title?: string | null;
+    templateId: number;
+  };
+};
 
 export type DeleteInstrumentMutationVariables = Exact<{
   deleteInstrumentId: Scalars['Int']['input'];
 }>;
 
-
-export type DeleteInstrumentMutation = { __typename?: 'Mutation', deleteInstrument: { __typename?: 'Instrument', id: number, description: string } };
+export type DeleteInstrumentMutation = {
+  __typename?: 'Mutation';
+  deleteInstrument: {
+    __typename?: 'Instrument';
+    id: number;
+    description: string;
+  };
+};
 
 export type DeleteProposalMutationVariables = Exact<{
   proposalPk: Scalars['Int']['input'];
 }>;
 
-
-export type DeleteProposalMutation = { __typename?: 'Mutation', deleteProposal: { __typename?: 'Proposal', primaryKey: number, proposalId: string, callId: number, status?: { __typename?: 'ProposalStatus', id: number, name: string, shortCode: string } | null, questionary: { __typename?: 'Questionary', questionaryId: number, templateId: number, steps: Array<{ __typename?: 'QuestionaryStep', topic: { __typename?: 'Topic', id: number, templateId: number } }> } } };
+export type DeleteProposalMutation = {
+  __typename?: 'Mutation';
+  deleteProposal: {
+    __typename?: 'Proposal';
+    primaryKey: number;
+    proposalId: string;
+    callId: number;
+    status?: {
+      __typename?: 'ProposalStatus';
+      id: number;
+      name: string;
+      shortCode: string;
+    } | null;
+    questionary: {
+      __typename?: 'Questionary';
+      questionaryId: number;
+      templateId: number;
+      steps: Array<{
+        __typename?: 'QuestionaryStep';
+        topic: { __typename?: 'Topic'; id: number; templateId: number };
+      }>;
+    };
+  };
+};
 
 export type DeleteTemplateMutationVariables = Exact<{
   templateId: Scalars['Int']['input'];
 }>;
 
-
-export type DeleteTemplateMutation = { __typename?: 'Mutation', deleteTemplate: { __typename?: 'Template', templateId: number, name: string, groupId: TemplateGroupId } };
+export type DeleteTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteTemplate: {
+    __typename?: 'Template';
+    templateId: number;
+    name: string;
+    groupId: TemplateGroupId;
+  };
+};
 
 export type ExternalTokenLoginMutationVariables = Exact<{
   redirectUri: Scalars['String']['input'];
   externalToken: Scalars['String']['input'];
 }>;
 
-
-export type ExternalTokenLoginMutation = { __typename?: 'Mutation', externalTokenLogin: string };
+export type ExternalTokenLoginMutation = {
+  __typename?: 'Mutation';
+  externalTokenLogin: string;
+};
 
 export type BasicUserDetailsByEmailQueryVariables = Exact<{
   email: Scalars['String']['input'];
 }>;
 
-
-export type BasicUserDetailsByEmailQuery = { __typename?: 'Query', basicUserDetailsByEmail?: { __typename?: 'BasicUserDetails', id: number } | null };
+export type BasicUserDetailsByEmailQuery = {
+  __typename?: 'Query';
+  basicUserDetailsByEmail?: {
+    __typename?: 'BasicUserDetails';
+    id: number;
+  } | null;
+};
 
 export type BlankQuestionaryQueryVariables = Exact<{
   templateId: Scalars['Int']['input'];
 }>;
 
-
-export type BlankQuestionaryQuery = { __typename?: 'Query', blankQuestionary: { __typename?: 'Questionary', isCompleted: boolean, questionaryId: number, steps: Array<{ __typename?: 'QuestionaryStep', fields: Array<{ __typename?: 'Answer', topicId: number }> }> } };
+export type BlankQuestionaryQuery = {
+  __typename?: 'Query';
+  blankQuestionary: {
+    __typename?: 'Questionary';
+    isCompleted: boolean;
+    questionaryId: number;
+    steps: Array<{
+      __typename?: 'QuestionaryStep';
+      fields: Array<{ __typename?: 'Answer'; topicId: number }>;
+    }>;
+  };
+};
 
 export type GetBlankQuestionaryStepsByCallIdQueryVariables = Exact<{
   callId: Scalars['Int']['input'];
 }>;
 
-
-export type GetBlankQuestionaryStepsByCallIdQuery = { __typename?: 'Query', blankQuestionaryStepsByCallId?: Array<{ __typename?: 'QuestionaryStep', isCompleted: boolean, fields: Array<{ __typename?: 'Answer', answerId?: number | null, topicId: number }> }> | null };
+export type GetBlankQuestionaryStepsByCallIdQuery = {
+  __typename?: 'Query';
+  blankQuestionaryStepsByCallId?: Array<{
+    __typename?: 'QuestionaryStep';
+    isCompleted: boolean;
+    fields: Array<{
+      __typename?: 'Answer';
+      answerId?: number | null;
+      topicId: number;
+    }>;
+  }> | null;
+};
 
 export type GetCallQueryVariables = Exact<{
   callId: Scalars['Int']['input'];
 }>;
 
-
-export type GetCallQuery = { __typename?: 'Query', call?: { __typename?: 'Call', id: number, title?: string | null, shortCode: string, templateId: number, faps?: Array<{ __typename?: 'Fap', id: number }> | null } | null };
+export type GetCallQuery = {
+  __typename?: 'Query';
+  call?: {
+    __typename?: 'Call';
+    id: number;
+    title?: string | null;
+    shortCode: string;
+    templateId: number;
+    faps?: Array<{ __typename?: 'Fap'; id: number }> | null;
+  } | null;
+};
 
 export type GetCallsQueryVariables = Exact<{
   filter?: InputMaybe<CallsFilter>;
 }>;
 
-
-export type GetCallsQuery = { __typename?: 'Query', calls?: Array<{ __typename?: 'Call', id: number, title?: string | null, shortCode: string, templateId: number, endCall: any, endCallInternal?: any | null, allocationTimeUnit: AllocationTimeUnits, cycleComment: string, isActive: boolean, isActiveInternal: boolean, startCall: any, startCycle: any, pdfTemplateId?: number | null }> | null };
+export type GetCallsQuery = {
+  __typename?: 'Query';
+  calls?: Array<{
+    __typename?: 'Call';
+    id: number;
+    title?: string | null;
+    shortCode: string;
+    templateId: number;
+    endCall: any;
+    endCallInternal?: any | null;
+    allocationTimeUnit: AllocationTimeUnits;
+    cycleComment: string;
+    isActive: boolean;
+    isActiveInternal: boolean;
+    startCall: any;
+    startCycle: any;
+    pdfTemplateId?: number | null;
+  }> | null;
+};
 
 export type GetFapMembersQueryVariables = Exact<{
   fapId: Scalars['Int']['input'];
 }>;
 
-
-export type GetFapMembersQuery = { __typename?: 'Query', fapMembers?: Array<{ __typename?: 'FapReviewer', fapId: number, userId: number }> | null };
+export type GetFapMembersQuery = {
+  __typename?: 'Query';
+  fapMembers?: Array<{
+    __typename?: 'FapReviewer';
+    fapId: number;
+    userId: number;
+  }> | null;
+};
 
 export type GenericTemplatesQueryVariables = Exact<{
   filter?: InputMaybe<GenericTemplatesFilter>;
 }>;
 
+export type GenericTemplatesQuery = {
+  __typename?: 'Query';
+  genericTemplates?: Array<{
+    __typename?: 'GenericTemplate';
+    id: number;
+    title: string;
+  }> | null;
+};
 
-export type GenericTemplatesQuery = { __typename?: 'Query', genericTemplates?: Array<{ __typename?: 'GenericTemplate', id: number, title: string }> | null };
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, created: string, roles: Array<{ __typename?: 'Role', id: number, shortCode: string, title: string }> } | null };
+export type MeQuery = {
+  __typename?: 'Query';
+  me?: {
+    __typename?: 'User';
+    id: number;
+    created: string;
+    roles: Array<{
+      __typename?: 'Role';
+      id: number;
+      shortCode: string;
+      title: string;
+    }>;
+  } | null;
+};
 
 export type PageContentQueryVariables = Exact<{
   pageId: PageName;
 }>;
 
-
-export type PageContentQuery = { __typename?: 'Query', pageContent?: string | null };
+export type PageContentQuery = {
+  __typename?: 'Query';
+  pageContent?: string | null;
+};
 
 export type ProposalQueryVariables = Exact<{
   primaryKey: Scalars['Int']['input'];
 }>;
 
-
-export type ProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', title: string, created: any, primaryKey: number, proposalId: string, proposerId: number } | null };
+export type ProposalQuery = {
+  __typename?: 'Query';
+  proposal?: {
+    __typename?: 'Proposal';
+    title: string;
+    created: any;
+    primaryKey: number;
+    proposalId: string;
+    proposerId: number;
+  } | null;
+};
 
 export type ProposalByIdQueryVariables = Exact<{
   proposalId: Scalars['String']['input'];
 }>;
 
-
-export type ProposalByIdQuery = { __typename?: 'Query', proposalById?: { __typename?: 'Proposal', proposalId: string, primaryKey: number, callId: number } | null };
+export type ProposalByIdQuery = {
+  __typename?: 'Query';
+  proposalById?: {
+    __typename?: 'Proposal';
+    proposalId: string;
+    primaryKey: number;
+    callId: number;
+  } | null;
+};
 
 export type ProposalStatusQueryVariables = Exact<{
   proposalStatusId: Scalars['Int']['input'];
 }>;
 
-
-export type ProposalStatusQuery = { __typename?: 'Query', proposalStatus?: { __typename?: 'ProposalStatus', id: number, isDefault: boolean, name: string, shortCode: string } | null };
+export type ProposalStatusQuery = {
+  __typename?: 'Query';
+  proposalStatus?: {
+    __typename?: 'ProposalStatus';
+    id: number;
+    isDefault: boolean;
+    name: string;
+    shortCode: string;
+  } | null;
+};
 
 export type GetProposalsQueryVariables = Exact<{
   filter?: InputMaybe<ProposalsFilter>;
 }>;
 
-
-export type GetProposalsQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, submitted: boolean, proposerId: number, abstract: string, status?: { __typename?: 'ProposalStatus', name: string } | null, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, users: Array<{ __typename?: 'BasicUserDetails', id: number }> }> } | null };
+export type GetProposalsQuery = {
+  __typename?: 'Query';
+  proposals?: {
+    __typename?: 'ProposalsQueryResult';
+    proposals: Array<{
+      __typename?: 'Proposal';
+      primaryKey: number;
+      proposalId: string;
+      title: string;
+      submitted: boolean;
+      proposerId: number;
+      abstract: string;
+      status?: { __typename?: 'ProposalStatus'; name: string } | null;
+      proposer?: { __typename?: 'BasicUserDetails'; id: number } | null;
+      users: Array<{ __typename?: 'BasicUserDetails'; id: number }>;
+    }>;
+  } | null;
+};
 
 export type GetProposalsWithCallInfoQueryVariables = Exact<{
   filter?: InputMaybe<ProposalsFilter>;
 }>;
 
-
-export type GetProposalsWithCallInfoQuery = { __typename?: 'Query', proposals?: { __typename?: 'ProposalsQueryResult', proposals: Array<{ __typename?: 'Proposal', primaryKey: number, proposalId: string, title: string, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, call?: { __typename?: 'Call', shortCode: string, title?: string | null, id: number } | null }> } | null };
+export type GetProposalsWithCallInfoQuery = {
+  __typename?: 'Query';
+  proposals?: {
+    __typename?: 'ProposalsQueryResult';
+    proposals: Array<{
+      __typename?: 'Proposal';
+      primaryKey: number;
+      proposalId: string;
+      title: string;
+      proposer?: { __typename?: 'BasicUserDetails'; id: number } | null;
+      call?: {
+        __typename?: 'Call';
+        shortCode: string;
+        title?: string | null;
+        id: number;
+      } | null;
+    }>;
+  } | null;
+};
 
 export type QuestionaryQueryVariables = Exact<{
   questionaryId: Scalars['Int']['input'];
 }>;
 
+export type QuestionaryQuery = {
+  __typename?: 'Query';
+  questionary?: {
+    __typename?: 'Questionary';
+    questionaryId: number;
+    templateId: number;
+    steps: Array<{
+      __typename?: 'QuestionaryStep';
+      topic: {
+        __typename?: 'Topic';
+        templateId: number;
+        title: string;
+        id: number;
+      };
+    }>;
+  } | null;
+};
 
-export type QuestionaryQuery = { __typename?: 'Query', questionary?: { __typename?: 'Questionary', questionaryId: number, templateId: number, steps: Array<{ __typename?: 'QuestionaryStep', topic: { __typename?: 'Topic', templateId: number, title: string, id: number } }> } | null };
+export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type SettingsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SettingsQuery = { __typename?: 'Query', settings: Array<{ __typename?: 'Settings', description?: string | null, id: SettingsId }> };
+export type SettingsQuery = {
+  __typename?: 'Query';
+  settings: Array<{
+    __typename?: 'Settings';
+    description?: string | null;
+    id: SettingsId;
+  }>;
+};
 
 export type InstrumentQueryVariables = Exact<{
   instrumentId: Scalars['Int']['input'];
 }>;
 
-
-export type InstrumentQuery = { __typename?: 'Query', instrument?: { __typename?: 'Instrument', id: number, name: string, managerUserId: number, shortCode: string } | null };
+export type InstrumentQuery = {
+  __typename?: 'Query';
+  instrument?: {
+    __typename?: 'Instrument';
+    id: number;
+    name: string;
+    managerUserId: number;
+    shortCode: string;
+  } | null;
+};
 
 export type RemoveAssignedInstrumentFromCallMutationVariables = Exact<{
   removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput;
 }>;
 
-
-export type RemoveAssignedInstrumentFromCallMutation = { __typename?: 'Mutation', removeAssignedInstrumentFromCall: { __typename?: 'Call', id: number, shortCode: string, title?: string | null, templateId: number, instruments: Array<{ __typename?: 'InstrumentWithAvailabilityTime', id: number, managerUserId: number, name: string, shortCode: string }> } };
+export type RemoveAssignedInstrumentFromCallMutation = {
+  __typename?: 'Mutation';
+  removeAssignedInstrumentFromCall: {
+    __typename?: 'Call';
+    id: number;
+    shortCode: string;
+    title?: string | null;
+    templateId: number;
+    instruments: Array<{
+      __typename?: 'InstrumentWithAvailabilityTime';
+      id: number;
+      managerUserId: number;
+      name: string;
+      shortCode: string;
+    }>;
+  };
+};
 
 export type RemoveMemberFromFapMutationVariables = Exact<{
   memberId: Scalars['Int']['input'];
@@ -4389,8 +4500,10 @@ export type RemoveMemberFromFapMutationVariables = Exact<{
   roleId: UserRole;
 }>;
 
-
-export type RemoveMemberFromFapMutation = { __typename?: 'Mutation', removeMemberFromFap: { __typename?: 'Fap', id: number } };
+export type RemoveMemberFromFapMutation = {
+  __typename?: 'Mutation';
+  removeMemberFromFap: { __typename?: 'Fap'; id: number };
+};
 
 export type RemoveMemberFromFapProposalMutationVariables = Exact<{
   memberId: Scalars['Int']['input'];
@@ -4398,15 +4511,19 @@ export type RemoveMemberFromFapProposalMutationVariables = Exact<{
   proposalPk: Scalars['Int']['input'];
 }>;
 
-
-export type RemoveMemberFromFapProposalMutation = { __typename?: 'Mutation', removeMemberFromFapProposal: { __typename?: 'Fap', id: number } };
+export type RemoveMemberFromFapProposalMutation = {
+  __typename?: 'Mutation';
+  removeMemberFromFapProposal: { __typename?: 'Fap'; id: number };
+};
 
 export type RemoveProposalsFromInstrumentMutationVariables = Exact<{
   proposalPks: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
 }>;
 
-
-export type RemoveProposalsFromInstrumentMutation = { __typename?: 'Mutation', removeProposalsFromInstrument: boolean };
+export type RemoveProposalsFromInstrumentMutation = {
+  __typename?: 'Mutation';
+  removeProposalsFromInstrument: boolean;
+};
 
 export type UpdateProposalMutationVariables = Exact<{
   proposalPk: Scalars['Int']['input'];
@@ -4417,8 +4534,18 @@ export type UpdateProposalMutationVariables = Exact<{
   created?: InputMaybe<Scalars['DateTime']['input']>;
 }>;
 
-
-export type UpdateProposalMutation = { __typename?: 'Mutation', updateProposal: { __typename?: 'Proposal', callId: number, statusId: number, primaryKey: number, proposalId: string, proposer?: { __typename?: 'BasicUserDetails', id: number } | null, users: Array<{ __typename?: 'BasicUserDetails', id: number }> } };
+export type UpdateProposalMutation = {
+  __typename?: 'Mutation';
+  updateProposal: {
+    __typename?: 'Proposal';
+    callId: number;
+    statusId: number;
+    primaryKey: number;
+    proposalId: string;
+    proposer?: { __typename?: 'BasicUserDetails'; id: number } | null;
+    users: Array<{ __typename?: 'BasicUserDetails'; id: number }>;
+  };
+};
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -4426,7 +4553,10 @@ export class TypedDocumentString<TResult, TVariables>
 {
   __apiType?: DocumentTypeDecoration<TResult, TVariables>['__apiType'];
 
-  constructor(private value: string, public __meta__?: Record<string, any> | undefined) {
+  constructor(
+    private value: string,
+    public __meta__?: Record<string, any> | undefined
+  ) {
     super(value);
   }
 
@@ -4448,14 +4578,32 @@ export const AnswerTopicDocument = new TypedDocumentString(`
     answerId
   }
 }
-    `) as unknown as TypedDocumentString<AnswerTopicMutation, AnswerTopicMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  AnswerTopicMutation,
+  AnswerTopicMutationVariables
+>;
+export const AssignChairOrSecretaryDocument = new TypedDocumentString(`
+    mutation AssignChairOrSecretary($assignChairOrSecretaryToFapInput: AssignChairOrSecretaryToFapInput!) {
+  assignChairOrSecretary(
+    assignChairOrSecretaryToFapInput: $assignChairOrSecretaryToFapInput
+  ) {
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<
+  AssignChairOrSecretaryMutation,
+  AssignChairOrSecretaryMutationVariables
+>;
 export const AssignFapReviewersToProposalsDocument = new TypedDocumentString(`
     mutation AssignFapReviewersToProposals($assignments: [FapReviewAssignmentInput!]!, $fapId: Int!) {
   assignFapReviewersToProposals(assignments: $assignments, fapId: $fapId) {
     id
   }
 }
-    `) as unknown as TypedDocumentString<AssignFapReviewersToProposalsMutation, AssignFapReviewersToProposalsMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  AssignFapReviewersToProposalsMutation,
+  AssignFapReviewersToProposalsMutationVariables
+>;
 export const AssignInstrumentsToCallDocument = new TypedDocumentString(`
     mutation AssignInstrumentsToCall($assignInstrumentsToCallInput: AssignInstrumentsToCallInput!) {
   assignInstrumentsToCall(
@@ -4474,7 +4622,10 @@ export const AssignInstrumentsToCallDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<AssignInstrumentsToCallMutation, AssignInstrumentsToCallMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  AssignInstrumentsToCallMutation,
+  AssignInstrumentsToCallMutationVariables
+>;
 export const AssignProposalsToFapsDocument = new TypedDocumentString(`
     mutation AssignProposalsToFaps($proposalPks: [Int!]!, $fapInstruments: [FapInstrumentInput!]!) {
   assignProposalsToFaps(
@@ -4482,7 +4633,10 @@ export const AssignProposalsToFapsDocument = new TypedDocumentString(`
     fapInstruments: $fapInstruments
   )
 }
-    `) as unknown as TypedDocumentString<AssignProposalsToFapsMutation, AssignProposalsToFapsMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  AssignProposalsToFapsMutation,
+  AssignProposalsToFapsMutationVariables
+>;
 export const AssignProposalsToInstrumentsDocument = new TypedDocumentString(`
     mutation AssignProposalsToInstruments($proposalPks: [Int!]!, $instrumentIds: [Int!]!) {
   assignProposalsToInstruments(
@@ -4490,19 +4644,28 @@ export const AssignProposalsToInstrumentsDocument = new TypedDocumentString(`
     instrumentIds: $instrumentIds
   )
 }
-    `) as unknown as TypedDocumentString<AssignProposalsToInstrumentsMutation, AssignProposalsToInstrumentsMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  AssignProposalsToInstrumentsMutation,
+  AssignProposalsToInstrumentsMutationVariables
+>;
 export const AssignReviewersToFapDocument = new TypedDocumentString(`
     mutation AssignReviewersToFap($memberIds: [Int!]!, $fapId: Int!) {
   assignReviewersToFap(memberIds: $memberIds, fapId: $fapId) {
     id
   }
 }
-    `) as unknown as TypedDocumentString<AssignReviewersToFapMutation, AssignReviewersToFapMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  AssignReviewersToFapMutation,
+  AssignReviewersToFapMutationVariables
+>;
 export const ChangeProposalsStatusDocument = new TypedDocumentString(`
     mutation ChangeProposalsStatus($changeProposalsStatusInput: ChangeProposalsStatusInput!) {
   changeProposalsStatus(changeProposalsStatusInput: $changeProposalsStatusInput)
 }
-    `) as unknown as TypedDocumentString<ChangeProposalsStatusMutation, ChangeProposalsStatusMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  ChangeProposalsStatusMutation,
+  ChangeProposalsStatusMutationVariables
+>;
 export const CreateCallDocument = new TypedDocumentString(`
     mutation CreateCall($createCallInput: CreateCallInput!) {
   createCall(createCallInput: $createCallInput) {
@@ -4519,7 +4682,10 @@ export const CreateCallDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<CreateCallMutation, CreateCallMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  CreateCallMutation,
+  CreateCallMutationVariables
+>;
 export const CreateInstrumentDocument = new TypedDocumentString(`
     mutation CreateInstrument($name: String!, $shortCode: String!, $description: String!, $managerUserId: Int!) {
   createInstrument(
@@ -4535,7 +4701,10 @@ export const CreateInstrumentDocument = new TypedDocumentString(`
     shortCode
   }
 }
-    `) as unknown as TypedDocumentString<CreateInstrumentMutation, CreateInstrumentMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  CreateInstrumentMutation,
+  CreateInstrumentMutationVariables
+>;
 export const CreateProposalDocument = new TypedDocumentString(`
     mutation CreateProposal($callId: Int!) {
   createProposal(callId: $callId) {
@@ -4559,7 +4728,10 @@ export const CreateProposalDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<CreateProposalMutation, CreateProposalMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  CreateProposalMutation,
+  CreateProposalMutationVariables
+>;
 export const CreateTemplateDocument = new TypedDocumentString(`
     mutation CreateTemplate($groupId: TemplateGroupId!, $name: String!, $description: String) {
   createTemplate(groupId: $groupId, name: $name, description: $description) {
@@ -4568,7 +4740,10 @@ export const CreateTemplateDocument = new TypedDocumentString(`
     description
   }
 }
-    `) as unknown as TypedDocumentString<CreateTemplateMutation, CreateTemplateMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  CreateTemplateMutation,
+  CreateTemplateMutationVariables
+>;
 export const DeleteCallDocument = new TypedDocumentString(`
     mutation DeleteCall($deleteCallId: Int!) {
   deleteCall(id: $deleteCallId) {
@@ -4578,7 +4753,10 @@ export const DeleteCallDocument = new TypedDocumentString(`
     templateId
   }
 }
-    `) as unknown as TypedDocumentString<DeleteCallMutation, DeleteCallMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  DeleteCallMutation,
+  DeleteCallMutationVariables
+>;
 export const DeleteInstrumentDocument = new TypedDocumentString(`
     mutation DeleteInstrument($deleteInstrumentId: Int!) {
   deleteInstrument(id: $deleteInstrumentId) {
@@ -4586,7 +4764,10 @@ export const DeleteInstrumentDocument = new TypedDocumentString(`
     description
   }
 }
-    `) as unknown as TypedDocumentString<DeleteInstrumentMutation, DeleteInstrumentMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  DeleteInstrumentMutation,
+  DeleteInstrumentMutationVariables
+>;
 export const DeleteProposalDocument = new TypedDocumentString(`
     mutation DeleteProposal($proposalPk: Int!) {
   deleteProposal(proposalPk: $proposalPk) {
@@ -4610,7 +4791,10 @@ export const DeleteProposalDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<DeleteProposalMutation, DeleteProposalMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  DeleteProposalMutation,
+  DeleteProposalMutationVariables
+>;
 export const DeleteTemplateDocument = new TypedDocumentString(`
     mutation DeleteTemplate($templateId: Int!) {
   deleteTemplate(templateId: $templateId) {
@@ -4619,19 +4803,28 @@ export const DeleteTemplateDocument = new TypedDocumentString(`
     groupId
   }
 }
-    `) as unknown as TypedDocumentString<DeleteTemplateMutation, DeleteTemplateMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  DeleteTemplateMutation,
+  DeleteTemplateMutationVariables
+>;
 export const ExternalTokenLoginDocument = new TypedDocumentString(`
     mutation ExternalTokenLogin($redirectUri: String!, $externalToken: String!) {
   externalTokenLogin(redirectUri: $redirectUri, externalToken: $externalToken)
 }
-    `) as unknown as TypedDocumentString<ExternalTokenLoginMutation, ExternalTokenLoginMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  ExternalTokenLoginMutation,
+  ExternalTokenLoginMutationVariables
+>;
 export const BasicUserDetailsByEmailDocument = new TypedDocumentString(`
     query BasicUserDetailsByEmail($email: String!) {
   basicUserDetailsByEmail(email: $email) {
     id
   }
 }
-    `) as unknown as TypedDocumentString<BasicUserDetailsByEmailQuery, BasicUserDetailsByEmailQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  BasicUserDetailsByEmailQuery,
+  BasicUserDetailsByEmailQueryVariables
+>;
 export const BlankQuestionaryDocument = new TypedDocumentString(`
     query BlankQuestionary($templateId: Int!) {
   blankQuestionary(templateId: $templateId) {
@@ -4644,8 +4837,12 @@ export const BlankQuestionaryDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<BlankQuestionaryQuery, BlankQuestionaryQueryVariables>;
-export const GetBlankQuestionaryStepsByCallIdDocument = new TypedDocumentString(`
+    `) as unknown as TypedDocumentString<
+  BlankQuestionaryQuery,
+  BlankQuestionaryQueryVariables
+>;
+export const GetBlankQuestionaryStepsByCallIdDocument =
+  new TypedDocumentString(`
     query getBlankQuestionaryStepsByCallId($callId: Int!) {
   blankQuestionaryStepsByCallId(callId: $callId) {
     fields {
@@ -4655,7 +4852,10 @@ export const GetBlankQuestionaryStepsByCallIdDocument = new TypedDocumentString(
     isCompleted
   }
 }
-    `) as unknown as TypedDocumentString<GetBlankQuestionaryStepsByCallIdQuery, GetBlankQuestionaryStepsByCallIdQueryVariables>;
+    `) as unknown as TypedDocumentString<
+    GetBlankQuestionaryStepsByCallIdQuery,
+    GetBlankQuestionaryStepsByCallIdQueryVariables
+  >;
 export const GetCallDocument = new TypedDocumentString(`
     query getCall($callId: Int!) {
   call(callId: $callId) {
@@ -4696,7 +4896,10 @@ export const GetFapMembersDocument = new TypedDocumentString(`
     userId
   }
 }
-    `) as unknown as TypedDocumentString<GetFapMembersQuery, GetFapMembersQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  GetFapMembersQuery,
+  GetFapMembersQueryVariables
+>;
 export const GenericTemplatesDocument = new TypedDocumentString(`
     query GenericTemplates($filter: GenericTemplatesFilter) {
   genericTemplates(filter: $filter) {
@@ -4704,7 +4907,10 @@ export const GenericTemplatesDocument = new TypedDocumentString(`
     title
   }
 }
-    `) as unknown as TypedDocumentString<GenericTemplatesQuery, GenericTemplatesQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  GenericTemplatesQuery,
+  GenericTemplatesQueryVariables
+>;
 export const MeDocument = new TypedDocumentString(`
     query Me {
   me {
@@ -4722,7 +4928,10 @@ export const PageContentDocument = new TypedDocumentString(`
     query PageContent($pageId: PageName!) {
   pageContent(pageId: $pageId)
 }
-    `) as unknown as TypedDocumentString<PageContentQuery, PageContentQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  PageContentQuery,
+  PageContentQueryVariables
+>;
 export const ProposalDocument = new TypedDocumentString(`
     query Proposal($primaryKey: Int!) {
   proposal(primaryKey: $primaryKey) {
@@ -4742,7 +4951,10 @@ export const ProposalByIdDocument = new TypedDocumentString(`
     callId
   }
 }
-    `) as unknown as TypedDocumentString<ProposalByIdQuery, ProposalByIdQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  ProposalByIdQuery,
+  ProposalByIdQueryVariables
+>;
 export const ProposalStatusDocument = new TypedDocumentString(`
     query ProposalStatus($proposalStatusId: Int!) {
   proposalStatus(proposalStatusId: $proposalStatusId) {
@@ -4752,7 +4964,10 @@ export const ProposalStatusDocument = new TypedDocumentString(`
     shortCode
   }
 }
-    `) as unknown as TypedDocumentString<ProposalStatusQuery, ProposalStatusQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  ProposalStatusQuery,
+  ProposalStatusQueryVariables
+>;
 export const GetProposalsDocument = new TypedDocumentString(`
     query getProposals($filter: ProposalsFilter) {
   proposals(filter: $filter) {
@@ -4775,7 +4990,10 @@ export const GetProposalsDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<GetProposalsQuery, GetProposalsQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  GetProposalsQuery,
+  GetProposalsQueryVariables
+>;
 export const GetProposalsWithCallInfoDocument = new TypedDocumentString(`
     query getProposalsWithCallInfo($filter: ProposalsFilter) {
   proposals(filter: $filter) {
@@ -4794,7 +5012,10 @@ export const GetProposalsWithCallInfoDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<GetProposalsWithCallInfoQuery, GetProposalsWithCallInfoQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  GetProposalsWithCallInfoQuery,
+  GetProposalsWithCallInfoQueryVariables
+>;
 export const QuestionaryDocument = new TypedDocumentString(`
     query Questionary($questionaryId: Int!) {
   questionary(questionaryId: $questionaryId) {
@@ -4809,7 +5030,10 @@ export const QuestionaryDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<QuestionaryQuery, QuestionaryQueryVariables>;
+    `) as unknown as TypedDocumentString<
+  QuestionaryQuery,
+  QuestionaryQueryVariables
+>;
 export const SettingsDocument = new TypedDocumentString(`
     query Settings {
   settings {
@@ -4827,8 +5051,12 @@ export const InstrumentDocument = new TypedDocumentString(`
     shortCode
   }
 }
-    `) as unknown as TypedDocumentString<InstrumentQuery, InstrumentQueryVariables>;
-export const RemoveAssignedInstrumentFromCallDocument = new TypedDocumentString(`
+    `) as unknown as TypedDocumentString<
+  InstrumentQuery,
+  InstrumentQueryVariables
+>;
+export const RemoveAssignedInstrumentFromCallDocument =
+  new TypedDocumentString(`
     mutation RemoveAssignedInstrumentFromCall($removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!) {
   removeAssignedInstrumentFromCall(
     removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput
@@ -4845,14 +5073,20 @@ export const RemoveAssignedInstrumentFromCallDocument = new TypedDocumentString(
     }
   }
 }
-    `) as unknown as TypedDocumentString<RemoveAssignedInstrumentFromCallMutation, RemoveAssignedInstrumentFromCallMutationVariables>;
+    `) as unknown as TypedDocumentString<
+    RemoveAssignedInstrumentFromCallMutation,
+    RemoveAssignedInstrumentFromCallMutationVariables
+  >;
 export const RemoveMemberFromFapDocument = new TypedDocumentString(`
     mutation RemoveMemberFromFap($memberId: Int!, $fapId: Int!, $roleId: UserRole!) {
   removeMemberFromFap(memberId: $memberId, fapId: $fapId, roleId: $roleId) {
     id
   }
 }
-    `) as unknown as TypedDocumentString<RemoveMemberFromFapMutation, RemoveMemberFromFapMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  RemoveMemberFromFapMutation,
+  RemoveMemberFromFapMutationVariables
+>;
 export const RemoveMemberFromFapProposalDocument = new TypedDocumentString(`
     mutation RemoveMemberFromFapProposal($memberId: Int!, $fapId: Int!, $proposalPk: Int!) {
   removeMemberFromFapProposal(
@@ -4863,12 +5097,18 @@ export const RemoveMemberFromFapProposalDocument = new TypedDocumentString(`
     id
   }
 }
-    `) as unknown as TypedDocumentString<RemoveMemberFromFapProposalMutation, RemoveMemberFromFapProposalMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  RemoveMemberFromFapProposalMutation,
+  RemoveMemberFromFapProposalMutationVariables
+>;
 export const RemoveProposalsFromInstrumentDocument = new TypedDocumentString(`
     mutation RemoveProposalsFromInstrument($proposalPks: [Int!]!) {
   removeProposalsFromInstrument(proposalPks: $proposalPks)
 }
-    `) as unknown as TypedDocumentString<RemoveProposalsFromInstrumentMutation, RemoveProposalsFromInstrumentMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  RemoveProposalsFromInstrumentMutation,
+  RemoveProposalsFromInstrumentMutationVariables
+>;
 export const UpdateProposalDocument = new TypedDocumentString(`
     mutation UpdateProposal($proposalPk: Int!, $users: [Int!], $title: String, $abstract: String, $proposerId: Int, $created: DateTime) {
   updateProposal(
@@ -4891,4 +5131,7 @@ export const UpdateProposalDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<UpdateProposalMutation, UpdateProposalMutationVariables>;
+    `) as unknown as TypedDocumentString<
+  UpdateProposalMutation,
+  UpdateProposalMutationVariables
+>;

@@ -4,6 +4,7 @@ import { Proposal } from '../graphql/support/proposal';
 import { SharedData } from '../utils/sharedType';
 import { FAP } from '../graphql/support/fap';
 import { UserRole } from '../graphql/generated/graphql';
+import { sleep } from 'k6';
 
 export async function sc1TearDownFapReview(
   sharedData: SharedData,
@@ -20,9 +21,9 @@ export async function sc1TearDownFapReview(
   const proposal = new Proposal(apiAsyncClient);
   const fap = new FAP(apiAsyncClient);
 
-  if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
+  if (__ENV.FAP_PROCESS_LOAD_TEST === 'true') {
     if (sharedData.fapReviewAssignments) {
-      let memberRemoved;
+      // let memberRemoved;
       sharedData.fapReviewAssignments.forEach(async (a) => {
         console.log(
           `Going to remove reviewer ${a.memberId} from proposal ${a.proposalPk} in fap ${a.fapId}`
@@ -33,31 +34,32 @@ export async function sc1TearDownFapReview(
           a.proposalPk
         );
       });
-      await new Promise((f) => setTimeout(f, 1000));
+      sleep(10);
       const fapId = sharedData.fapReviewAssignments[0].fapId;
       const userIds = sharedData.fapReviewAssignments.map((a) => a.memberId);
       const uniqueUserIds = new Set(userIds);
+      let role: UserRole;
+      if (__ENV.FAP_REVIEWER_ROLE === 'fapMember') role = UserRole.FapReviewer;
+      else if (__ENV.FAP_REVIEWER_ROLE === 'fapChair') role = UserRole.FapChair;
+      else role = UserRole.FapSecretary;
+
       uniqueUserIds.forEach(async (a) => {
         console.log(`Going to remove member ${a} from fap ${fapId}`);
-        memberRemoved = await fap.removeMemberFromFap(
-          a,
-          fapId,
-          UserRole.FapReviewer
-        );
+        await fap.removeMemberFromFap(a, fapId, role);
       });
-      await new Promise((f) => setTimeout(f, 1000));
-      if (memberRemoved) {
-        let proposalPks = sharedData.fapReviewAssignments?.map(
-          (a) => a.proposalPk
-        );
-        console.log(`Going to change status of proposals ${proposalPks}`);
-        let statusChanged = await proposal.changeProposalsStatus(
-          proposalPks,
-          Number(__ENV.SUBMITTED_STATUS_ID)
-        );
-        if (statusChanged)
-          await proposal.removeProposalsFromInstrument(proposalPks);
-      }
+      // await new Promise((f) => setTimeout(f, 10));
+      // if (memberRemoved) {
+      const proposalPks = sharedData.fapReviewAssignments?.map(
+        (a) => a.proposalPk
+      );
+      console.log(`Going to change status of proposals ${proposalPks}`);
+      const statusChanged = await proposal.changeProposalsStatus(
+        proposalPks,
+        Number(__ENV.SUBMITTED_STATUS_ID)
+      );
+      if (statusChanged)
+        await proposal.removeProposalsFromInstrument(proposalPks);
+      // }
     }
     return;
   }

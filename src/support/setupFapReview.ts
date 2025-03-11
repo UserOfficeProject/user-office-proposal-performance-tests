@@ -17,6 +17,7 @@ import {
   Proposal as ProposalType,
   FapReviewAssignment,
 } from '../utils/sharedType';
+import { UserRole } from '../graphql/generated/graphql';
 
 export async function sc1SetupFapReview(
   environmentConfig: EnvironmentConfigurations
@@ -33,7 +34,6 @@ export async function sc1SetupFapReview(
   let testProposals: ProposalType[];
   let testFapId: number;
   const fapReviewAssignments: FapReviewAssignment[] = [];
-  const testSetupBaseUrl = __ENV.TEST_SETUP_URL || 'http://localhost:8100';
   const apiAsyncClient = getAsyncClientApi(
     environmentConfig.GRAPHQL_URL,
     environmentConfig.GRAPHQL_TOKEN
@@ -151,31 +151,13 @@ export async function sc1SetupFapReview(
     }
   }
 
-  if (environmentConfig.SETUP_TEST_REVIEWERS === 'true') {
+  if (__ENV.FAP_PROCESS_LOAD_TEST === 'true') {
     if (Array.isArray(users)) {
       const userLogin = users as UserLogin[];
-      const reviewerUsers = userLogin.slice(
-        0,
-        Number(__ENV.SETUP_TOTAL_REVIEWERS)
+      const reviewerUsers = userLogin.slice(0, Number(__ENV.TOTAL_FAP_MEMBERS));
+      console.log(
+        `FAP member user ids - ${reviewerUsers.map((u) => u.userId)}`
       );
-      const reviewerIds = reviewerUsers.map((users) => String(users.userId));
-      console.info(`the user ids going to be reviewers will be ${reviewerIds}`);
-      const payLoad = JSON.stringify({
-        ids: reviewerIds,
-        roleName: environmentConfig.SETUP_TEST_REVIEWER_ROLE,
-      });
-      const res = await http.asyncRequest(
-        'POST',
-        `${testSetupBaseUrl}/users/assignRole`,
-        payLoad,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      console.log(`response status ${res.status}`);
-
       if (testCall?.faps) {
         testFapId = testCall?.faps[0].id;
         if (testFapId) {
@@ -183,16 +165,42 @@ export async function sc1SetupFapReview(
             Promise.resolve(
               await user.getUserToken(`${reviewerUsers[index].sessionId}`)
             ).then(async () => {
-              Promise.resolve(
-                await fap.assignReviewersToFap(
-                  [reviewerUsers[index].userId],
-                  testFapId
-                )
-              ).then((value) =>
-                console.log(
-                  `assigned ${[reviewerUsers[index].userId]} to FAP id ${value.id}`
-                )
-              );
+              switch (__ENV.FAP_MEMBER_ROLE) {
+                case 'fapChair':
+                case 'fapSecretary': {
+                  const role =
+                    __ENV.FAP_MEMBER_ROLE === 'fapChair'
+                      ? UserRole.FapChair
+                      : UserRole.FapSecretary;
+                  Promise.resolve(
+                    await fap.assignChairOrSecretary(
+                      testFapId,
+                      role,
+                      reviewerUsers[index].userId
+                    )
+                  ).then((value) =>
+                    console.log(
+                      `assigned ${role} ${[reviewerUsers[index].userId]} to FAP id ${value.id}`
+                    )
+                  );
+                  break;
+                }
+                case 'fapMember': {
+                  Promise.resolve(
+                    await fap.assignReviewersToFap(
+                      [reviewerUsers[index].userId],
+                      testFapId
+                    )
+                  ).then((value) =>
+                    console.log(
+                      `assigned ${[reviewerUsers[index].userId]} to FAP id ${value.id}`
+                    )
+                  );
+                  break;
+                }
+                default:
+                  console.error('Invalid role name');
+              }
             });
           }
         }

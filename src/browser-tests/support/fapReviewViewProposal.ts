@@ -24,7 +24,7 @@ export default async function fapReviewViewProposalTest(
   const startTime = Date.now();
   const fapReviewers = sharedData.users.slice(
     0,
-    Number(__ENV.SETUP_TOTAL_REVIEWERS)
+    Number(__ENV.TOTAL_FAP_MEMBERS)
   );
   const currentUser = fapReviewers[vu.idInTest - 1];
   context.setDefaultTimeout(360000);

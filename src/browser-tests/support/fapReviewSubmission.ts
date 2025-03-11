@@ -22,7 +22,7 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
   const startTime = Date.now();
   const fapReviewers = sharedData.users.slice(
     0,
-    Number(__ENV.SETUP_TOTAL_REVIEWERS)
+    Number(__ENV.TOTAL_FAP_MEMBERS)
   );
   const currentUser = fapReviewers[vu.idInTest - 1];
   context.setDefaultTimeout(360000);
@@ -94,9 +94,21 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
       await page.screenshot({
         path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
       });
-      await page
-        .waitForSelector('//button[contains(text(), "Submit")]')
-        .then((e) => e.click());
+
+      const submitButtonEnabled = await page
+        .locator('//button[contains(text(), "Submit")]')
+        .isEnabled();
+
+      sleep(10);
+      await page.screenshot({
+        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
+      });
+
+      check(page, {
+        'Submit button enabled ': () => submitButtonEnabled,
+      });
+
+      await page.locator('//button[contains(text(), "Submit")]').click();
 
       sleep(10);
 
@@ -104,8 +116,10 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
         path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
       });
       const submitConfirmBoxIsVisible = await page
-        .waitForSelector('//h2[contains(text(), "Please confirm")]')
-        .then((e) => e.isVisible());
+        .locator('//h2[contains(text(), "Please confirm")]')
+        .isVisible();
+
+      sleep(10);
       await page.screenshot({
         path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
       });
@@ -120,11 +134,12 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
       }
       sleep(10);
       const submissionMessageIsVisible = await page
-        .waitForSelector(
+        .locator(
           '//div[contains(text(), "Your review has been submitted successfully.")]'
         )
-        .then((e) => e.isVisible());
+        .isVisible();
 
+      sleep(20);
       check(
         page,
         {
@@ -145,7 +160,7 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
       sleep(20);
     }
   } catch (error) {
-    console.error(`Error while submitting Review : ${currentUser.userId}`);
+    console.error(`Error while submitting Review : ${currentUser.userId} error is ${error}`);
   } finally {
     await page.close();
     if (page.isClosed()) {

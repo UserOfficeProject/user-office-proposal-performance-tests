@@ -44,10 +44,10 @@ spec:
                   name: connection-secrets
                   key: USER_DB_CONNECTION_STRING
                   optional: false
-            - name: SETUP_TEST_REVIEWERS
-              value: "${SETUP_TEST_REVIEWERS}"
-            - name: SETUP_TOTAL_REVIEWERS
-              value: "${SETUP_TOTAL_REVIEWERS}"
+            - name: FAP_PROCESS_LOAD_TEST
+              value: "${FAP_PROCESS_LOAD_TEST}"
+            - name: FAP_MEMBER_ROLE
+              value: "${FAP_MEMBER_ROLE}"
           resources:
             limits:
               cpu: "500m"
