@@ -28,8 +28,8 @@ export const options: Options = {
     fapReviewSubmission: {
       exec: 'fapReviewSubmission',
       executor: 'per-vu-iterations',
-      vus: +__ENV.K6_PS_VUS || 5,
-      iterations: +__ENV.K6_PS_ITERATIONS || 2,
+      vus: +__ENV.K6_FAP_VUS || 5,
+      iterations: +__ENV.K6_FAP_ITERATIONS || 2,
       options: {
         browser: {
           type: 'chromium',

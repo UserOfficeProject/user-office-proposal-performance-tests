@@ -23,7 +23,6 @@ export async function sc1TearDownFapReview(
 
   if (__ENV.FAP_PROCESS_LOAD_TEST === 'true') {
     if (sharedData.fapReviewAssignments) {
-      // let memberRemoved;
       sharedData.fapReviewAssignments.forEach(async (a) => {
         console.log(
           `Going to remove reviewer ${a.memberId} from proposal ${a.proposalPk} in fap ${a.fapId}`
@@ -40,15 +39,14 @@ export async function sc1TearDownFapReview(
       const uniqueUserIds = new Set(userIds);
       let role: UserRole;
       if (__ENV.FAP_MEMBER_ROLE === 'fapChair') role = UserRole.FapChair;
-      else if (__ENV.FAP_MEMBER_ROLE === 'fapSecretary') role = UserRole.FapSecretary;
+      else if (__ENV.FAP_MEMBER_ROLE === 'fapSecretary')
+        role = UserRole.FapSecretary;
       else role = UserRole.FapReviewer;
 
       uniqueUserIds.forEach(async (a) => {
         console.log(`Going to remove member ${a} from fap ${fapId}`);
         await fap.removeMemberFromFap(a, fapId, role);
       });
-      // await new Promise((f) => setTimeout(f, 10));
-      // if (memberRemoved) {
       const proposalPks = sharedData.fapReviewAssignments?.map(
         (a) => a.proposalPk
       );
@@ -59,7 +57,6 @@ export async function sc1TearDownFapReview(
       );
       if (statusChanged)
         await proposal.removeProposalsFromInstrument(proposalPks);
-      // }
     }
     return;
   }

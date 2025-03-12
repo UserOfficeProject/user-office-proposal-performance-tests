@@ -160,7 +160,9 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
       sleep(20);
     }
   } catch (error) {
-    console.error(`Error while submitting Review : ${currentUser.userId} error is ${error}`);
+    console.error(
+      `Error while submitting Review : ${currentUser.userId} error is ${error}`
+    );
   } finally {
     await page.close();
     if (page.isClosed()) {

@@ -6,9 +6,7 @@ import { EnvironmentConfigurations } from './configurations';
 import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { FAP } from '../graphql/support/fap';
-import { Instrument } from '../graphql/support/instrument';
 import { Proposal } from '../graphql/support/proposal';
-import { Template } from '../graphql/support/template';
 import { User } from '../graphql/support/user';
 import {
   SharedData,
@@ -39,7 +37,6 @@ export async function sc1SetupFapReview(
     environmentConfig.GRAPHQL_TOKEN
   );
   const call = new Call(apiAsyncClient);
-  const template = new Template(apiAsyncClient);
   const fap = new FAP(apiAsyncClient);
   const user = new User(apiAsyncClient);
   const proposal = new Proposal(apiAsyncClient);
@@ -112,43 +109,13 @@ export async function sc1SetupFapReview(
       } `
     );
   }
-  if (environmentConfig.SETUP_TEST_CALL === 'true') {
-    if (__ENV.TEST_SETUP_CALL_ID) {
-      testCall = (await call.getCall(+__ENV.TEST_SETUP_CALL_ID)) as CallType;
-    } else {
-      testCall = (await call.createTestCall(
-        (await template.createTemplate()).templateId
-      )) as CallType;
-      if (testCall) {
-        const instrument = new Instrument(apiAsyncClient);
-        const callInstrument = await instrument.createInstrument(1);
-        if (callInstrument) {
-          const callWithInstruments = await call.assignInstrumentsToCall(
-            testCall.id,
-            callInstrument.id
-          );
-          if (callWithInstruments) {
-            callWithInstruments.instruments.map((instrument) => {
-              testCall!.instruments.push({
-                description: instrument.description,
-                id: instrument.id,
-                managerUserId: instrument.managerUserId,
-                name: instrument.name,
-                shortCode: instrument.shortCode,
-              });
-            });
-          }
-        } else {
-          console.error('Failed to create instrument aborting test');
-          exec.test.abort();
-        }
-      }
-    }
 
-    if (!testCall) {
-      console.error('Failed to create test call aborting test');
-      exec.test.abort();
-    }
+  if (__ENV.FAP_CALL_ID) {
+    testCall = (await call.getCall(+__ENV.FAP_CALL_ID)) as CallType;
+  }
+  if (!testCall) {
+    console.error('Failed to load call aborting test');
+    exec.test.abort();
   }
 
   if (__ENV.FAP_PROCESS_LOAD_TEST === 'true') {
@@ -220,14 +187,14 @@ export async function sc1SetupFapReview(
           if (proposalStatusChanged) {
             const instrumentsAssigned =
               await proposal.assignProposalsToInstruments(testFapProposalKeys, [
-                Number(__ENV.TEST_SET_UP_INSTRUMENT_ID),
+                Number(__ENV.FAP_INSTRUMENT_ID),
               ]);
 
             if (instrumentsAssigned) {
               const proposalsAssignedToFap = await fap.assignProposalsToFaps(
                 testFapProposalKeys,
                 testFapId,
-                Number(__ENV.TEST_SET_UP_INSTRUMENT_ID)
+                Number(__ENV.FAP_INSTRUMENT_ID)
               );
               if (proposalsAssignedToFap) {
                 const reviewerIterator = reviewerUsers.entries();
