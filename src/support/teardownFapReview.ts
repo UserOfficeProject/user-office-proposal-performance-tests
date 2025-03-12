@@ -39,9 +39,9 @@ export async function sc1TearDownFapReview(
       const userIds = sharedData.fapReviewAssignments.map((a) => a.memberId);
       const uniqueUserIds = new Set(userIds);
       let role: UserRole;
-      if (__ENV.FAP_REVIEWER_ROLE === 'fapMember') role = UserRole.FapReviewer;
-      else if (__ENV.FAP_REVIEWER_ROLE === 'fapChair') role = UserRole.FapChair;
-      else role = UserRole.FapSecretary;
+      if (__ENV.FAP_MEMBER_ROLE === 'fapChair') role = UserRole.FapChair;
+      else if (__ENV.FAP_MEMBER_ROLE === 'fapSecretary') role = UserRole.FapSecretary;
+      else role = UserRole.FapReviewer;
 
       uniqueUserIds.forEach(async (a) => {
         console.log(`Going to remove member ${a} from fap ${fapId}`);
