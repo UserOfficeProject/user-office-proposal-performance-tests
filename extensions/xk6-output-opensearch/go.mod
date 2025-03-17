@@ -1,7 +1,8 @@
 module github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-opensearch
 
-go 1.22.2
-toolchain go1.24.1
+go 1.23.0
+
+toolchain go1.23.7
 
 require go.k6.io/k6 v0.54.0
 
