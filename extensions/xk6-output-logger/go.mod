@@ -1,6 +1,7 @@
 module xk6-output-logger
 
-go 1.22.2
+go 1.23.0
+
 toolchain go1.23.7
 
 require go.k6.io/k6 v0.53.0
