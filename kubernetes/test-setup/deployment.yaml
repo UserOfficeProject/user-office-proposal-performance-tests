@@ -25,7 +25,7 @@ spec:
             - name: PORT
               value: "8100"
             - name: FIRST_USER_ID
-              value: "${FIRST_USER_ID}" 
+              value: "${FIRST_USER_ID}"
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -44,6 +44,10 @@ spec:
                   name: connection-secrets
                   key: USER_DB_CONNECTION_STRING
                   optional: false
+            - name: FAP_PROCESS_LOAD_TEST
+              value: "${FAP_PROCESS_LOAD_TEST}"
+            - name: FAP_MEMBER_ROLE
+              value: "${FAP_MEMBER_ROLE}"
           resources:
             limits:
               cpu: "500m"

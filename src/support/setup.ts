@@ -7,7 +7,11 @@ import { getAsyncClientApi } from './graphql';
 import { Call } from '../graphql/support/call';
 import { Instrument } from '../graphql/support/instrument';
 import { Template } from '../graphql/support/template';
-import { SharedData, Call as CallType } from '../utils/sharedType';
+import {
+  SharedData,
+  Call as CallType,
+} from '../utils/sharedType';
+
 export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   /************
       Check if the system under test and user setup server are available.
@@ -18,7 +22,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
   let proposalHealthCheck = false;
   let users = null;
   let testCall: CallType | null = null;
-
   const apiAsyncClient = getAsyncClientApi(
     environmentConfig.GRAPHQL_URL,
     environmentConfig.GRAPHQL_TOKEN
@@ -94,7 +97,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       } `
     );
   }
-
   if (environmentConfig.SETUP_TEST_CALL === 'true') {
     if (__ENV.TEST_SETUP_CALL_ID) {
       testCall = (await call.getCall(+__ENV.TEST_SETUP_CALL_ID)) as CallType;
@@ -133,7 +135,6 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
       exec.test.abort();
     }
   }
-
   return {
     users,
     browserBaseUrl: environmentConfig.BROWSER_BASE_URL,

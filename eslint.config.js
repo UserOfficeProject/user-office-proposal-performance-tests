@@ -36,5 +36,5 @@ export default [
       'import/no-dynamic-require': 'warn',
     },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 ];

@@ -52,10 +52,9 @@ export class Call {
         callId: callId,
       }
     ).then((data) => {
-      
       return data.call;
     });
-    
+
     if (!call) {
       return null;
     }
@@ -110,7 +109,7 @@ export class Call {
           instrumentId,
         },
       }
-    ).then(data => {
+    ).then((data) => {
       return data.removeAssignedInstrumentFromCall;
     });
     if (!removeAssignedInstrumentFromCall) {

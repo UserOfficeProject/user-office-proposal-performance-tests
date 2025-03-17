@@ -17,6 +17,7 @@
     "bundle": "webpack",
     "install:test-setup": "cd test-setup && npm install",
     "build:k6-test": "npm run bundle",
+    "prettier": "prettier --write .",
     "build:test-setup": "cd test-setup && npm run build",
     "start:test-setup": "cd test-setup && npm run start",
     "start:docker-test-setup": "cd test-setup && npm run start:docker",
@@ -25,6 +26,7 @@
     "prepare": "husky",
     "postinstall": "cd test-setup && npm install",
     "generate-uop": "graphql-codegen --require dotenv/config --config codegen.ts",
+    "generate:uows": "cd test-setup && npm run generate:uows",
     "cluster-cli:build": "eslint && rm -rf ./cluster-cli/build && node esbuild.cli.config.mjs",
     "cluster-cli:start": "npm run build && npm run cluster-cli:build && node ./cluster-cli/build/index.cjs"
   },

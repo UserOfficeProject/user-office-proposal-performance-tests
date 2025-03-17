@@ -1,0 +1,13 @@
+mutation RemoveMemberFromFap(
+  $memberId: Int!
+  $fapId: Int!
+  $roleId: UserRole!
+) {
+  removeMemberFromFap(
+    memberId: $memberId
+    fapId: $fapId
+    roleId: $roleId
+  ) {
+    id
+  }
+}

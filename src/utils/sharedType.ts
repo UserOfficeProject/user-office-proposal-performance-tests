@@ -2,11 +2,14 @@
 import { File as BrowserFile } from 'k6/browser';
 import { File as ExperimentalFsFile } from 'k6/experimental/fs';
 import { RefinedParams, RefinedResponse, RequestBody } from 'k6/http';
-import {
+import { 
+  BasicUserDetails,
   CreateCallInput,
+  Fap as FapFields,
   Instrument,
-  TemplateGroupId,
-} from '../graphql/generated/graphql';
+  Proposal as ProposalFields,
+  ProposalStatus,
+  TemplateGroupId, } from '../graphql/generated/graphql';
 
 export class FsFile extends ExperimentalFsFile {}
 
@@ -21,6 +24,7 @@ export type Call = {
       'id' | 'managerUserId' | 'name' | 'shortCode' | 'description'
     >,
   ];
+  faps: [Fap];
 };
 export type TemplateStep = {
   topic: {
@@ -36,21 +40,18 @@ export type Template = {
   description: string;
   steps: [TemplateStep];
 };
-type Questionary = {
-  steps: [TemplateStep];
-  questionaryId: number;
-  templateId: number;
-};
-export type Proposal = {
-  primaryKey: number;
-  proposalId: string;
-  callId: number;
-  status: {
-    id: string;
-    name: string;
-    shortCode: string;
-  };
-  questionary: Questionary;
+export type Proposal = Pick<
+  ProposalFields,
+  | 'primaryKey'
+  | 'proposalId'
+  | 'title'
+  | 'submitted'
+  | 'proposerId'
+  | 'abstract'
+> & {
+  status?: Pick<ProposalStatus, 'name'> | null;
+  proposer?: Pick<BasicUserDetails, 'id'> | null;
+  users?: Pick<BasicUserDetails, 'id'>[] | null;
 };
 export type Proposals = {
   proposals: [Proposal];
@@ -63,8 +64,15 @@ export type SharedData = {
   testSetupBaseUrl?: string | null;
   isClusterTestRun: boolean;
   instrumentId: number;
+  fapReviewAssignments: FapReviewAssignment[] | null;
 };
+export type Fap = Pick<FapFields, 'id' >;
 
+export type FapReviewAssignment = {
+  memberId: number;
+  proposalPk: number;
+  fapId: number;
+};
 export type ClientResponse = RefinedResponse<any>;
 export type AsyncClientResponse = Promise<RefinedResponse<any>>;
 
@@ -78,6 +86,7 @@ export type AsyncClientApi = (
   body: RequestBody | null,
   options?: AsyncRequestOptions | undefined
 ) => AsyncClientResponse;
+
 export type CallQueryResponse = {
   data: { [name: string]: Call };
 };
@@ -100,7 +109,9 @@ export type ProposalQueryResponse = {
 export type GenericQueryResponse = {
   data: { [name: string]: any };
 };
-
+export type FapQueryResponse = {
+  data: { [name: string]: Fap };
+};
 export type InitData = {
   call: CreateCallInput;
   proposal: {

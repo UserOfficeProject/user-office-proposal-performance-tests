@@ -20,7 +20,8 @@ if (process.env.TEST_SETUP_DOTENV_PATH) {
   dotenv.config({
     path: validate<string>(process.env.TEST_SETUP_DOTENV_PATH as string, 'TEST_SETUP_DOTENV_PATH'),
   });
-}{
+}
+{
   dotenv.config({
     path: `../.env`,
   });
@@ -31,6 +32,7 @@ async function startServer() {
     const port = process.env.PORT || 8100;
     const app = express();
     const connectionPool: oracledb.Pool = db.getConnectionPool();
+    app.use(express.json());
     app.use(users(db.getConnectionPool()));
     app.use(heathCheck());
     process.on('exit', async () => {
@@ -60,8 +62,14 @@ async function startServer() {
       }
     }
     const sessionIds = await userDataSource.createLoggedInUsers(userIds);
+    console.log(`is this a fap process load test ? : ${process.env.FAP_PROCESS_LOAD_TEST}`);
+    if (process.env.FAP_PROCESS_LOAD_TEST === 'true' && process.env.FAP_MEMBER_ROLE) {
+      const reviewerUserIds = userIds.slice(0, 150); //hard-coded value is used to assign 150 users as fap members out of 500 users
+      console.info(`the user ids going to be fap members will be ${reviewerUserIds}`);
+      await userDataSource.assignRoleToUsers(reviewerUserIds, process.env.FAP_MEMBER_ROLE);
+    }
+
     if (sessionIds.length > 0) {
-      
       logger.logInfo('Created pre start up users', {
         number: sessionIds.length,
       });

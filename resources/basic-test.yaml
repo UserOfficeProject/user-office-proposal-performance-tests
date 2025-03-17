@@ -25,7 +25,7 @@ spec:
         co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
         co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
         co.elastic.logs/processors.add_fields.fields.application.tier: "service"
-        co.elastic.logs/processors.dissect.tokenizer: "time=\"%{@timestamp}\" level=%{log_level} msg=\"%{?log_message}\" source=%{?log_source}"
+        co.elastic.logs/processors.dissect.tokenizer: 'time="%{@timestamp}" level=%{log_level} msg="%{?log_message}" source=%{?log_source}'
         co.elastic.logs/processors.dissect.ignore_failure: "true"
         co.elastic.logs/processors.dissect.target_prefix: ""
         co.elastic.logs/processors.dissect.overwrite_keys: "true"
@@ -66,6 +66,30 @@ spec:
         value: "${IS_CLUSTER_TEST_RUN}"
       - name: INSTRUMENT_ID
         value: "${INSTRUMENT_ID}"
+      - name: FAP_PROCESS_LOAD_TEST
+        value: "${FAP_PROCESS_LOAD_TEST}"
+      - name: FAP_MEMBER_ROLE
+        value: "${FAP_MEMBER_ROLE}"
+      - name: TOTAL_FAP_MEMBERS
+        value: "${TOTAL_FAP_MEMBERS}"
+      - name: FAP_INSTRUMENT_ID
+        value: "${FAP_INSTRUMENT_ID}"
+      - name: FAP_PROPOSALS
+        value: "${FAP_PROPOSALS}"
+      - name: PROPOSALS_PER_REVIEWER
+        value: "${PROPOSALS_PER_REVIEWER}"
+      - name: FAP_REVIEW_STATUS_ID
+        value: "${FAP_REVIEW_STATUS_ID}"
+      - name: SUBMITTED_STATUS_ID
+        value: "${SUBMITTED_STATUS_ID}"
+      - name: FAP_CALL_ID
+        value: "${FAP_CALL_ID}"
+      - name: K6_FAP_VUS
+        value: "${K6_FAP_VUS}"
+      - name: K6_FAP_ITERATIONS
+        value: "${K6_FAP_ITERATIONS}"
+      - name: K6_OPENSEARCH_INSECURE_SKIP_VERIFY
+        value: "${K6_OPENSEARCH_INSECURE_SKIP_VERIFY}"
     envFrom:
       - secretRef:
           name: connection-secrets

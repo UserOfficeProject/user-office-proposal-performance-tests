@@ -1,0 +1,11 @@
+mutation AssignReviewersToFap(
+  $memberIds: [Int!]!
+  $fapId: Int!
+) {
+  assignReviewersToFap(
+    memberIds: $memberIds
+    fapId: $fapId
+  ) {
+    id
+  }
+}

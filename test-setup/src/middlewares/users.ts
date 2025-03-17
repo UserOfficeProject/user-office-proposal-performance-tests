@@ -33,6 +33,35 @@ const userIdGenerator = generateUserId();
 const router = express.Router();
 
 export default function (pool: oracledb.Pool) {
+  router.post('/users/assignRole', async (req: Request, res: Response) => {
+    const reviewerIds = req.body.ids;
+    const roleName = req.body.roleName;
+    const dataSource: UserDataSource = await createUserDataSource(pool);
+    if (!reviewerIds || !Array.isArray(reviewerIds) || !roleName) {
+      return res.sendStatus(400);
+    }
+
+    return await dataSource
+      .assignRoleToUsers(reviewerIds, roleName)
+      .then((results) => {
+        logger.logInfo(`Users assigned to role ${roleName}`, {
+          ...results,
+          roleName,
+        });
+        const assignedUsers = results.map((result) => {
+          return {
+            userId: result.userId,
+            roleName,
+          };
+        });
+        return res.send(assignedUsers);
+      })
+      .catch((error) => {
+        logger.logInfo('Error assigning role for users', error);
+        return res.sendStatus(500);
+      });
+  });
+
   router.post(
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
@@ -50,11 +79,11 @@ export default function (pool: oracledb.Pool) {
       const userIds: number[] = [];
 
       for (let userId = firstUserId; userId <= lastUserId; userId++) {
-          userIds.push(userId);
+        userIds.push(userId);
       }
       const dataSource: UserDataSource = await createUserDataSource(pool);
       const sessionIds = await dataSource.createLoggedInUsers(userIds);
-      
+
       if (sessionIds.length > 0) {
         logger.logInfo('Created logins,people,establishments and addresses', {
           number: sessionIds.length,
@@ -110,6 +139,7 @@ export default function (pool: oracledb.Pool) {
       res.status(200).json(sessionIds);
     })
   );
+
   router.delete(
     '/users/:sessionId',
     handleError(async (req: Request, res: Response) => {
@@ -120,7 +150,6 @@ export default function (pool: oracledb.Pool) {
       res.status(204).send();
     })
   );
-
   router.delete(
     '/users/:firstId/:lastId',
     handleError(async (req: Request, res: Response) => {
