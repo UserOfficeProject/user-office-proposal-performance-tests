@@ -41,11 +41,11 @@ pipeline {
                     selector: lastSuccessful(),
                     fingerprintArtifacts: true
                 )
-               sh (
-                '''   
-                 ansible-playbook -v helm/install-helm-dependencies.yml
-                '''
-                )
+            //    sh (
+            //     '''   
+            //      ansible-playbook -v helm/install-helm-dependencies.yml
+            //     '''
+            //     )
                 sh(
                 '''
                  kubectl create namespace apps --dry-run=true -o yaml | kubectl apply -f -
