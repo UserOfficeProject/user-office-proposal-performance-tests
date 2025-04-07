@@ -40,7 +40,7 @@ pipeline {
     string(
       name: 'TEST_SETUP_VERSION_TAG',
       description: 'The test setup image version',
-      defaultValue: '0.0.4',
+      defaultValue: '0.0.5',
       trim: true
     )
     string(

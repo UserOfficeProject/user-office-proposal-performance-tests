@@ -1,7 +1,7 @@
 #!/bin/bash
 export K6_TEST_NAME=sc1-proposal-submission-test
 export K6_TEST_FILE="$K6_TEST_NAME.js"
-export K6_VERSION_TAG=0.0.5
+export K6_VERSION_TAG=0.0.4
 export TEST_SETUP_VERSION_TAG=0.0.5
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
