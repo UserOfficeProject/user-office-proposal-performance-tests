@@ -12,7 +12,7 @@ spec:
       name: test-scripts
       file: ${K6_TEST_NAME}.js
   separate: true
-  arguments: --out xk6-output-opensearch --no-usage-report -e ENVIRONMENT=develop
+  arguments:  --no-usage-report -e ENVIRONMENT=develop
   runner:
     image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
     imagePullPolicy: Always
