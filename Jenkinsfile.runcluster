@@ -167,7 +167,7 @@ pipeline {
       agent {
         dockerfile {
           filename 'Dockerfile.run'
-          label 'k6 && docker'
+          label 'linux && docker'
           reuseNode true
         }
       }
