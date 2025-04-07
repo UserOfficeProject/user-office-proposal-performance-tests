@@ -1,5 +1,5 @@
 #!/bin/bash
-export K6_TEST_NAME=sc1-fap-review-view-proposal-test
+export K6_TEST_NAME=sc1-proposal-submission-test
 export K6_TEST_FILE="$K6_TEST_NAME.js"
 export K6_VERSION_TAG=0.0.5
 export TEST_SETUP_VERSION_TAG=0.0.5
@@ -27,7 +27,6 @@ export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk/opensearch"
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
-export K6_OPENSEARCH_INSECURE_SKIP_VERIFY="true"
 export IS_CLUSTER_TEST_RUN="true"
 export INSTRUMENT_ID=9
 export FIRST_USER_ID=-220800000
