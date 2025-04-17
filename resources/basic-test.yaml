@@ -12,7 +12,7 @@ spec:
       name: test-scripts
       file: ${K6_TEST_NAME}.js
   separate: true
-  arguments: --out xk6-output-opensearch --no-usage-report -e ENVIRONMENT=develop
+  arguments: --out experimental-prometheus-rw --no-usage-report -e ENVIRONMENT=develop -e K6_PROMETHEUS_RW_SERVER_URL=${K6_PROMETHEUS_RW_SERVER_URL}
   runner:
     image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
     imagePullPolicy: Always
@@ -90,6 +90,8 @@ spec:
         value: "${K6_FAP_ITERATIONS}"
       - name: K6_OPENSEARCH_INSECURE_SKIP_VERIFY
         value: "${K6_OPENSEARCH_INSECURE_SKIP_VERIFY}"
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: "${K6_PROMETHEUS_RW_SERVER_URL}"
     envFrom:
       - secretRef:
           name: connection-secrets
