@@ -7,7 +7,7 @@ RUN go install go.k6.io/xk6/cmd/xk6@v0.13.3
 RUN xk6 build v0.55.0 \
     --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-logger="$PWD/extensions/xk6-output-logger" \
     --with github.com/UserOfficeProject/user-office-proposal-performance-tests/extensions/xk6-output-opensearch="$PWD/extensions/xk6-output-opensearch" \
-    --with grafana/xk6-client-tracing:latest \
+    --with github.com/grafana/xk6-client-tracing@v0.0.7 \
     --output /tmp/k6
 
 FROM alpine:3.20 AS release
