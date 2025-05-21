@@ -31,7 +31,8 @@ export K6_OPENSEARCH_INSECURE_SKIP_VERIFY="true"
 export IS_CLUSTER_TEST_RUN="true"
 export INSTRUMENT_ID=9
 export FIRST_USER_ID=-220800000
-export K6_PROMETHEUS_RW_SERVER_URL="https://prometheus.developers.facilities.rl.ac.uk/api/v1/write"
+export K6_PROMETHEUS_RW_SERVER_URL="https://mimir.developers.facilities.rl.ac.uk/api/v1/push"
+export K6_PROMETHEUS_RW_TREND_STATS="p(95),p(99),min,max,sum,avg,med"
 
 for arg in "$@"; do
   KEY=$(echo "$arg" | cut -d= -f1)

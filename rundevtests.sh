@@ -35,7 +35,7 @@ export K6_OPENSEARCH_USERNAME="admin"
 export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
 export TEST_SETUP_DOTENV_PATH="../.env"
 export K6_OPENSEARCH_CREATE_INDEX="true"
-export K6_PROMETHEUS_RW_SERVER_URL="https://prometheus.developers.facilities.rl.ac.uk/api/v1/write"
+export K6_PROMETHEUS_RW_SERVER_URL="https://mimir.developers.facilities.rl.ac.uk/api/v1/push"
 
 try
     while IFS='=' read -r key value || [ -n "$key" ]; do
@@ -85,4 +85,6 @@ if [ "$SETUP_TEST_USERS" = "true" ]; then
 fi
 sleep 10
 
-k6 run --no-usage-report --out experimental-prometheus-rw  ./test/${K6_TEST_FILE}.js
+export K6_PROMETHEUS_RW_HTTP_HEADERS="X-Scope-OrgID:FASE,X-Prometheus-Remote-Write-Version:0.1.0,Authorization:Basic $MIMIR_CREDENTIAL"
+export K6_PROMETHEUS_RW_TREND_STATS="p(95),p(99),min,max,sum,avg,med"
+k6 run --tag testid=${K6_TEST_ID} --no-usage-report --out experimental-prometheus-rw ./test/${K6_TEST_FILE}.js
