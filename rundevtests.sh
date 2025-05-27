@@ -87,4 +87,4 @@ sleep 10
 
 export K6_PROMETHEUS_RW_HTTP_HEADERS="X-Scope-OrgID:FASE,X-Prometheus-Remote-Write-Version:0.1.0,Authorization:Basic $MIMIR_CREDENTIAL"
 export K6_PROMETHEUS_RW_TREND_STATS="p(95),p(99),min,max,sum,avg,med"
-k6 run --tag testid=${K6_TEST_ID} --no-usage-report --out experimental-prometheus-rw ./test/${K6_TEST_FILE}.js
+k6 run --no-usage-report --out dashboard - < <(cat ./test/${K6_TEST_FILE}.js)
