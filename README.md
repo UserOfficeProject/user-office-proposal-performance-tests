@@ -45,6 +45,8 @@ This repository is specifically used by the submission team to conduct performan
 ### Running a tests:
 #### **Running local with out fba-compose:** 
 * Executed tests with ``k6 run test/<test name>.js`` e.g (``k6 run test/sc1-load-test.js``) 
+#### **Running local with out fba-compose and stream the load test's result to grafana dashboard
+* Execute test with command ``k6 run --tag testid=<test id> --no-usage-report --out experimental-prometheus-rw ./test/<test file name>.js``
 #### **Running Tests with fba-compose(STFC):** ```Use `fba-compose` and `rundevtests.sh` to build and run the test setup server locally.```
  * Create a token to use as value of ``GRAPHQL_TOKEN`` with all the required permissions.This covers set up and teardown during tests .Individual tests may require their own permissions, update the permissions on the token accordingly.
     ```txt
