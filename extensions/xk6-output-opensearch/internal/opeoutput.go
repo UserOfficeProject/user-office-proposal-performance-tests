@@ -14,11 +14,12 @@ import (
 	"strings"
 	"time"
 
+	"math/rand/v2"
+
 	osapi "github.com/opensearch-project/opensearch-go/v4/opensearchapi"
 	osapiutil "github.com/opensearch-project/opensearch-go/v4/opensearchutil"
 	"github.com/sirupsen/logrus"
 	"go.k6.io/k6/output"
-	"golang.org/x/exp/rand"
 )
 
 type openSearchMetricEntry struct {
@@ -79,7 +80,7 @@ func New(params output.Params) (output.Output, error) {
 		
 		return time.Duration(math.Pow(2, float64(attempt))) * time.Second
 	}
-	randomDuration := time.Duration(rand.Intn(10)) * time.Second
+	randomDuration := time.Duration(rand.IntN(10)) * time.Second
 	time.Sleep(randomDuration)
 	client, err := osapi.NewClient(osConfig)
 	if err != nil {
