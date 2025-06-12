@@ -34,13 +34,13 @@ pipeline {
     string(
       name: 'K6_VERSION_TAG',
       description: 'The k6 version image',
-      defaultValue: '0.0.4',
+      defaultValue: '0.0.6',
       trim: true
     )
     string(
       name: 'TEST_SETUP_VERSION_TAG',
       description: 'The test setup image version',
-      defaultValue: '0.0.4',
+      defaultValue: '0.0.5',
       trim: true
     )
     string(
@@ -64,7 +64,7 @@ pipeline {
     string(
       name: 'TEST_SETUP_CALL_ID',
       description: 'The call id in develop',
-      defaultValue: '292',
+      defaultValue: '301',
       trim: true
     )
     string(
@@ -167,7 +167,7 @@ pipeline {
       agent {
         dockerfile {
           filename 'Dockerfile.run'
-          label 'k6 && docker'
+          label 'linux && docker'
           reuseNode true
         }
       }

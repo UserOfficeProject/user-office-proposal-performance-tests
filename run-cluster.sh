@@ -1,7 +1,7 @@
 #!/bin/bash
-export K6_TEST_NAME=sc1-fap-review-view-proposal-test
+export K6_TEST_NAME=sc1-proposal-submission-test
 export K6_TEST_FILE="$K6_TEST_NAME.js"
-export K6_VERSION_TAG=0.0.5
+export K6_VERSION_TAG=0.0.6
 export TEST_SETUP_VERSION_TAG=0.0.5
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
@@ -10,7 +10,7 @@ export TEST_SETUP_URL=http://test-setup:8100
 export K6_PS_VUS=50
 export K6_PS_ITERATIONS=2
 export K6_SETUP_TOTAL_USERS=250
-export TEST_SETUP_CALL_ID=292
+export TEST_SETUP_CALL_ID=301
 export FAP_PROCESS_LOAD_TEST="true"
 export FAP_CALL_ID=145
 export FAP_INSTRUMENT_ID=37
@@ -27,7 +27,6 @@ export SETUP_TEST_USERS="true"
 export SETUP_TEST_CALL="true"
 export K6_OPENSEARCH_ADDRESS="https://devopensearch.developers.facilities.rl.ac.uk/opensearch"
 export K6_OPENSEARCH_FLUSH_PERIOD="2m"
-export K6_OPENSEARCH_INSECURE_SKIP_VERIFY="true"
 export IS_CLUSTER_TEST_RUN="true"
 export INSTRUMENT_ID=9
 export FIRST_USER_ID=-220800000

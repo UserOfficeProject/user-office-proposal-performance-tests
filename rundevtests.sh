@@ -4,7 +4,7 @@
 try() {
     "$@" || return 1
 }
-export K6_TEST_FILE=sc1-fap-review-submission-test
+export K6_TEST_FILE=sc1-proposal-submission-test
 export XK6_BROWSER_LOG="fatal"
 export K6_BROWSER_LOG="error"
 export ENVIRONMENT="local"
