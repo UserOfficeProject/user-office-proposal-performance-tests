@@ -1,4 +1,5 @@
 import http, { RequestBody } from 'k6/http';
+import tempo from 'https://jslib.k6.io/http-instrumentation-tempo/1.0.1/index.js';
 
 import {
   AsyncClientApi,
@@ -24,6 +25,10 @@ export function getClientApi(
   graphqlUrl: string,
   bearerToken?: string
 ): ClientApi {
+  tempo.instrumentHTTP({
+    propagator: 'w3c',
+    sampling: 1,
+  });
   if (bearerToken) {
     return function (body: string, userToken?: string) {
       return http.post(graphqlUrl, body, {
@@ -64,6 +69,10 @@ export function getAsyncClientApi(
   graphqlUrl: string,
   bearerToken?: string
 ): AsyncClientApi {
+  tempo.instrumentHTTP({
+    propagator: 'w3c',
+    sampling: 1,
+  });
   if (bearerToken) {
     return function (
       method: string,
