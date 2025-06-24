@@ -11,6 +11,12 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "types": ["k6"],
+    "baseUrl": ".",
+    "paths": {
+      "https://jslib.k6.io/http-instrumentation-tempo/1.0.1/index.js": [
+        "./src/utils/k6-http-instrumentation-tempo.d.ts"
+      ]
+    },
     "noEmit": true,
     "allowJs": true,
     "removeComments": false,

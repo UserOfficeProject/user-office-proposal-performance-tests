@@ -1,5 +1,4 @@
 import { FsFile, UserLogin } from './sharedType';
-import { crypto } from 'k6/experimental/webcrypto';
 
 export function randomUUIDv4(): string {
   //This is an experimental module.

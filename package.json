@@ -54,7 +54,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "3.5.3",
-    "typescript": "^5.3.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.19.1",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
@@ -68,9 +68,9 @@
   "dependencies": {
     "@inquirer/prompts": "^7.3.1",
     "@kubernetes/client-node": "^1.0.0",
+    "concurrently": "^9.1.2",
     "date-fns": "^4.1.0",
     "js-yaml": "^4.1.0",
-    "ora": "^8.2.0",
-    "concurrently": "^9.1.2"
+    "ora": "^8.2.0"
   }
 }
