@@ -1,6 +1,5 @@
 export type Answers = Record<AnswerKey, string | number | boolean>;
 export type AnswerKey =
-  | 'K6_VERSION_TAG'
   | 'TEST_SETUP_VERSION_TAG'
   | 'BROWSER_BASE_URL'
   | 'TEST_SETUP_URL'
@@ -28,7 +27,6 @@ export type AnswerKey =
   | 'PROPOSAL_LOOKUP_URL'
   | 'STOP_CURRENT_TESTS';
 export const defaultAnswers: Answers = {
-  K6_VERSION_TAG: '0.0.4',
   TEST_SETUP_VERSION_TAG: '0.0.4',
   BROWSER_BASE_URL: 'https://devproposal.facilities.rl.ac.uk',
   GRAPHQL_URL: 'https://devproposal.facilities.rl.ac.uk/graphql',

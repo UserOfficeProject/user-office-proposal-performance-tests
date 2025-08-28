@@ -61,14 +61,6 @@ export const getQuestions = async () => {
       },
     },
     {
-      type: input,
-      key: 'K6_VERSION_TAG',
-      options: {
-        message: 'K6 image version tag',
-        default: defaultAnswers.K6_VERSION_TAG,
-      },
-    },
-    {
       type: confirm,
       key: 'IS_BROWSER_TEST',
       options: {
