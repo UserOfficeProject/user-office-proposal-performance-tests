@@ -1,12 +1,7 @@
----
-title: User Office Proposal Performance Testing readme
-tags:
- - markdown
----
 
 # User Office Proposal Performance Testing
 
-This repository contains tools and scripts for performance monitoring and testing of systems. It focuses on ensuring that applications maintains acceptable performance under various load conditions.Testing is done using [K6](https://grafana.com/docs/k6/) one of the leading leading load testing tool.Some tools have their own folders [test-setup](test-setup/README.md), [cluster-cli](cluster-cli/README.md) and [extensions](extensions/README.md)
+This repository contains tools and scripts for performance monitoring and testing of systems. It focuses on ensuring that applications maintains acceptable performance under various load conditions.Testing is done using [K6](https://grafana.com/docs/k6/) one of the leading leading load testing tool.Some tools have their own folders [test-setup](test-setup/README.md), [cluster-cli](cluster-cli/README.md).
 
 This repository is specifically used by the submission team to conduct performance testing on systems ,by simulating varying levels of user load this gives us an ability to identify and address potential performance issues, to avoid performance degradation during peak usage periods.For our tests metrics we send to Opensearch when running tests on the cluster.
 
