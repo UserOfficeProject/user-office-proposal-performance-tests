@@ -15,6 +15,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Validate test setup build file
+        uses: docker/build-push-action@v6
+        with:
+          context: ./test-setup
+          platforms: linux/amd64
+          call: check
+          
       - name: Build test setup
         uses: docker/build-push-action@v6
         with:
