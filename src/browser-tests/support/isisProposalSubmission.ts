@@ -21,7 +21,7 @@ const proposalsCreated = new Counter('proposals_created', false);
 
 export default async function isisProposalSubmissionTest(
   sharedData: SharedData,
-  fileData: string | ArrayBuffer
+  fileData: string | ArrayBuffer | Uint8Array
 ) {
   if (!sharedData.users) {
     fail(`User not set`);
@@ -826,7 +826,7 @@ export default async function isisProposalSubmissionTest(
       name: `${proposalTitle + Date.now() + '.pdf'}`,
       mimeType: 'application/pdf',
       mimetype: 'application/pdf',
-      buffer: encoding.b64encode(fileData) as unknown as ArrayBuffer,
+      buffer: encoding.b64encode(fileData as ArrayBuffer ) as unknown as ArrayBuffer,
     } as InputFileType);
 
     sleep(5);
