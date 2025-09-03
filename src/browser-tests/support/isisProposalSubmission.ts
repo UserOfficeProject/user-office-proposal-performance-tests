@@ -36,7 +36,7 @@ export default async function isisProposalSubmissionTest(
   const currentUser =
     sharedData.users[randomIntBetween(0, sharedData.users.length - 1)];
   const today = new Date();
-  const futureDate = `${today.getMonth().toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}${today.getFullYear() + 1}`;
+
   page.setDefaultTimeout(1060000000);
   const proposalTitle = randomString(5);
   try {
@@ -143,59 +143,14 @@ export default async function isisProposalSubmissionTest(
 
     sleep(randomIntBetween(10, 20));
 
-    await page.locator('button[data-cy="add-button"]').click();
-
-    const grantTitleTextarea = page.locator(
-      'textarea[name="generic_template_basis"]'
-    );
-    await grantTitleTextarea.waitFor({
-      state: 'visible',
-    });
-    await grantTitleTextarea.type(randomString(8));
-
-    await page.locator('#selection_from_options_1634225562606').click();
-
-    const fundingBody = page.locator('li[data-value="STFC"]');
-    await fundingBody.waitFor({
-      state: 'visible',
-    });
-    await fundingBody.click();
-
-    sleep(5);
-
-    await page
-      .locator('input[name="text_input_1634572306120"]')
-      .type(randomString(8));
-
-    sleep(5);
-
-    await page
-      .locator('textarea[name="text_input_1634225877426"]')
-      .type(randomString(8));
-
-    sleep(5);
-
-    await page.locator('input[name="date_1634225935445"]').type(futureDate);
-
-    sleep(5);
-
-    await page.locator('input[name="date_1634225971632"]').type(futureDate);
-
-    sleep(5);
-
-    await page
-      .locator(
-        'div[data-cy="genericTemplate-declaration-modal"] button[data-cy="save-and-continue-button"]'
-      )
-      .click();
-
     const sponsorshipCheckBox = page.locator(
       'input[value="Yes"][type="radio"][name="selection_from_options_1634226627885"]'
     );
     await sponsorshipCheckBox.waitFor({
       state: 'visible',
     });
-    await sponsorshipCheckBox.click();
+    sleep(5);
+    await sponsorshipCheckBox.click({ force: true });
 
     const industrialPartnersInput = page.locator(
       'input[name="text_input_1675848614834"]'
@@ -230,6 +185,61 @@ export default async function isisProposalSubmissionTest(
       state: 'visible',
     });
     await piBasedInput.click();
+
+    sleep(randomIntBetween(5, 10));
+
+    await page.locator('button[data-cy="add-button"]').click();
+
+    const grantTitleTextarea = page.locator(
+      'textarea[name="generic_template_basis"]'
+    );
+    await grantTitleTextarea.waitFor({
+      state: 'visible',
+    });
+    await grantTitleTextarea.type(randomString(8));
+
+    await page.locator('#selection_from_options_1634225562606').click();
+
+    const fundingBody = page.locator('li[data-value="STFC"]');
+    await fundingBody.waitFor({
+      state: 'visible',
+    });
+    await fundingBody.click();
+
+    sleep(5);
+
+    await page
+      .locator('input[name="text_input_1634572306120"]')
+      .type(randomString(8));
+
+    sleep(5);
+
+    await page
+      .locator('textarea[name="text_input_1634225877426"]')
+      .type(randomString(8));
+
+    sleep(5);
+
+    await page
+      .locator('input[name="date_1634225935445"]')
+      .fill(
+        `${today.getDate().toString().padStart(2, '0')}-${today.getMonth().toString().padStart(2, '0')}-${today.getFullYear() + 1}`
+      );
+    sleep(5);
+
+    await page
+      .locator('input[name="date_1634225971632"]')
+      .fill(
+        `${today.getDate().toString().padStart(2, '0')}-${today.getMonth().toString().padStart(2, '0')}-${today.getFullYear() + 1}`
+      );
+
+    sleep(5);
+
+    await page
+      .locator(
+        'div[data-cy="genericTemplate-declaration-modal"] button[data-cy="save-and-continue-button"]'
+      )
+      .click();
 
     sleep(randomIntBetween(5, 10));
 
@@ -826,7 +836,9 @@ export default async function isisProposalSubmissionTest(
       name: `${proposalTitle + Date.now() + '.pdf'}`,
       mimeType: 'application/pdf',
       mimetype: 'application/pdf',
-      buffer: encoding.b64encode(fileData as ArrayBuffer ) as unknown as ArrayBuffer,
+      buffer: encoding.b64encode(
+        fileData as ArrayBuffer
+      ) as unknown as ArrayBuffer,
     } as InputFileType);
 
     sleep(5);
@@ -913,6 +925,8 @@ export default async function isisProposalSubmissionTest(
       state: 'visible',
     });
     await proposalSubmitButton.click();
+
+    sleep(randomIntBetween(10, 30));
 
     const submitConfirmBoxIsVisible = page.locator(
       '//h2[contains(text(), "Please confirm")]'
