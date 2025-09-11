@@ -14,10 +14,8 @@ spec:
   separate: true
   arguments: --tag testid=${K6_TEST_ID} --out experimental-prometheus-rw --no-usage-report -e ENVIRONMENT=develop -e K6_PROMETHEUS_RW_SERVER_URL=${K6_PROMETHEUS_RW_SERVER_URL}
   runner:
-    image: "harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-k6:${K6_VERSION_TAG}"
-    imagePullPolicy: Always
-    imagePullSecrets:
-      - name: registry-creds
+    image: grafana/k6:1.2.3-with-browser
+    imagePullPolicy: IfNotPresent
     metadata:
       annotations:
         co.elastic.logs/enabled: "true"
@@ -56,12 +54,8 @@ spec:
         value: "${SETUP_TEST_USERS}"
       - name: SETUP_TEST_CALL
         value: "${SETUP_TEST_CALL}"
-      - name: K6_OPENSEARCH_ADDRESS
-        value: "${K6_OPENSEARCH_ADDRESS}"
       - name: K6_TEST_ID
         value: "${K6_TEST_ID}"
-      - name: K6_OPENSEARCH_FLUSH_PERIOD
-        value: "${K6_OPENSEARCH_FLUSH_PERIOD}"
       - name: IS_CLUSTER_TEST_RUN
         value: "${IS_CLUSTER_TEST_RUN}"
       - name: INSTRUMENT_ID
@@ -88,8 +82,6 @@ spec:
         value: "${K6_FAP_VUS}"
       - name: K6_FAP_ITERATIONS
         value: "${K6_FAP_ITERATIONS}"
-      - name: K6_OPENSEARCH_INSECURE_SKIP_VERIFY
-        value: "${K6_OPENSEARCH_INSECURE_SKIP_VERIFY}"
       - name: K6_PROMETHEUS_RW_SERVER_URL
         value: "${K6_PROMETHEUS_RW_SERVER_URL}"
       - name: K6_PROMETHEUS_RW_HTTP_HEADERS

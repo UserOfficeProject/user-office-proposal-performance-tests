@@ -1,7 +1,4 @@
 ---
-title: Test cluster CLI readme
-tags:
- - markdown
 ---
 # Test cluster CLI
 

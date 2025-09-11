@@ -30,11 +30,7 @@ export FAP_REVIEW_STATUS_ID=5
 export SUBMITTED_STATUS_ID=15
 export K6_FAP_VUS=1
 export K6_FAP_ITERATIONS=1
-export K6_OPENSEARCH_PASSWORD="password"
-export K6_OPENSEARCH_USERNAME="admin"
-export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
 export TEST_SETUP_DOTENV_PATH="../.env"
-export K6_OPENSEARCH_CREATE_INDEX="true"
 export K6_PROMETHEUS_RW_SERVER_URL="https://mimir.developers.facilities.rl.ac.uk/api/v1/push"
 
 try
@@ -87,4 +83,4 @@ sleep 10
 
 export K6_PROMETHEUS_RW_HTTP_HEADERS="X-Scope-OrgID:FASE,X-Prometheus-Remote-Write-Version:0.1.0,Authorization:Basic $MIMIR_CREDENTIAL"
 export K6_PROMETHEUS_RW_TREND_STATS="p(95),p(99),min,max,sum,avg,med"
-k6 run --no-usage-report --out dashboard - < <(cat ./test/${K6_TEST_FILE}.js)
+k6 run --no-usage-report - < <(cat ./test/${K6_TEST_FILE}.js)

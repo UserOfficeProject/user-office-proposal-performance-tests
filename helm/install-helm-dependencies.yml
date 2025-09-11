@@ -15,7 +15,7 @@
         create_namespace: true
         release_namespace: default
         chart_ref: grafana/k6-operator
-        chart_version: 3.10.1
+        chart_version: 3.16.0
         update_repo_cache: yes
         wait: yes
         state: present 

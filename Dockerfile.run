@@ -1,4 +1,4 @@
-FROM alpine/k8s:1.28.7
+FROM alpine/k8s:1.32.8
 
 RUN apk --no-cache add nodejs npm ca-certificates curl jq yq gettext
 

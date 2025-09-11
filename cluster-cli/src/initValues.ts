@@ -1,6 +1,5 @@
 export type Answers = Record<AnswerKey, string | number | boolean>;
 export type AnswerKey =
-  | 'K6_VERSION_TAG'
   | 'TEST_SETUP_VERSION_TAG'
   | 'BROWSER_BASE_URL'
   | 'TEST_SETUP_URL'
@@ -12,9 +11,6 @@ export type AnswerKey =
   | 'K6_TEST_PARALLELISM'
   | 'SETUP_TEST_USERS'
   | 'SETUP_TEST_CALL'
-  | 'K6_OPENSEARCH_ADDRESS'
-  | 'K6_OPENSEARCH_FLUSH_PERIOD'
-  | 'K6_OPENSEARCH_FLUSH_PERIOD'
   | 'IS_CLUSTER_TEST_RUN'
   | 'INSTRUMENT_ID'
   | 'K6_TEST_FILE'
@@ -28,7 +24,6 @@ export type AnswerKey =
   | 'PROPOSAL_LOOKUP_URL'
   | 'STOP_CURRENT_TESTS';
 export const defaultAnswers: Answers = {
-  K6_VERSION_TAG: '0.0.4',
   TEST_SETUP_VERSION_TAG: '0.0.4',
   BROWSER_BASE_URL: 'https://devproposal.facilities.rl.ac.uk',
   GRAPHQL_URL: 'https://devproposal.facilities.rl.ac.uk/graphql',
@@ -40,9 +35,6 @@ export const defaultAnswers: Answers = {
   K6_TEST_PARALLELISM: 2,
   SETUP_TEST_USERS: true,
   SETUP_TEST_CALL: true,
-  K6_OPENSEARCH_ADDRESS:
-    'https://devopensearch.developers.facilities.rl.ac.uk/opensearch',
-  K6_OPENSEARCH_FLUSH_PERIOD: '2m',
   IS_CLUSTER_TEST_RUN: true,
   INSTRUMENT_ID: 9,
   IS_BROWSER_TEST: false,
