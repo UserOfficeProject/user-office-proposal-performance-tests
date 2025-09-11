@@ -166,32 +166,6 @@ export const getQuestions = async () => {
     },
     {
       type: confirm,
-      key: 'SETUP_OPENSEARCH_CONFIGS',
-      options: {
-        message: 'Do you want to set opensearch configs',
-        default: defaultAnswers.SETUP_K6_OPTIONS,
-      },
-    },
-    {
-      type: input,
-      key: 'K6_OPENSEARCH_ADDRESS',
-      dependencyPrompt: 'SETUP_OPENSEARCH_CONFIGS',
-      options: {
-        message: 'Open search address',
-        default: defaultAnswers.K6_OPENSEARCH_ADDRESS,
-      },
-    },
-    {
-      type: input,
-      key: 'K6_OPENSEARCH_FLUSH_PERIOD',
-      dependencyPrompt: 'SETUP_OPENSEARCH_CONFIGS',
-      options: {
-        message: 'Open search flush period',
-        default: defaultAnswers.K6_OPENSEARCH_FLUSH_PERIOD,
-      },
-    },
-    {
-      type: confirm,
       key: 'SETUP_TEST_INSTRUMENT',
       options: {
         message: 'Do the job want instrument id ?',

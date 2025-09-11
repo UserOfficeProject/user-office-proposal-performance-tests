@@ -11,9 +11,6 @@ export type AnswerKey =
   | 'K6_TEST_PARALLELISM'
   | 'SETUP_TEST_USERS'
   | 'SETUP_TEST_CALL'
-  | 'K6_OPENSEARCH_ADDRESS'
-  | 'K6_OPENSEARCH_FLUSH_PERIOD'
-  | 'K6_OPENSEARCH_FLUSH_PERIOD'
   | 'IS_CLUSTER_TEST_RUN'
   | 'INSTRUMENT_ID'
   | 'K6_TEST_FILE'
@@ -38,9 +35,6 @@ export const defaultAnswers: Answers = {
   K6_TEST_PARALLELISM: 2,
   SETUP_TEST_USERS: true,
   SETUP_TEST_CALL: true,
-  K6_OPENSEARCH_ADDRESS:
-    'https://devopensearch.developers.facilities.rl.ac.uk/opensearch',
-  K6_OPENSEARCH_FLUSH_PERIOD: '2m',
   IS_CLUSTER_TEST_RUN: true,
   INSTRUMENT_ID: 9,
   IS_BROWSER_TEST: false,

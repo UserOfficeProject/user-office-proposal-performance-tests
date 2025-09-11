@@ -30,11 +30,7 @@ export FAP_REVIEW_STATUS_ID=5
 export SUBMITTED_STATUS_ID=15
 export K6_FAP_VUS=1
 export K6_FAP_ITERATIONS=1
-export K6_OPENSEARCH_PASSWORD="password"
-export K6_OPENSEARCH_USERNAME="admin"
-export K6_OPENSEARCH_ADDRESS="https://opensearch-node1:9200"
 export TEST_SETUP_DOTENV_PATH="../.env"
-export K6_OPENSEARCH_CREATE_INDEX="true"
 export K6_PROMETHEUS_RW_SERVER_URL="https://mimir.developers.facilities.rl.ac.uk/api/v1/push"
 
 try
