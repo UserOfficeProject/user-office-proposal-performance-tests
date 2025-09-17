@@ -42,6 +42,7 @@ done
 root_config_dir="$(dirname $(realpath $0))"
 export K6_TEST_ID="$K6_TEST_NAME-$(date +"%d/%m/%y:%H:%M")"
 echo "K6_TEST_ID: $K6_TEST_ID"
+echo "K6_TEST_FILE value: $K6_TEST_FILE"
 
 echo "Removing previous test setup ..."
 kubectl delete deployment/test-setup-deployment  -n apps  --ignore-not-found &> /dev/null
