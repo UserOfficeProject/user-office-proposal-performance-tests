@@ -110,12 +110,6 @@ pipeline {
       trim: true
     )
     string(
-      name: 'TOTAL_FAP_MEMBERS',
-      description: 'Flag to set up number of reviewers',
-      defaultValue: '100',
-      trim: true
-    )
-    string(
       name: 'FAP_CALL_ID',
       description: 'Flag to refer to FAP call ID',
       defaultValue: '145',
@@ -133,24 +127,7 @@ pipeline {
       defaultValue: '300',
       trim: true
     )
-    string(
-      name: 'PROPOSALS_PER_REVIEWER',
-      description: 'Flag to set up number of proposals per reviewer',
-      defaultValue: '3',
-      trim: true
-    )
-    string(
-      name: 'FAP_REVIEW_STATUS_ID',
-      description: 'Flag to set up fapreviewer status id',
-      defaultValue: '5',
-      trim: true
-    )
-    string(
-      name: 'SUBMITTED_STATUS_ID',
-      description: 'Flag to set up submitted status id',
-      defaultValue: '15',
-      trim: true
-    )
+    
   }
   environment {
     HOME = '.'
@@ -175,7 +152,7 @@ pipeline {
             npm ci
             npm run-script build:k6-test
         """ 
-        sh './run-cluster.sh K6_TEST_NAME=$K6_TEST_NAME SETUP_TEST_CALL=$SETUP_TEST_CALL SETUP_TEST_USERS=$SETUP_TEST_USERS TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_PS_VUS=$K6_PS_VUS K6_PS_ITERATIONS=$K6_PS_ITERATIONS K6_SETUP_TOTAL_USERS=$K6_SETUP_TOTAL_USERS K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID FIRST_USER_ID=$FIRST_USER_ID K6_FAP_VUS=$K6_FAP_VUS K6_FAP_ITERATIONS=$K6_FAP_ITERATIONS FAP_PROCESS_LOAD_TEST=$FAP_PROCESS_LOAD_TEST TOTAL_FAP_MEMBERS=$TOTAL_FAP_MEMBERS FAP_MEMBER_ROLE=$FAP_MEMBER_ROLE FAP_CALL_ID=$FAP_CALL_ID FAP_INSTRUMENT_ID=$FAP_INSTRUMENT_ID FAP_PROPOSALS=$FAP_PROPOSALS PROPOSALS_PER_REVIEWER=$PROPOSALS_PER_REVIEWER FAP_REVIEW_STATUS_ID=$FAP_REVIEW_STATUS_ID SUBMITTED_STATUS_ID=$SUBMITTED_STATUS_ID'
+        sh './run-cluster.sh K6_TEST_NAME=$K6_TEST_NAME SETUP_TEST_CALL=$SETUP_TEST_CALL SETUP_TEST_USERS=$SETUP_TEST_USERS TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_PS_VUS=$K6_PS_VUS K6_PS_ITERATIONS=$K6_PS_ITERATIONS K6_SETUP_TOTAL_USERS=$K6_SETUP_TOTAL_USERS K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM TEST_SETUP_CALL_ID=$TEST_SETUP_CALL_ID FIRST_USER_ID=$FIRST_USER_ID K6_FAP_VUS=$K6_FAP_VUS K6_FAP_ITERATIONS=$K6_FAP_ITERATIONS FAP_PROCESS_LOAD_TEST=$FAP_PROCESS_LOAD_TEST FAP_MEMBER_ROLE=$FAP_MEMBER_ROLE FAP_CALL_ID=$FAP_CALL_ID FAP_INSTRUMENT_ID=$FAP_INSTRUMENT_ID FAP_PROPOSALS=$FAP_PROPOSALS'
       }
     }
 
