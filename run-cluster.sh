@@ -1,6 +1,5 @@
 #!/bin/bash
 export K6_TEST_NAME=sc1-proposal-submission-test
-export K6_TEST_FILE="$K6_TEST_NAME.js"
 export TEST_SETUP_VERSION_TAG=0.0.5
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
@@ -42,7 +41,8 @@ done
 root_config_dir="$(dirname $(realpath $0))"
 export K6_TEST_ID="$K6_TEST_NAME-$(date +"%d/%m/%y:%H:%M")"
 echo "K6_TEST_ID: $K6_TEST_ID"
-echo "K6_TEST_FILE value: $K6_TEST_FILE"
+export K6_TEST_FILE="$K6_TEST_NAME.js"
+echo "K6_TEST_FILE: $K6_TEST_FILE"
 
 echo "Removing previous test setup ..."
 kubectl delete deployment/test-setup-deployment  -n apps  --ignore-not-found &> /dev/null
