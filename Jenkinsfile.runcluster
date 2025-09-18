@@ -105,7 +105,7 @@ pipeline {
     )
     choice(
       name: 'FAP_MEMBER_ROLE',
-      choices:['fapMember', 'fapChair', 'fapSecretary']
+      choices:['fapMember', 'fapChair', 'fapSecretary'],
       description: 'Flag to set up test reviewers role'
     )
     string(
