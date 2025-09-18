@@ -34,53 +34,24 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
     await homePage.waitFor({
       state: 'visible',
     });
-    sleep(10);
-    await page.screenshot({
-      path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-    });
-
+    
     const gradeIcons = await page.$$('//button[@aria-label="Grade proposal"]');
     for (let i = 0; i < gradeIcons.length; i++) {
       await gradeIcons[i].waitForElementState('visible');
 
       sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
-      await gradeIcons[i].tap();
-
-      sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
-
+      await gradeIcons[i].tap();      
       // Get the iframe element
       await page.locator('iframe[id="comment_ifr"]').click();
-      sleep(10);
       await page.keyboard.type(randomWords(8, 5));
-
-      sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
-
       await page
         .locator('input[id="grade-proposal"]')
         .type(randomIntBetween(1, 10).toString());
-
-      sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
+      
       const saveButtonVisible = await page
         .locator('//button[contains(text(), "Save and continue")]')
         .isVisible();
-
-      sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
-
+    
       check(page, {
         'Save and continue button visible ': () => saveButtonVisible,
       });
@@ -91,18 +62,9 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
 
       sleep(10);
 
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
-
       const submitButtonEnabled = await page
         .locator('//button[contains(text(), "Submit")]')
         .isEnabled();
-
-      sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
 
       check(page, {
         'Submit button enabled ': () => submitButtonEnabled,
@@ -112,17 +74,10 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
 
       sleep(10);
 
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
       const submitConfirmBoxIsVisible = await page
         .locator('//h2[contains(text(), "Please confirm")]')
         .isVisible();
-
-      sleep(10);
-      await page.screenshot({
-        path: `screenshots/${currentUser.userId + Date.now() + '_screenshot.png'}`,
-      });
+      
       check(page, {
         'Proposal review confirmation box visible': () =>
           submitConfirmBoxIsVisible,
@@ -139,7 +94,6 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
         )
         .isVisible();
 
-      sleep(20);
       check(
         page,
         {
@@ -151,10 +105,10 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
         }
       );
 
-      console.error(
+      console.log(
         `Review submitted successfully for reviewer : ${currentUser.userId}`
       );
-      console.error(`Globally unique identifier of VU : ${exec.vu.idInTest}`);
+      console.log(`Globally unique identifier of VU : ${exec.vu.idInTest}`);
 
       await page.locator('//button[@data-cy="close-modal"]').click();
       sleep(20);
