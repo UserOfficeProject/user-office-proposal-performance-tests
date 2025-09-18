@@ -103,11 +103,10 @@ pipeline {
       defaultValue: 'false',
       trim: true
     )
-    string(
+    choice(
       name: 'FAP_MEMBER_ROLE',
-      description: 'Flag to set up test reviewers role',
-      defaultValue: 'fapMember',
-      trim: true
+      choices:['fapMember', 'fapChair', 'fapSecretary']
+      description: 'Flag to set up test reviewers role'
     )
     string(
       name: 'FAP_CALL_ID',
