@@ -34,24 +34,27 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
     await homePage.waitFor({
       state: 'visible',
     });
-    
+    sleep(10);
     const gradeIcons = await page.$$('//button[@aria-label="Grade proposal"]');
     for (let i = 0; i < gradeIcons.length; i++) {
       await gradeIcons[i].waitForElementState('visible');
 
       sleep(10);
-      await gradeIcons[i].tap();      
+      await gradeIcons[i].tap();    
+      sleep(10);  
       // Get the iframe element
       await page.locator('iframe[id="comment_ifr"]').click();
+      sleep(10);
       await page.keyboard.type(randomWords(8, 5));
+      sleep(10);
       await page
         .locator('input[id="grade-proposal"]')
         .type(randomIntBetween(1, 10).toString());
-      
+      sleep(10);
       const saveButtonVisible = await page
         .locator('//button[contains(text(), "Save and continue")]')
         .isVisible();
-    
+      sleep(10);
       check(page, {
         'Save and continue button visible ': () => saveButtonVisible,
       });
@@ -65,7 +68,7 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
       const submitButtonEnabled = await page
         .locator('//button[contains(text(), "Submit")]')
         .isEnabled();
-
+      sleep(10);
       check(page, {
         'Submit button enabled ': () => submitButtonEnabled,
       });
@@ -93,7 +96,7 @@ export default async function fapReviewSubmissionTest(sharedData: SharedData) {
           '//div[contains(text(), "Your review has been submitted successfully.")]'
         )
         .isVisible();
-
+      sleep(20);
       check(
         page,
         {
