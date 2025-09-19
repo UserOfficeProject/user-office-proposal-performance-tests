@@ -1,6 +1,5 @@
 #!/bin/bash
 export K6_TEST_NAME=sc1-proposal-submission-test
-export K6_TEST_FILE="$K6_TEST_NAME.js"
 export TEST_SETUP_VERSION_TAG=0.0.5
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
@@ -13,10 +12,8 @@ export TEST_SETUP_CALL_ID=301
 export FAP_PROCESS_LOAD_TEST="true"
 export FAP_CALL_ID=145
 export FAP_INSTRUMENT_ID=37
-export TOTAL_FAP_MEMBERS=10
 export FAP_MEMBER_ROLE="fapMember"
 export FAP_PROPOSALS=30
-export PROPOSALS_PER_REVIEWER=3
 export FAP_REVIEW_STATUS_ID=5
 export SUBMITTED_STATUS_ID=15
 export K6_FAP_VUS=10
@@ -42,6 +39,11 @@ done
 root_config_dir="$(dirname $(realpath $0))"
 export K6_TEST_ID="$K6_TEST_NAME-$(date +"%d/%m/%y:%H:%M")"
 echo "K6_TEST_ID: $K6_TEST_ID"
+export K6_TEST_FILE="$K6_TEST_NAME.js"
+export TOTAL_FAP_MEMBERS=$K6_FAP_VUS
+export PROPOSALS_PER_REVIEWER=$(awk -v a="$FAP_PROPOSALS" -v b="$TOTAL_FAP_MEMBERS" 'BEGIN { print int(a/b) }')
+echo "FAP_PROPOSALS / TOTAL_FAP_MEMBERS (integer part) = $PROPOSALS_PER_REVIEWER"
+echo "K6_TEST_FILE: $K6_TEST_FILE"
 
 echo "Removing previous test setup ..."
 kubectl delete deployment/test-setup-deployment  -n apps  --ignore-not-found &> /dev/null
