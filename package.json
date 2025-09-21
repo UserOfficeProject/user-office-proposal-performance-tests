@@ -47,7 +47,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "esbuild": "0.25.9",
     "eslint": "^8.57.1",
-    "eslint-config-prettier": "10.1.5",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.2.0",
     "globals": "^16.3.0",
