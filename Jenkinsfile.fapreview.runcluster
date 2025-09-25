@@ -1,0 +1,157 @@
+pipeline {
+  
+  agent none
+
+  options {
+    disableConcurrentBuilds()
+
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10'
+      )
+    )
+
+    office365ConnectorWebhooks([[
+      url: "${env.TEAMS_WEBHOOK_URL}",
+      notifyUnstable: true,
+      notifyFailure: true,
+      notifyBackToNormal: true,
+      startNotification: false,
+      notifySuccess: false,
+      notifyAborted: false,
+      notifyNotBuilt: false,
+      notifyRepeatedFailure: false
+    ]])
+
+    timeout(time: 3, unit: 'HOURS')
+  }
+  parameters {
+    string(
+      name: 'K6_TEST_NAME',
+      description: 'The k6 test name',
+      defaultValue: 'sc1-fap-review-submission-test',
+      trim: true
+    )
+    string(
+      name: 'TEST_SETUP_VERSION_TAG',
+      description: 'The test setup image version',
+      defaultValue: '0.0.5',
+      trim: true
+    )
+    
+    string(
+      name: 'K6_SETUP_TOTAL_USERS',
+      description: 'The total number of users to use for the test',
+      defaultValue: '250',
+      trim: true
+    )
+    string(
+      name: 'K6_TEST_PARALLELISM',
+      description: 'The number of parallel pods to use',
+      defaultValue: '1',
+      trim: true
+    )
+    string(
+      name: 'FIRST_USER_ID',
+      description: 'User id of first user',
+      defaultValue: '-220800000',
+      trim: true
+    )
+    string(
+      name: 'SETUP_TEST_USERS',
+      description: 'Flag to set up test users',
+      defaultValue: 'true',
+      trim: true
+    )
+    string(
+      name: 'K6_FAP_VUS',
+      description: 'Number of k6 vus for fap load test',
+      defaultValue: '100',
+      trim: true
+    )
+    string(
+      name: 'K6_FAP_ITERATIONS',
+      description: 'Number of iterations for fap load test',
+      defaultValue: '1',
+      trim: true
+    )
+    string(
+      name: 'FAP_PROCESS_LOAD_TEST',
+      description: 'Flag to indicate fap load test',
+      defaultValue: 'true',
+      trim: true
+    )
+    choice(
+      name: 'FAP_MEMBER_ROLE',
+      choices:['fapMember', 'fapChair', 'fapSecretary'],
+      description: 'Flag to set up test reviewers role'
+    )
+    string(
+      name: 'FAP_CALL_ID',
+      description: 'Flag to refer to FAP call ID',
+      defaultValue: '145',
+      trim: true
+    )
+    string(
+      name: 'FAP_INSTRUMENT_ID',
+      description: 'Flag to refer to FAP instrument ID',
+      defaultValue: '37',
+      trim: true
+    )
+    string(
+      name: 'FAP_PROPOSALS',
+      description: 'Flag to set up number of proposals for review',
+      defaultValue: '300',
+      trim: true
+    )
+    
+  }
+  environment {
+    HOME = '.'
+  }
+  stages {
+    stage('Build and run fapreview load tests') {
+
+      agent {
+        dockerfile {
+          filename 'Dockerfile.run'
+          label 'linux && docker'
+          reuseNode true
+        }
+      }
+      environment {
+       KUBECONFIG = credentials('load-test-kubeconfig')
+      }
+      steps {
+        sh """
+            # clean up past data
+            rm -rf ./node_modules
+            npm ci
+            npm run-script build:k6-test
+        """ 
+        sh './run-cluster.sh K6_TEST_NAME=$K6_TEST_NAME SETUP_TEST_USERS=$SETUP_TEST_USERS TEST_SETUP_VERSION_TAG=$TEST_SETUP_VERSION_TAG K6_SETUP_TOTAL_USERS=$K6_SETUP_TOTAL_USERS K6_TEST_PARALLELISM=$K6_TEST_PARALLELISM FIRST_USER_ID=$FIRST_USER_ID K6_FAP_VUS=$K6_FAP_VUS K6_FAP_ITERATIONS=$K6_FAP_ITERATIONS FAP_PROCESS_LOAD_TEST=$FAP_PROCESS_LOAD_TEST FAP_MEMBER_ROLE=$FAP_MEMBER_ROLE FAP_CALL_ID=$FAP_CALL_ID FAP_INSTRUMENT_ID=$FAP_INSTRUMENT_ID FAP_PROPOSALS=$FAP_PROPOSALS'
+      }
+    }
+
+  }
+
+  post {
+    regression {
+        emailext(
+          subject: '$DEFAULT_SUBJECT',
+          body: '$DEFAULT_CONTENT',
+          to: '$DEFAULT_RECIPIENTS',
+          recipientProviders: [developers()]
+        )
+      }
+
+    fixed {
+      emailext(
+      subject: '$DEFAULT_SUBJECT',
+      body: '$DEFAULT_CONTENT',
+      to: '$DEFAULT_RECIPIENTS',
+      recipientProviders: [developers()]
+    )
+    }
+  }
+}
