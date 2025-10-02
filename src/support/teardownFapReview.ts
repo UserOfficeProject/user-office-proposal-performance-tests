@@ -48,6 +48,7 @@ export async function sc1TearDownFapReview(
         await fap.removeMemberFromFap(a, fapId, role);
       });
       sleep(10);
+      console.log(`Added a new log line to check if the changes are reflecting`);
       const proposalPks = sharedData.fapReviewAssignments?.map(
         (a) => a.proposalPk
       );
