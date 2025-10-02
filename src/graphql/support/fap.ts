@@ -154,7 +154,7 @@ export class FAP {
       }
     );
     if (!response) {
-      throw new Error('Failed to remove reviewer from FAP');
+      throw new Error(`Failed to remove reviewer ${memberId} from FAP`);
     }
     return response.removeMemberFromFap;
   }
