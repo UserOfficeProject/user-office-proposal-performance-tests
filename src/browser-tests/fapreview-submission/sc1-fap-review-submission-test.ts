@@ -11,13 +11,13 @@ export const options: Options = {
   thresholds: {
     browser_http_req_failed: [
       {
-        threshold: 'rate <= 0.95',
+        threshold: 'rate <= 0.05',
         abortOnFail: true,
       },
     ],
     http_req_failed: [
       {
-        threshold: 'rate <= 0.95',
+        threshold: 'rate <= 0.05',
         abortOnFail: true,
       },
     ],
@@ -49,4 +49,10 @@ export function fapReviewSubmission(sharedData: SharedData) {
 }
 export async function teardown(sharedData: SharedData) {
   return await sc1TearDownFapReview(sharedData, environmentConfig);
+}
+
+export function handleSummary(sharedData: SharedData) {
+  return {
+    stdout: JSON.stringify(sharedData, null, 2), // pretty print all summary data
+  };
 }
