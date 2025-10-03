@@ -50,9 +50,3 @@ export function fapReviewSubmission(sharedData: SharedData) {
 export async function teardown(sharedData: SharedData) {
   return await sc1TearDownFapReview(sharedData, environmentConfig);
 }
-
-export function handleSummary(sharedData: SharedData) {
-  return {
-    stdout: JSON.stringify(sharedData, null, 2), // pretty print all summary data
-  };
-}
