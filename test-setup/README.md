@@ -67,7 +67,7 @@ This directory contains the test setup server used to provide user logins during
 
 2.  **Cluster Deployment:**
     * **Jenkinsfile.build:**
-        * **Image Building:** The Docker image is built using the `Jenkinsfile.build` pipeline. This pipeline executes the necessary steps to create a container image based on the `Dockerfile`. The resulting image is pushed to the Harbor registry: `harbor.stfc.ac.uk/isisbusapps/uop-performance-tests-setup:<TEST_SETUP_VERSION_TAG>`.
+        * **Image Building:** The Docker image is built using the `Jenkinsfile.build` pipeline. This pipeline executes the necessary steps to create a container image based on the `Dockerfile`. The resulting image is pushed to the Harbor registry: `ghcr.io/isisbusapps/uop-performance-tests-setup:<TEST_SETUP_VERSION_TAG>`.
     * **Server Startup:**
         * **Cluster Deployment via Jenkins:** The server is deployed within the cluster using the `run-cluster.sh` script, which is triggered by the `Jenkinsfile.runcluster` pipeline. This pipeline automates the deployment process within the cluster environment.
         * **Local Cluster Deployment (CLI):** For local testing using the cluster, the server can be deployed using the command:
