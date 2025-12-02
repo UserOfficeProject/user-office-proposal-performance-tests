@@ -8,8 +8,8 @@
       "dom",
       "esnext.asynciterable"
     ] ,
-    "moduleResolution": "node",
-    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "module": "es2015",
     "types": ["k6"],
     "baseUrl": ".",
     "paths": {
