@@ -9,7 +9,18 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ['src/**/*.ts'] },
-  { ignores: ['**/*.js', '!**/eslint.config.js','src/graphql/generated','cluster-cli/build'] },
+  {
+    ignores: [
+      '**/*.js',
+      '!**/eslint.config.js',
+      'node_modules/*',
+      'test/*',
+      'extensions/*',
+      'test-setup/*',
+      'src/graphql/generated/*',
+      'cluster-cli/build/*',
+    ],
+  },
   { languageOptions: { globals: globals.es2016 } },
   {
     plugins: {
