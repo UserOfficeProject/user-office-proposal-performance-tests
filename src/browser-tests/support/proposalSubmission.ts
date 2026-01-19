@@ -2,9 +2,13 @@ import { check, fail, sleep } from 'k6';
 import { browser } from 'k6/browser';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
-import { getRandomUser, randomIntBetween, randomString, randomWords } from '../../utils/helperFunctions';
+import {
+  getRandomUser,
+  randomIntBetween,
+  randomString,
+  randomWords,
+} from '../../utils/helperFunctions';
 import { SharedData } from '../../utils/sharedType';
-
 
 const proposalSubmissionDuration = new Trend(
   'proposal_submission_duration',
@@ -74,22 +78,24 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     sleep(5);
 
     await page.locator('button[data-cy="add-participant-button"]').click();
-    const emailInput = page.locator('#Email-input');
+    sleep(5);
+
+    const emailInput = page.locator('div[data-cy="invite-user-autocomplete"] ');
     await emailInput.waitFor({
       state: 'visible',
     });
+    emailInput.click();
     const piEmail = getRandomUser(sharedData.users, currentUser).email;
-    emailInput.type(piEmail);
-    const emailFilledInput = page.locator(`input[value="${piEmail}"]`);
-    await emailFilledInput.waitFor({
-      state: 'visible',
-    });
 
-    await page.locator('button[data-cy="findUser"]').click();
+    sleep(10);
 
-    sleep(5);
+    await page.keyboard.type(piEmail);
 
-    await page.locator('button[data-cy="assign-selected-users"]').click();
+    sleep(10);
+    await page.keyboard.press('Enter');
+
+    sleep(10);
+    await page.locator('button[data-cy="invite-user-submit-button"]').click();
 
     sleep(5);
 

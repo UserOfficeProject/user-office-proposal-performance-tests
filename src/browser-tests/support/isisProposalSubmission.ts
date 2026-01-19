@@ -82,23 +82,25 @@ export default async function isisProposalSubmissionTest(
 
     sleep(5);
 
-    await page.locator('button[data-cy="add-participant-button"]').click();
-    const emailInput = page.locator('#Email-input');
+       await page.locator('button[data-cy="add-participant-button"]').click();
+    sleep(5);
+
+    const emailInput = page.locator('div[data-cy="invite-user-autocomplete"] ');
     await emailInput.waitFor({
       state: 'visible',
     });
+    emailInput.click();
     const piEmail = getRandomUser(sharedData.users, currentUser).email;
-    emailInput.type(piEmail);
-    const emailFilledInput = page.locator(`input[value="${piEmail}"]`);
-    await emailFilledInput.waitFor({
-      state: 'visible',
-    });
 
-    await page.locator('button[data-cy="findUser"]').click();
+    sleep(10);
 
-    sleep(5);
+    await page.keyboard.type(piEmail);
 
-    await page.locator('button[data-cy="assign-selected-users"]').click();
+    sleep(10);
+    await page.keyboard.press('Enter');
+
+    sleep(10);
+    await page.locator('button[data-cy="invite-user-submit-button"]').click();
 
     sleep(5);
 
