@@ -58,7 +58,7 @@ pipeline {
     string(
       name: 'TEST_SETUP_CALL_ID',
       description: 'The call id in develop',
-      defaultValue: '301',
+      defaultValue: '306',
       trim: true
     )
     string(
