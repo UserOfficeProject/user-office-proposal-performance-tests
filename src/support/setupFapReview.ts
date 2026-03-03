@@ -129,6 +129,7 @@ export async function sc1SetupFapReview(
         testFapId = testCall?.faps[0].id;
         if (testFapId) {
           for (const index in reviewerUsers) {
+            console.log(`getUserToken for user id ${reviewerUsers[index].userId}`)
             Promise.resolve(
               await user.getUserToken(`${reviewerUsers[index].sessionId}`)
             ).then(async () => {

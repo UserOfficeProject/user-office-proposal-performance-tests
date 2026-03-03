@@ -42,7 +42,7 @@ pipeline {
     string(
       name: 'K6_SETUP_TOTAL_USERS',
       description: 'The total number of users to use for the test',
-      defaultValue: '250',
+      defaultValue: '100',
       trim: true
     )
     string(
