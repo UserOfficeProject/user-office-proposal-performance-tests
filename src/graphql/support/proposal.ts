@@ -124,7 +124,7 @@ export class Proposal {
   }
   async changeProposalsStatus(
     proposalPks: number[],
-    statusId: number
+    workflowStatusId: number
   ): Promise<boolean> {
     const changeProposalsStatus = await executeGraphqlQuery(
       this.apiAsyncClient,
@@ -132,7 +132,7 @@ export class Proposal {
       {
         changeProposalsStatusInput: {
           proposalPks,
-          statusId,
+          workflowStatusId,
         },
       }
     ).then((data) => {
