@@ -26,6 +26,7 @@
     "prepare": "husky",
     "postinstall": "cd test-setup && npm install",
     "generate-uop": "graphql-codegen --require dotenv/config --config codegen.ts",
+    "generate-uop:watch": "graphql-codegen --watch --require dotenv/config --config codegen.ts",
     "generate:uows": "cd test-setup && npm run generate:uows",
     "cluster-cli:build": "eslint && rm -rf ./cluster-cli/build && node esbuild.cli.config.mjs",
     "cluster-cli:start": "npm run build && npm run cluster-cli:build && node ./cluster-cli/build/index.cjs"
@@ -46,6 +47,7 @@
     "@typescript-eslint/parser": "^8.48.1",
     "babel-loader": "^10.0.0",
     "clean-webpack-plugin": "^4.0.0",
+    "dotenv": "^16.6.1",
     "esbuild": "0.27.1",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "10.1.8",
