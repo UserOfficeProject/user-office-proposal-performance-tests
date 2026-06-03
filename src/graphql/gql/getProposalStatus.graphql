@@ -1,8 +1,0 @@
-query ProposalStatus($proposalStatusId: Int!) {
-  proposalStatus(proposalStatusId: $proposalStatusId) {
-    id
-    isDefault
-    name
-    shortCode
-  }
-}

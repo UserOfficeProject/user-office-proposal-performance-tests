@@ -13,6 +13,5 @@ query getCalls($filter: CallsFilter) {
     shortCode
     startCall
     startCycle
-    pdfTemplateId
   }
 }
