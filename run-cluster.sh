@@ -2,8 +2,10 @@
 set -euo pipefail
 
 root_config_dir="$(dirname "$(realpath "$0")")"
-# shellcheck source=.venv/bin/activate
-source "$root_config_dir/.venv/bin/activate"
+if [ -f "$root_config_dir/.venv/bin/activate" ]; then
+  # shellcheck source=.venv/bin/activate
+  source "$root_config_dir/.venv/bin/activate"
+fi
 
 export K6_TEST_NAME=sc1-proposal-submission-test
 export TEST_SETUP_VERSION_TAG=0.0.5
