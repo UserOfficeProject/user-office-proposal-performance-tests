@@ -112,13 +112,11 @@ export class Proposal {
       })
     );
 
-    Promise.allSettled(proposalPromises).then((results) => {
-      if (results.filter((result) => result.status === 'rejected').length > 0) {
-        if (proposals.length === proposalPromises.length) {
-          throw new Error(`Fail to delete proposals on call ${callId}`);
-        }
-      }
-    });
+    const results = await Promise.allSettled(proposalPromises);
+    const failures = results.filter((r) => r.status === 'rejected');
+    if (failures.length > 0) {
+      throw new Error(`Failed to delete ${failures.length}/${proposals.length} proposal(s) on call ${callId}`);
+    }
 
     return proposals;
   }
@@ -132,7 +130,7 @@ export class Proposal {
       {
         changeProposalsStatusInput: {
           proposalPks,
-          statusId,
+          workflowStatusId: statusId,
         },
       }
     ).then((data) => {

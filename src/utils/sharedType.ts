@@ -8,7 +8,7 @@ import {
   Fap as FapFields,
   Instrument,
   Proposal as ProposalFields,
-  ProposalStatus,
+  Status,
   TemplateGroupId, } from '../graphql/generated/graphql';
 
 export class FsFile extends ExperimentalFsFile {}
@@ -49,7 +49,7 @@ export type Proposal = Pick<
   | 'proposerId'
   | 'abstract'
 > & {
-  status?: Pick<ProposalStatus, 'name'> | null;
+  status?: Pick<Status, 'name'> | null;
   proposer?: Pick<BasicUserDetails, 'id'> | null;
   users?: Pick<BasicUserDetails, 'id'>[] | null;
 };
