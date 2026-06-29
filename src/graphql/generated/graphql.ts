@@ -612,7 +612,8 @@ export enum Event {
   UserUpdated = 'USER_UPDATED',
   VisitCreated = 'VISIT_CREATED',
   VisitRegistrationApproved = 'VISIT_REGISTRATION_APPROVED',
-  VisitRegistrationCancelled = 'VISIT_REGISTRATION_CANCELLED'
+  VisitRegistrationCancelled = 'VISIT_REGISTRATION_CANCELLED',
+  VisitRegistrationUpdated = 'VISIT_REGISTRATION_UPDATED'
 }
 
 export type EventLog = {
@@ -1095,7 +1096,7 @@ export type InstrumentFapMappingInput = {
 };
 
 export type InstrumentFilterInput = {
-  instrumentId?: InputMaybe<Scalars['Int']['input']>;
+  instrumentIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   showAllProposals: Scalars['Boolean']['input'];
   showMultiInstrumentProposals: Scalars['Boolean']['input'];
 };
@@ -3013,6 +3014,7 @@ export type Query = {
   proposalReviews?: Maybe<Array<Review>>;
   proposalScientistComment?: Maybe<ProposalScientistComment>;
   proposalTemplates?: Maybe<Array<ProposalTemplate>>;
+  proposalTimeRequested: Scalars['Float']['output'];
   proposals?: Maybe<ProposalsQueryResult>;
   proposalsView?: Maybe<ProposalsViewQueryResult>;
   quantities: Array<Quantity>;
@@ -3413,6 +3415,12 @@ export type QueryProposalScientistCommentArgs = {
 
 export type QueryProposalTemplatesArgs = {
   filter?: InputMaybe<ProposalTemplatesFilter>;
+};
+
+
+export type QueryProposalTimeRequestedArgs = {
+  instrumentId: Scalars['Int']['input'];
+  proposalPk: Scalars['Int']['input'];
 };
 
 
@@ -4636,6 +4644,7 @@ export type VisitBasisConfig = {
 export type VisitRegistration = {
   __typename?: 'VisitRegistration';
   endsAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
   questionary: Questionary;
   registrationQuestionaryId?: Maybe<Scalars['Int']['output']>;
   startsAt?: Maybe<Scalars['DateTime']['output']>;
