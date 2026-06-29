@@ -131,7 +131,7 @@ export async function sc1Setup(environmentConfig: EnvironmentConfigurations) {
     }
 
     if (!testCall) {
-      console.error('Failed to create test call aborting test');
+      console.error('Failed to get or create test call aborting test');
       exec.test.abort();
     }
   }

@@ -6,7 +6,6 @@ mutation DeleteProposal($proposalPk: Int!) {
     status {
       id
       name
-      shortCode
     }
     questionary {
       steps {
