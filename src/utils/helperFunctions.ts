@@ -1,3 +1,4 @@
+import { randomInt } from 'crypto';
 import { FsFile, UserLogin } from './sharedType';
 
 export function randomUUIDv4(): string {
@@ -6,7 +7,7 @@ export function randomUUIDv4(): string {
 }
 export function randomIntBetween(min: number, max: number): number {
   // Ensure correct inclusive behavior:
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomInt(min, max + 1);
 }
 
 export function randomItem<T>(arrayOfItems: T[]): T {
@@ -15,7 +16,7 @@ export function randomItem<T>(arrayOfItems: T[]): T {
     throw new Error('Array cannot be empty');
   }
 
-  return arrayOfItems[Math.floor(Math.random() * arrayOfItems.length)];
+  return arrayOfItems[randomInt(0, arrayOfItems.length)];
 }
 
 export function* numberGenerator(firstId: number) {
@@ -33,7 +34,7 @@ export function randomString(length: number): string {
   const charset = 'abcdefghijklmnopqrstuvwxyz';
   let res = '';
   while (length--) {
-    res += charset[Math.floor(Math.random() * charset.length)];
+    res += charset[randomInt(0, charset.length)];
   }
 
   return res;
@@ -62,7 +63,7 @@ export function randomAlphaNumericString(length: number) {
   const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
   let res = '';
   while (length--) {
-    res += charset[Math.floor(Math.random() * charset.length)];
+    res += charset[randomInt(0, charset.length)];
   }
 
   return res;
