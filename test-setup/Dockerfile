@@ -2,7 +2,7 @@ FROM node:20-slim AS build-stage
 
 WORKDIR /workdir
 
-COPY package.json package-lock.json build.mjs tsconfig.json ./
+COPY package.json package-lock.json build.mjs tsconfig.json eslint.config.mjs ./
 
 RUN npm ci --loglevel error --no-fund
 
