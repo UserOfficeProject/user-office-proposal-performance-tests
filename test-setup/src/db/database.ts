@@ -61,7 +61,9 @@ export default async function () {
         logger.logInfo('Database connect pool closed', {});
       } catch (error) {
         logger.logException('Failed to close database connection pool', error);
-        throw new Error('Failed to close database connection pool');
+        throw new Error('Failed to close database connection pool', {
+          cause: error,
+        });
       }
     },
   };
