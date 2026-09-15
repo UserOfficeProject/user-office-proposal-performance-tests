@@ -1,7 +1,7 @@
 import { check, fail, sleep } from 'k6';
 import { browser } from 'k6/browser';
 import exec from 'k6/execution';
-import { Counter, Trend } from 'k6/metrics';
+import { Counter, Rate, Trend } from 'k6/metrics';
 import {
   getRandomUser,
   randomIntBetween,
@@ -17,7 +17,12 @@ const proposalSubmissionDuration = new Trend(
 
 const proposalsSubmitted = new Counter('proposals_submitted', false);
 const proposalsCreated = new Counter('proposals_created', false);
+const proposalSubmissionSuccess = new Rate('proposal_submission_success');
 export default async function proposalSubmissionTest(sharedData: SharedData) {
+
+  proposalsCreated.add(0);
+  proposalsSubmitted.add(0);
+
   if (!sharedData.users) {
     fail(`User not set`);
   }
@@ -154,6 +159,7 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     proposalSubmissionDuration.add((Date.now() - startTime) / 1000);
     const submissionMessageIsVisibleCheck =
       await submissionMessageIsVisible.isVisible();
+    proposalSubmissionSuccess.add(submissionMessageIsVisibleCheck);
     check(page, {
       'User was able to submit proposal': () => submissionMessageIsVisibleCheck,
     });
@@ -172,6 +178,11 @@ export default async function proposalSubmissionTest(sharedData: SharedData) {
     const scenario = `SCENARIO: ${exec.scenario.name} TEST: proposal test VU_ID: ${exec.vu.idInTest}`;
     const message = `User could not create and submit proposal to  call`;
     console.error(scenario, message, error);
+
+    proposalSubmissionSuccess.add(false);
+    check(page, {
+      'User was able to submit proposal': () => false,
+    });
 
     return await page.close().then(async () => {
       await context.close();

@@ -7,32 +7,33 @@ if [ -f "$root_config_dir/.venv/bin/activate" ]; then
   source "$root_config_dir/.venv/bin/activate"
 fi
 
-export K6_TEST_NAME=sc1-proposal-submission-test
-export TEST_SETUP_VERSION_TAG=0.0.5
-export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
-export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
-export TEST_SETUP_URL=http://test-setup:8100
-export K6_PS_VUS=50
-export K6_PS_ITERATIONS=2
-export K6_SETUP_TOTAL_USERS=250
-export TEST_SETUP_CALL_ID=311
-export FAP_PROCESS_LOAD_TEST="false"
-export FAP_CALL_ID=145
-export FAP_INSTRUMENT_ID=37
-export FAP_MEMBER_ROLE="fapMember"
-export FAP_PROPOSALS=300
-export FAP_REVIEW_STATUS_ID=5
-export SUBMITTED_STATUS_ID=15
-export K6_FAP_VUS=10
-export K6_FAP_ITERATIONS=1
-export K6_TEST_PARALLELISM=2
-export SETUP_TEST_USERS="true"
-export SETUP_TEST_CALL="true"
-export IS_CLUSTER_TEST_RUN="true"
-export INSTRUMENT_ID=9
-export FIRST_USER_ID=-220806000
-export K6_PROMETHEUS_RW_SERVER_URL="https://mimir.developers.facilities.rl.ac.uk/api/v1/push"
-export K6_PROMETHEUS_RW_TREND_STATS="p(95),p(99),min,max,sum,avg,med"
+# Get values from env first passed from jenkinsfile.
+export K6_TEST_NAME="${K6_TEST_NAME:-sc1-proposal-submission-test}"
+export TEST_SETUP_VERSION_TAG="${TEST_SETUP_VERSION_TAG:-0.0.5}"
+export BROWSER_BASE_URL="${BROWSER_BASE_URL:-https://devproposal.facilities.rl.ac.uk}"
+export GRAPHQL_URL="${GRAPHQL_URL:-https://devproposal.facilities.rl.ac.uk/graphql}"
+export TEST_SETUP_URL="${TEST_SETUP_URL:-http://test-setup:8100}"
+export K6_PS_VUS="${K6_PS_VUS:-50}"
+export K6_PS_ITERATIONS="${K6_PS_ITERATIONS:-2}"
+export K6_SETUP_TOTAL_USERS="${K6_SETUP_TOTAL_USERS:-250}"
+export TEST_SETUP_CALL_ID="${TEST_SETUP_CALL_ID:-311}"
+export FAP_PROCESS_LOAD_TEST="${FAP_PROCESS_LOAD_TEST:-false}"
+export FAP_CALL_ID="${FAP_CALL_ID:-145}"
+export FAP_INSTRUMENT_ID="${FAP_INSTRUMENT_ID:-37}"
+export FAP_MEMBER_ROLE="${FAP_MEMBER_ROLE:-fapMember}"
+export FAP_PROPOSALS="${FAP_PROPOSALS:-300}"
+export FAP_REVIEW_STATUS_ID="${FAP_REVIEW_STATUS_ID:-5}"
+export SUBMITTED_STATUS_ID="${SUBMITTED_STATUS_ID:-15}"
+export K6_FAP_VUS="${K6_FAP_VUS:-10}"
+export K6_FAP_ITERATIONS="${K6_FAP_ITERATIONS:-1}"
+export K6_TEST_PARALLELISM="${K6_TEST_PARALLELISM:-2}"
+export SETUP_TEST_USERS="${SETUP_TEST_USERS:-true}"
+export SETUP_TEST_CALL="${SETUP_TEST_CALL:-true}"
+export IS_CLUSTER_TEST_RUN="${IS_CLUSTER_TEST_RUN:-true}"
+export INSTRUMENT_ID="${INSTRUMENT_ID:-9}"
+export FIRST_USER_ID="${FIRST_USER_ID:--220806000}"
+export K6_PROMETHEUS_RW_SERVER_URL="${K6_PROMETHEUS_RW_SERVER_URL:-https://mimir.developers.facilities.rl.ac.uk/api/v1/push}"
+export K6_PROMETHEUS_RW_TREND_STATS="${K6_PROMETHEUS_RW_TREND_STATS:-p(95),p(99),min,max,sum,avg,med}"
 
 NAMESPACE=apps
 
