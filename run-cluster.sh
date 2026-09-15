@@ -11,7 +11,6 @@ export K6_TEST_NAME=sc1-proposal-submission-test
 export TEST_SETUP_VERSION_TAG=0.0.5
 export BROWSER_BASE_URL=https://devproposal.facilities.rl.ac.uk
 export GRAPHQL_URL=https://devproposal.facilities.rl.ac.uk/graphql
-export PROPOSAL_LOOKUP_URL=https://devapis.facilities.rl.ac.uk/ws/ProposalLookupWebService?wsdl
 export TEST_SETUP_URL=http://test-setup:8100
 export K6_PS_VUS=50
 export K6_PS_ITERATIONS=2

@@ -21,7 +21,6 @@ export type AnswerKey =
   | 'SETUP_TEST_INSTRUMENT'
   | 'K6_TEST_ID'
   | 'FIRST_USER_ID'
-  | 'PROPOSAL_LOOKUP_URL'
   | 'STOP_CURRENT_TESTS';
 export const defaultAnswers: Answers = {
   TEST_SETUP_VERSION_TAG: '0.0.4',
@@ -45,6 +44,5 @@ export const defaultAnswers: Answers = {
   SETUP_OPENSEARCH_CONFIGS: false,
   SETUP_TEST_INSTRUMENT: false,
   STOP_CURRENT_TESTS: false,
-  FIRST_USER_ID: -220800000,
-  PROPOSAL_LOOKUP_URL:'https://devapis.facilities.rl.ac.uk/ws/ProposalLookupWebService?wsdl'
+  FIRST_USER_ID: -220800000
 };
