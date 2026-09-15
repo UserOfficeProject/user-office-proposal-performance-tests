@@ -18,7 +18,7 @@ export async function createConfigMapFromFile(
   filePath: string,
   useBinaryData: boolean = false
 ) {
-  let configMap = {};
+  let configMap: V1ConfigMap;
   if (useBinaryData) {
     const binaryData = fs.readFileSync(filePath, 'base64');
     configMap = {

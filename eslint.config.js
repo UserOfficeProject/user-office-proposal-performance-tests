@@ -2,7 +2,7 @@ import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
-import importPlugin from 'eslint-plugin-import';
+import importPlugin from 'eslint-plugin-import-x';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
@@ -16,7 +16,7 @@ export default [
       'node_modules/*',
       'test/*',
       'extensions/*',
-      'test-setup/*',
+      'test-setup/**',
       'src/graphql/generated/*',
       'cluster-cli/build/*',
     ],
@@ -44,7 +44,7 @@ export default [
     ...importPlugin.flatConfigs.recommended,
     rules: {
       'no-unused-vars': 'off',
-      'import/no-dynamic-require': 'warn',
+      'import-x/no-dynamic-require': 'warn',
     },
   },
   eslintConfigPrettier,

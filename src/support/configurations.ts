@@ -49,7 +49,8 @@ export async function getFixturesFile(fileName: string) {
     return await fsOpen(`${configDir}/fixtures/${fileName}`);
   } catch (err) {
     throw new Error(
-      `File ${fileName} not found.Create the file in ${configDir}/fixtures/ if you want to use it ${err}`
+      `File ${fileName} not found.Create the file in ${configDir}/fixtures/ if you want to use it ${err}`,
+      { cause: err }
     );
   }
 }

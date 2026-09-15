@@ -8,6 +8,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 
 export default tseslint.config(
   { files: ['**/*.{ts,js}'] },
+  { ignores: ['build/**', 'generated/**'] },
   { languageOptions: { globals: globals.es5 } },
   pluginJs.configs.recommended,
   eslint.configs.recommended,
