@@ -14,16 +14,16 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache node_modules
         id: cached-node-modules-test
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: node_modules
           key: node-modules-test-${{ hashFiles('package-lock.json') }}-${{ env.NODE_VERSION }}
@@ -33,7 +33,7 @@ jobs:
 
       - name: Cache test-setup node_modules
         id: cached-node-modules-test-setup
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: test-setup/node_modules
           key: node-modules-test-setup-${{ hashFiles('test-setup/package-lock.json') }}-${{ env.NODE_VERSION }}
@@ -47,23 +47,23 @@ jobs:
     needs: install-and-cache
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Restore node_modules
         id: cached-node-modules-root
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: node_modules
           key: node-modules-root-${{ hashFiles('package-lock.json') }}-${{ env.NODE_VERSION }}
 
       - name: Restore test-setup node_modules
         id: cached-node-modules-test-setup
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: test-setup/node_modules
           key: node-modules-test-setup-${{ hashFiles('test-setup/package-lock.json') }}-${{ env.NODE_VERSION }}
