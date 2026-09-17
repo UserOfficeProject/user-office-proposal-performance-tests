@@ -9,7 +9,6 @@
       "allowJs": true ,
       "skipLibCheck": true,
       "outDir": "./build",
-      "downlevelIteration": true,
       "strict": true ,
       "strictPropertyInitialization": false ,
       "types": [
