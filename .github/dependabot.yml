@@ -37,10 +37,7 @@ updates:
     pull-request-branch-name:
       separator: '-'
     cooldown:
-      default-days: 1
-      semver-major-days: 30
-      semver-minor-days: 7
-      semver-patch-days: 1
+      default-days: 30
       include:
         - "*"
 
@@ -54,9 +51,6 @@ updates:
     pull-request-branch-name:
       separator: '-'
     cooldown:
-      default-days: 1
-      semver-major-days: 30
-      semver-minor-days: 7
-      semver-patch-days: 1
+      default-days: 30
       include:
         - "*"

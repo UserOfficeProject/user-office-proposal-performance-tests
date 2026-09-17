@@ -75,5 +75,9 @@
     "date-fns": "^4.1.0",
     "js-yaml": "^4.1.0",
     "ora": "^9.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "unrs-resolver@1.12.2": true
   }
 }
