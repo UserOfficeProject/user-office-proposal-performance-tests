@@ -40,8 +40,8 @@
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^7.2.0",
     "@graphql-codegen/typed-document-node": "^6.0.2",
-    "@types/k6": "^1.2.0",
-    "@types/node": "^26.0.0",
+    "@types/k6": "^2.2.1",
+    "@types/node": "^24.13.5",
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
@@ -65,8 +65,8 @@
     "webpack-sources": "^3.3.3"
   },
   "engines": {
-    "npm": ">=10.2.5",
-    "node": ">=21.0.0"
+    "npm": ">=11.0.0",
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.0.1",
