@@ -1,33 +1,24 @@
-FROM node:20-slim AS build-stage
+FROM node:24-slim AS build-stage
 
 WORKDIR /workdir
 
-COPY package.json package-lock.json build.mjs tsconfig.json eslint.config.mjs ./
+COPY package.json package-lock.json ./
 
 RUN npm ci --loglevel error --no-fund
 
-COPY src ./src
+COPY . .
 
-COPY openapi.yaml openapi.yaml
+RUN npm run generate:uows && \
+    npm run build && \
+    npm prune --omit=dev
 
-RUN npm run generate:uows
-
-RUN npm run build
-
-FROM oraclelinux:8
-
-RUN dnf -y module enable nodejs:20 && \
-    dnf -y install oracle-instantclient-release-el8 oraclelinux-developer-release-el8 && \
-    dnf -y install oracle-instantclient-basic node-oracledb-node20 nodejs npm && \
-    rm -rf /var/cache/dnf
+FROM node:24-slim
 
 WORKDIR /usr/src/app
 
-COPY --from=build-stage  /workdir/build ./build
-COPY --from=build-stage  /workdir/package*.json ./
-
-RUN npm ci --only=production --loglevel error --no-fund
-
+COPY --from=build-stage /workdir/node_modules ./node_modules
+COPY --from=build-stage /workdir/build ./build
+COPY --from=build-stage /workdir/package.json ./
 
 EXPOSE 8100
 

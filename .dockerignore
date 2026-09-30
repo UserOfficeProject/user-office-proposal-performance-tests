@@ -1,0 +1,7 @@
+# Keep the build context small.
+**/node_modules
+.git
+.github
+screenshots
+**/build
+**/generated

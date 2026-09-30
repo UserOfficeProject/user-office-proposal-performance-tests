@@ -9,7 +9,7 @@ fi
 
 # Get values from env first passed from jenkinsfile.
 export K6_TEST_NAME="${K6_TEST_NAME:-sc1-proposal-submission-test}"
-export TEST_SETUP_VERSION_TAG="${TEST_SETUP_VERSION_TAG:-0.0.5}"
+export TEST_SETUP_VERSION_TAG="${TEST_SETUP_VERSION_TAG:-1.0.0}"
 export BROWSER_BASE_URL="${BROWSER_BASE_URL:-https://devproposal.facilities.rl.ac.uk}"
 export GRAPHQL_URL="${GRAPHQL_URL:-https://devproposal.facilities.rl.ac.uk/graphql}"
 export TEST_SETUP_URL="${TEST_SETUP_URL:-http://test-setup:8100}"
