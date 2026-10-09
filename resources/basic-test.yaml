@@ -7,6 +7,8 @@ metadata:
     app: ${K6_TEST_NAME}
 spec:
   parallelism: ${K6_TEST_PARALLELISM}
+  initializer:
+    disabled: true
   script:
     configMap:
       name: test-scripts
@@ -14,7 +16,7 @@ spec:
   separate: true
   arguments: --tag testid=${K6_TEST_ID} --out experimental-prometheus-rw --no-usage-report -e ENVIRONMENT=develop -e K6_PROMETHEUS_RW_SERVER_URL=${K6_PROMETHEUS_RW_SERVER_URL}
   runner:
-    image: grafana/k6:1.2.3-with-browser
+    image: grafana/k6:2.2.0-with-browser
     imagePullPolicy: IfNotPresent
     metadata:
       annotations:
