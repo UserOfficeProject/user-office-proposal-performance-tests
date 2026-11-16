@@ -1,0 +1,189 @@
+pipeline {
+
+  agent none
+
+  options {
+    disableConcurrentBuilds()
+
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10'
+      )
+    )
+
+    office365ConnectorWebhooks([[
+      url: "${env.TEAMS_WEBHOOK_URL}",
+      notifyUnstable: true,
+      notifyFailure: true,
+      notifyBackToNormal: true,
+      startNotification: false,
+      notifySuccess: false,
+      notifyAborted: false,
+      notifyNotBuilt: false,
+      notifyRepeatedFailure: false
+    ]])
+
+    timeout(time: 3, unit: 'HOURS')
+  }
+  parameters {
+    string(
+      name: 'K6_TEST_NAME',
+      description: 'The k6 test name',
+      trim: true
+    )
+    string(
+      name: 'TEST_SETUP_VERSION_TAG',
+      description: 'The test setup image version',
+      defaultValue: '1.0.1',
+      trim: true
+    )
+    string(
+      name: 'K6_PS_VUS',
+      description: 'The number of k6 vus',
+      defaultValue: '50',
+      trim: true
+    )
+    string(
+      name: 'K6_PS_ITERATIONS',
+      description: 'The number of k6 iterations',
+      defaultValue: '2',
+      trim: true
+    )
+    string(
+      name: 'K6_SETUP_TOTAL_USERS',
+      description: 'The total number of users to use for the test',
+      defaultValue: '250',
+      trim: true
+    )
+    string(
+      name: 'TEST_SETUP_CALL_ID',
+      description: 'The call id in develop',
+      defaultValue: '367',
+      trim: true
+    )
+    string(
+      name: 'K6_TEST_PARALLELISM',
+      description: 'The number of parallel pods to use',
+      defaultValue: '2',
+      trim: true
+    )
+    string(
+      name: 'FIRST_USER_ID',
+      description: 'User id of first user',
+      defaultValue: '-220806000',
+      trim: true
+    )
+    booleanParam(
+      name: 'SETUP_TEST_USERS',
+      description: 'Flag to set up test users',
+      defaultValue: true
+    )
+    booleanParam(
+      name: 'SETUP_TEST_CALL',
+      description: 'Flag to set up test call',
+      defaultValue: true
+    )
+    string(
+      name: 'K6_FAP_VUS',
+      description: 'Number of k6 vus for fap load test',
+      defaultValue: '100',
+      trim: true
+    )
+    string(
+      name: 'K6_FAP_ITERATIONS',
+      description: 'Number of iterations for fap load test',
+      defaultValue: '1',
+      trim: true
+    )
+    booleanParam(
+      name: 'FAP_PROCESS_LOAD_TEST',
+      description: 'Flag to indicate fap load test',
+      defaultValue: false
+    )
+    choice(
+      name: 'FAP_MEMBER_ROLE',
+      choices: ['fapMember', 'fapChair', 'fapSecretary'],
+      description: 'Flag to set up test reviewers role'
+    )
+    string(
+      name: 'FAP_CALL_ID',
+      description: 'Flag to refer to FAP call ID',
+      defaultValue: '145',
+      trim: true
+    )
+    string(
+      name: 'FAP_INSTRUMENT_ID',
+      description: 'Flag to refer to FAP instrument ID',
+      defaultValue: '37',
+      trim: true
+    )
+    string(
+      name: 'FAP_PROPOSALS',
+      description: 'Flag to set up number of proposals for review',
+      defaultValue: '300',
+      trim: true
+    )
+  }
+  environment {
+    HOME = '.'
+  }
+  stages {
+    stage('Build and run load tests') {
+
+      agent {
+        dockerfile {
+          filename 'Dockerfile.run'
+          label 'linux && docker'
+          reuseNode true
+        }
+      }
+      environment {
+        KUBECONFIG             = credentials('load-test-kubeconfig')
+        K6_TEST_NAME           = "${params.K6_TEST_NAME}"
+        TEST_SETUP_VERSION_TAG = "${params.TEST_SETUP_VERSION_TAG}"
+        K6_PS_VUS              = "${params.K6_PS_VUS}"
+        K6_PS_ITERATIONS       = "${params.K6_PS_ITERATIONS}"
+        K6_SETUP_TOTAL_USERS   = "${params.K6_SETUP_TOTAL_USERS}"
+        TEST_SETUP_CALL_ID     = "${params.TEST_SETUP_CALL_ID}"
+        K6_TEST_PARALLELISM    = "${params.K6_TEST_PARALLELISM}"
+        FIRST_USER_ID          = "${params.FIRST_USER_ID}"
+        SETUP_TEST_USERS       = "${params.SETUP_TEST_USERS}"
+        SETUP_TEST_CALL        = "${params.SETUP_TEST_CALL}"
+        K6_FAP_VUS             = "${params.K6_FAP_VUS}"
+        K6_FAP_ITERATIONS      = "${params.K6_FAP_ITERATIONS}"
+        FAP_PROCESS_LOAD_TEST  = "${params.FAP_PROCESS_LOAD_TEST}"
+        FAP_MEMBER_ROLE        = "${params.FAP_MEMBER_ROLE}"
+        FAP_CALL_ID            = "${params.FAP_CALL_ID}"
+        FAP_INSTRUMENT_ID      = "${params.FAP_INSTRUMENT_ID}"
+        FAP_PROPOSALS          = "${params.FAP_PROPOSALS}"
+      }
+      steps {
+        sh """
+          npm ci
+          npm run-script build:k6-test
+          ./run-cluster.sh
+        """
+      }
+    }
+  }
+
+  post {
+    regression {
+      emailext(
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+        to: '$DEFAULT_RECIPIENTS',
+        recipientProviders: [developers()]
+      )
+    }
+
+    fixed {
+      emailext(
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+        to: '$DEFAULT_RECIPIENTS',
+        recipientProviders: [developers()]
+      )
+    }
+  }
+}

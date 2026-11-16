@@ -1,0 +1,64 @@
+# Specify a different separator for branch names
+
+version: 2
+updates:
+  # Node packages update.
+  - package-ecosystem: npm
+    directories:
+      - "/"
+      - "/test-setup"
+    schedule:
+      interval: weekly
+      day: "sunday"
+    # Limit PRs open from dependabot to avoid reaching job runners limit
+    open-pull-requests-limit: 2
+    pull-request-branch-name:
+      # Separate sections of the branch name with a hyphen because docker hub doesn't want slashes
+      # for example, `dependabot-npm_and_yarn-next_js-acorn-6.4.1`
+      separator: '-'
+    versioning-strategy: increase-if-necessary
+    # Only raise PRs for minor and patch updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    cooldown:
+      default-days: 1 
+      semver-major-days: 30 
+      semver-minor-days: 7 
+      semver-patch-days: 1       
+      include:
+        - "*"                    
+
+  # Docker image update.
+  - package-ecosystem: docker
+    directories:
+      - "/"
+      - "/test-setup"
+    schedule:
+      interval: weekly
+      day: "sunday"
+    open-pull-requests-limit: 1
+    pull-request-branch-name:
+      separator: '-'
+    # Only raise PRs for minor and patch updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    cooldown:
+      default-days: 30
+      include:
+        - "*"
+
+  # GitHub Actions update.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: "sunday"
+    open-pull-requests-limit: 2
+    pull-request-branch-name:
+      separator: '-'
+    cooldown:
+      default-days: 30
+      include:
+        - "*"

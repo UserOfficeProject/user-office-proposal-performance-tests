@@ -1,0 +1,13 @@
+query Questionary($questionaryId: Int!) {
+  questionary(questionaryId: $questionaryId) {
+    questionaryId
+    templateId
+    steps {
+      topic {
+        templateId
+        title
+        id
+      }
+    }
+  }
+}

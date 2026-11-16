@@ -1,0 +1,66 @@
+pipeline {
+  agent {
+    label 'linux && docker'
+  }
+
+  options {
+    disableConcurrentBuilds()
+
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10'
+      )
+    )
+
+    office365ConnectorWebhooks([[
+      url: "${env.TEAMS_WEBHOOK_URL}",
+      notifyUnstable: true,
+      notifyFailure: true,
+      notifyBackToNormal: true,
+      startNotification: false,
+      notifySuccess: false,
+      notifyAborted: false,
+      notifyNotBuilt: false,
+      notifyRepeatedFailure: false
+    ]])
+  }
+
+  parameters {
+    string(name: 'SETUP_VERSION_TAG', defaultValue: '', description: 'The version to tag the docker image for test setup. E.g. 1.0.0')
+  }
+
+  stages {
+    stage('Build and deploy') {
+       stages {  
+          stage('test-setup') {
+                steps {
+                  withDockerRegistry(credentialsId: 'ghcr-image-pusher', url: 'https://ghcr.io/isisbusapps') {
+                    sh """
+                    ./build-push-image.sh uop-performance-tests-setup ${params.SETUP_VERSION_TAG} test-setup
+                    """
+                  }
+                }
+          }
+       }
+    }
+  }
+  post {
+    regression {
+      emailext (
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+        to: '$DEFAULT_RECIPIENTS',
+        recipientProviders: [developers()]
+      )
+    }
+
+    fixed {
+      emailext (
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+        to: '$DEFAULT_RECIPIENTS',
+        recipientProviders: [developers()]
+      )
+    }
+  }
+}

@@ -1,0 +1,9 @@
+query getBlankQuestionaryStepsByCallId($callId: Int!) {
+  blankQuestionaryStepsByCallId(callId: $callId) {
+    fields {
+      answerId
+      topicId
+    }
+    isCompleted
+  }
+}

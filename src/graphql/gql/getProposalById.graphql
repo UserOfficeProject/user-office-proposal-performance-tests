@@ -1,0 +1,7 @@
+query ProposalById($proposalId: String!) {
+  proposalById(proposalId: $proposalId) {
+    proposalId
+    primaryKey
+    callId
+  }
+}

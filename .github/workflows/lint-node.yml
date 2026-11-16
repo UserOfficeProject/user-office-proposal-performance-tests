@@ -1,0 +1,28 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+env:
+  NODE_VERSION: 24.x
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Lint Action
+        run: npm run lint

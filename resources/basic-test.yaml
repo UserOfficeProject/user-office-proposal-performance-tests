@@ -1,0 +1,104 @@
+---
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: ${K6_TEST_NAME}-deployment
+  labels:
+    app: ${K6_TEST_NAME}
+spec:
+  parallelism: ${K6_TEST_PARALLELISM}
+  initializer:
+    disabled: true
+  script:
+    configMap:
+      name: test-scripts
+      file: ${K6_TEST_NAME}.js
+  separate: true
+  arguments: --tag testid=${K6_TEST_ID} --out experimental-prometheus-rw --no-usage-report -e ENVIRONMENT=develop -e K6_PROMETHEUS_RW_SERVER_URL=${K6_PROMETHEUS_RW_SERVER_URL}
+  runner:
+    image: grafana/k6:2.2.0-with-browser
+    imagePullPolicy: IfNotPresent
+    metadata:
+      annotations:
+        co.elastic.logs/enabled: "true"
+        co.elastic.logs/processors.add_fields.target: ""
+        co.elastic.logs/processors.add_fields.fields.application.name: "proposal-load-tester"
+        co.elastic.logs/processors.add_fields.fields.application.domain: "proposal-load-testing"
+        co.elastic.logs/processors.add_fields.fields.application.tier: "service"
+        co.elastic.logs/processors.dissect.tokenizer: 'time="%{@timestamp}" level=%{log_level} msg="%{?log_message}" source=%{?log_source}'
+        co.elastic.logs/processors.dissect.ignore_failure: "true"
+        co.elastic.logs/processors.dissect.target_prefix: ""
+        co.elastic.logs/processors.dissect.overwrite_keys: "true"
+    resources:
+      requests:
+        cpu: "20000m"
+        memory: "10Gi"
+    env:
+      - name: BROWSER_BASE_URL
+        value: ${BROWSER_BASE_URL}
+      - name: GRAPHQL_URL
+        value: ${GRAPHQL_URL}
+      - name: TEST_SETUP_URL
+        value: ${TEST_SETUP_URL}
+      - name: K6_PS_VUS
+        value: "${K6_PS_VUS}"
+      - name: K6_PS_ITERATIONS
+        value: "${K6_PS_ITERATIONS}"
+      - name: SETUP_TOTAL_USERS
+        value: "${K6_SETUP_TOTAL_USERS}"
+      - name: TEST_SETUP_CALL_ID
+        value: "${TEST_SETUP_CALL_ID}"
+      - name: K6_TEST_PARALLELISM
+        value: "${K6_TEST_PARALLELISM}"
+      - name: SETUP_TEST_USERS
+        value: "${SETUP_TEST_USERS}"
+      - name: SETUP_TEST_CALL
+        value: "${SETUP_TEST_CALL}"
+      - name: K6_TEST_ID
+        value: "${K6_TEST_ID}"
+      - name: IS_CLUSTER_TEST_RUN
+        value: "${IS_CLUSTER_TEST_RUN}"
+      - name: INSTRUMENT_ID
+        value: "${INSTRUMENT_ID}"
+      - name: FAP_PROCESS_LOAD_TEST
+        value: "${FAP_PROCESS_LOAD_TEST}"
+      - name: FAP_MEMBER_ROLE
+        value: "${FAP_MEMBER_ROLE}"
+      - name: TOTAL_FAP_MEMBERS
+        value: "${TOTAL_FAP_MEMBERS}"
+      - name: FAP_INSTRUMENT_ID
+        value: "${FAP_INSTRUMENT_ID}"
+      - name: FAP_PROPOSALS
+        value: "${FAP_PROPOSALS}"
+      - name: PROPOSALS_PER_REVIEWER
+        value: "${PROPOSALS_PER_REVIEWER}"
+      - name: FAP_REVIEW_STATUS_ID
+        value: "${FAP_REVIEW_STATUS_ID}"
+      - name: SUBMITTED_STATUS_ID
+        value: "${SUBMITTED_STATUS_ID}"
+      - name: FAP_CALL_ID
+        value: "${FAP_CALL_ID}"
+      - name: K6_FAP_VUS
+        value: "${K6_FAP_VUS}"
+      - name: K6_FAP_ITERATIONS
+        value: "${K6_FAP_ITERATIONS}"
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: "${K6_PROMETHEUS_RW_SERVER_URL}"
+      - name: K6_PROMETHEUS_RW_HTTP_HEADERS
+        valueFrom:
+          secretKeyRef:
+            name: connection-secrets
+            key: K6_PROMETHEUS_RW_HTTP_HEADERS
+      - name: K6_PROMETHEUS_RW_TREND_STATS
+        value: "${K6_PROMETHEUS_RW_TREND_STATS}"
+    envFrom:
+      - secretRef:
+          name: connection-secrets
+    volumeMounts:
+      - name: fixtures
+        mountPath: "/fixtures"
+        readOnly: true
+    volumes:
+      - name: fixtures
+        configMap:
+          name: test-fixtures

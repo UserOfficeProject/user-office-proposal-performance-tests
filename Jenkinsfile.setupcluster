@@ -1,0 +1,79 @@
+pipeline {
+  
+    agent none
+
+    options {
+        disableConcurrentBuilds()
+
+        buildDiscarder(
+          logRotator(
+            numToKeepStr: '10'
+          )
+        )
+
+        office365ConnectorWebhooks([[
+          url: "${env.TEAMS_WEBHOOK_URL}",
+          notifyUnstable: true,
+          notifyFailure: true,
+          notifyBackToNormal: true,
+          startNotification: false,
+          notifySuccess: false,
+          notifyAborted: false,
+          notifyNotBuilt: false,
+          notifyRepeatedFailure: false
+        ]])
+    }
+
+    stages {
+        stage ('Install Helm dependencies') {
+            agent {
+                label 'kubectl-1.28 && helm && ansible'
+            }
+            environment {
+                KUBECONFIG = credentials('load-test-kubeconfig')
+                ANSIBLE_FORCE_COLOR = '1' 
+            }
+            steps {
+
+                 copyArtifacts(
+                    projectName: 'Dev_Build_BisAppSettings',
+                    filter: 'BISAppSettings/**/*',
+                    selector: lastSuccessful(),
+                    fingerprintArtifacts: true
+                )
+               sh (
+                '''   
+                 ansible-playbook -v helm/install-helm-dependencies.yml
+                '''
+                )
+                sh(
+                '''
+                 kubectl create namespace apps --dry-run=true -o yaml | kubectl apply -f -
+                 kubectl apply -k $WORKSPACE/BISAppSettings/proposal-load-tester/cluster/
+                 kubectl apply -k $WORKSPACE/BISAppSettings
+                '''
+                )
+            }
+        }
+    }
+
+    post {
+        regression {
+            emailext(
+                subject: '$DEFAULT_SUBJECT',
+                body: '$DEFAULT_CONTENT',
+                to: '$DEFAULT_RECIPIENTS',
+                recipientProviders: [developers()]
+            )
+        }
+
+        fixed {
+            emailext(
+                subject: '$DEFAULT_SUBJECT',
+                body: '$DEFAULT_CONTENT',
+                to: '$DEFAULT_RECIPIENTS',
+                recipientProviders: [developers()]
+            )
+        }
+    }
+}

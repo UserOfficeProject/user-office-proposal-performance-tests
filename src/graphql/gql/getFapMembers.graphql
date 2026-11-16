@@ -1,0 +1,6 @@
+query getFapMembers($fapId: Int!) {
+  fapMembers(fapId: $fapId) {
+    fapId
+    userId
+  }
+}

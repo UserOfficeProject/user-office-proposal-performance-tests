@@ -1,0 +1,11 @@
+query Me {
+  me {
+    id
+    created
+    roles {
+      id
+      shortCode
+      title
+    }
+  }
+}

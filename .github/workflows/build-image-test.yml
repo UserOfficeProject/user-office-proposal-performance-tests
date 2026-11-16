@@ -1,0 +1,30 @@
+name: Build image test
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  build-image-test:
+    name: Docker build and file validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Validate test setup build file
+        uses: docker/build-push-action@v7
+        with:
+          context: ./test-setup
+          platforms: linux/amd64
+          call: check
+          
+      - name: Build test setup
+        uses: docker/build-push-action@v7
+        with:
+          context: ./test-setup
+          push: false
+          tags: test-setup:latest

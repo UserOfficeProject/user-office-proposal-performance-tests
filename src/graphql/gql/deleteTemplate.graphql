@@ -1,0 +1,7 @@
+mutation DeleteTemplate($templateId: Int!) {
+  deleteTemplate(templateId: $templateId) {
+    templateId
+    name
+    groupId
+  }
+}

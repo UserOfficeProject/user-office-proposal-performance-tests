@@ -1,0 +1,17 @@
+query getProposalsWithCallInfo($filter: ProposalsFilter) {
+  proposals(filter: $filter) {
+    proposals {
+      primaryKey
+      proposalId
+      title
+      proposer {
+        id
+      }
+      call {
+        shortCode
+        title
+        id
+      }
+    }
+  }
+}

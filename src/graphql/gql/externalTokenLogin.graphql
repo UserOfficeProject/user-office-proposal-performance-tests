@@ -1,0 +1,3 @@
+mutation ExternalTokenLogin($redirectUri: String!, $externalToken: String!) {
+  externalTokenLogin(redirectUri: $redirectUri, externalToken: $externalToken)
+}

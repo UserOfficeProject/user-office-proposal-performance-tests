@@ -1,0 +1,9 @@
+query Proposal($primaryKey: Int!) {
+  proposal(primaryKey: $primaryKey) {
+    title
+    created
+    primaryKey
+    proposalId
+    proposerId
+  }
+}

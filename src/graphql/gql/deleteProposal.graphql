@@ -1,0 +1,21 @@
+mutation DeleteProposal($proposalPk: Int!) {
+  deleteProposal(proposalPk: $proposalPk) {
+    primaryKey
+    proposalId
+    callId
+    status {
+      id
+      name
+    }
+    questionary {
+      steps {
+        topic {
+          id
+          templateId
+        }
+      }
+      questionaryId
+      templateId
+    }
+  }
+}

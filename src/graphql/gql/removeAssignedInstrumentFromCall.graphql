@@ -1,0 +1,18 @@
+mutation RemoveAssignedInstrumentFromCall(
+  $removeAssignedInstrumentFromCallInput: RemoveAssignedInstrumentFromCallInput!
+) {
+  removeAssignedInstrumentFromCall(
+    removeAssignedInstrumentFromCallInput: $removeAssignedInstrumentFromCallInput
+  ) {
+    id
+    shortCode
+    title
+    templateId
+    instruments {
+      id
+      managerUserId
+      name
+      shortCode
+    }
+  }
+}
