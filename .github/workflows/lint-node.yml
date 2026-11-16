@@ -2,7 +2,7 @@ name: Lint
 
 on:
   pull_request:
-    branches: [develop, master]
+    branches: [develop, main]
 
 env:
   NODE_VERSION: 24.x

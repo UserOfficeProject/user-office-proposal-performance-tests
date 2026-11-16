@@ -2,7 +2,7 @@ name: Build image test
 
 on:
   pull_request:
-    branches: [develop, master]
+    branches: [develop, main]
 
 jobs:
   build-image-test:
