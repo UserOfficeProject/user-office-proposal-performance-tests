@@ -32,11 +32,9 @@
     "cluster-cli:start": "npm run build && npm run cluster-cli:build && node ./cluster-cli/build/index.cjs"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.3",
-    "@babel/plugin-transform-class-properties": "^8.0.1",
-    "@babel/plugin-transform-object-rest-spread": "^7.28.0",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/preset-typescript": "^7.27.1",
+    "@babel/core": "^8.1.2",
+    "@babel/preset-env": "^8.0.7",
+    "@babel/preset-typescript": "^8.0.7",
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^7.2.0",
     "@graphql-codegen/typed-document-node": "^7.1.1",
@@ -66,7 +64,7 @@
   },
   "engines": {
     "npm": ">=11.0.0",
-    "node": ">=24.0.0"
+    "node": ">=24.11.0"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.0.1",
