@@ -1,4 +1,4 @@
-FROM node:25-slim AS build-stage
+FROM node:24.22-slim AS build-stage
 
 WORKDIR /workdir
 
@@ -12,7 +12,7 @@ RUN npm run generate:uows && \
     npm run build && \
     npm prune --omit=dev
 
-FROM node:25-slim
+FROM node:24.22-slim
 
 WORKDIR /usr/src/app
 

@@ -17,6 +17,10 @@ updates:
       # for example, `dependabot-npm_and_yarn-next_js-acorn-6.4.1`
       separator: '-'
     versioning-strategy: increase-if-necessary
+    # Only raise PRs for minor and patch updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     cooldown:
       default-days: 1 
       semver-major-days: 30 
@@ -36,6 +40,10 @@ updates:
     open-pull-requests-limit: 1
     pull-request-branch-name:
       separator: '-'
+    # Only raise PRs for minor and patch updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     cooldown:
       default-days: 30
       include:
