@@ -118,7 +118,7 @@ export class UserDataSource {
                   email, work_phone,
                   establishment_id, org_correspondence_id, home_correspondence_id,
                   from_date, dpa, verified,
-                  isis_salt, sha2, lastpwdreset,privacy_id) 
+                  isis_salt, password_hash, lastpwdreset,privacy_id)
           VALUES ( S.rid, S.rid,
                   'Mx', 'Test', 'Account', 'Postdoctoral Researcher',
                   'BISAPPSSINK' || S.rid || '@stfc.ac.uk', '012345123456',
@@ -379,7 +379,7 @@ export class UserDataSource {
                   email, work_phone,
                   establishment_id, org_correspondence_id, home_correspondence_id,
                   from_date, dpa, verified,
-                  isis_salt, sha2, lastpwdreset,privacy_id) 
+                  isis_salt, password_hash, lastpwdreset,privacy_id)
           VALUES ( S.rid, S.rid,
                   'Mx', 'Test', 'Account', 'Postdoctoral Researcher',
                   'BISAPPSSINK' || S.rid || '@stfc.ac.uk', '012345123456',
